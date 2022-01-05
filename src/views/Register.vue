@@ -3,34 +3,58 @@
     <form class="register">
       <p class="login-register">
         Already have an account?
-        <router-link class="router-link" :to="{ name: 'Login' }">Login</router-link>
+        <router-link class="router-link" :to="{ name: 'Login' }"
+          >Login</router-link
+        >
       </p>
       <h2>Create your Donkey Account</h2>
       <div class="inputs">
         <div class="input">
-          <input type="text" placeholder="First Name" v-model="firstName" />
+          <input
+            type="text"
+            placeholder="First Name"
+            v-model="firstName"
+            required
+          />
           <user class="icon" />
         </div>
         <div class="input">
-          <input type="text" placeholder="Last Name" v-model="lastName" />
+          <input
+            type="text"
+            placeholder="Last Name"
+            v-model="lastName"
+            required
+          />
           <user class="icon" />
         </div>
         <div class="input">
-          <input type="text" placeholder="Username" v-model="username" />
+          <input
+            type="text"
+            placeholder="Username"
+            v-model="username"
+            required
+          />
           <user class="icon" />
         </div>
         <div class="input">
-          <input type="text" placeholder="Email" v-model="email" />
+          <input type="text" placeholder="Email" v-model="email" required />
           <email class="icon" />
         </div>
         <div class="input">
-          <input type="password" placeholder="Password" v-model="password" />
+          <input
+            type="password"
+            placeholder="Password"
+            v-model="password"
+            required
+          />
           <password class="icon" />
         </div>
-        <div v-show="error" class="error">{{ this.errorMsg }}</div> <!-- only show if error == true -->
+        <div v-show="error" class="error">{{ this.errorMsg }}</div>
+        <!-- only show if error == true -->
       </div>
 
-      <button @click.prevent="register">Sign Up</button> <!-- click.prevent stops page from refreshing -->
+      <button @click.prevent="register">Sign Up</button>
+      <!-- click.prevent stops page from refreshing -->
       <div class="angle"></div>
     </form>
     <div class="background"></div>
@@ -46,58 +70,68 @@ import "firebase/auth";
 import db from "../firebase/firebaseInit";
 
 export default {
-    name: "Register",
-    components: {
-        email,
-        password,
-        user,
+  name: "Register",
+  components: {
+    email,
+    password,
+    user,
+  },
+  data() {
+    return {
+      firstName: "",
+      lastName: "",
+      username: "",
+      email: "",
+      password: "",
+      error: null,
+      errorMsg: "",
+    };
+  },
+  methods: {
+    async register() {
+      if (
+        this.email !== "" &&
+        this.password !== "" &&
+        this.firstName !== "" &&
+        this.lastName !== "" &&
+        this.username !== ""
+      ) {
+        this.error = false;
+        this.errorMsg = "";
+        const firebaseAuth = await firebase.auth();
+        const createUser = await firebaseAuth.createUserWithEmailAndPassword(
+          this.email,
+          this.password
+        ).catch(err => {
+          this.error = true;
+          this.errorMsg = err.message;
+        });
+        const result = await createUser;
+        if (!this.error) {
+        const dataBase = db.collection("users").doc(result.user.uid);
+        await dataBase.set({
+          firstName: this.firstName,
+          lastName: this.lastName,
+          username: this.username,
+          email: this.email,
+        });
+        this.$router.push({ name: "Home" }); //push user to homepage aft auth
+        return;
+        }
+      } else {
+      this.error = true;
+      this.errorMsg = "Please fill out all the fields!";
+      return;
+      }
     },
-    data() {
-        return {
-            firstName: "",
-            lastName: "",
-            username: "",
-            email: "",
-            password: "",
-            error: null,
-            errorMsg: "",
-        };
-    },
-    methods: {
-        async register() {
-            if (this.email !== "" &&
-                this.password !== "" &&
-                this.firstName !== "" &&
-                this.lastName !== "" &&
-                this.username !== ""
-            ) {
-                this.error = false;
-                this.errorMsg = "";
-                const firebaseAuth = await firebase.auth();
-                const createUser = await firebaseAuth.createUserWithEmailAndPassword(this.email, this.password);
-                const result = await createUser;
-                const dataBase = db.collection("users").doc(result.user.uid);
-                await dataBase.set({
-                    firstName: this.firstName,
-                    lastName: this.lastName,
-                    username: this.username,
-                    email: this.email,
-                });
-                this.$router.push({name: "Home"}) //push user to homepage aft auth
-                return;
-            } 
-            this.error = true;
-            this.errorMsg = "Please fill out all the fields!"
-            return;
-        },
-    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .register {
-    h2 {
-        max-width: 350px;
-    }
+  h2 {
+    max-width: 350px;
+  }
 }
 </style>

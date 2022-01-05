@@ -3,7 +3,9 @@
     <form class="login">
       <p class="login-register">
         Don't have an account?
-        <router-link class="router-link" :to="{ name: 'Register' }">Register</router-link>
+        <router-link class="router-link" :to="{ name: 'Register' }"
+          >Register</router-link
+        >
       </p>
       <h2>Login like a Donkey</h2>
       <div class="inputs">
@@ -17,8 +19,10 @@
         </div>
         <div v-show="error" class="error">{{ this.errorMsg }}</div>
       </div>
-      <router-link class="forgot-password" :to="{ name: 'ForgotPassword' }">Forgot your password?</router-link>
-      <button @click.prevent="signIn">Sign In</button>
+      <router-link class="forgot-password" :to="{ name: 'ForgotPassword' }"
+        >Forgot your password?</router-link
+      >
+      <button type="submit" @click.prevent="signIn">Sign In</button>
       <div class="angle"></div>
     </form>
     <div class="background"></div>
@@ -46,21 +50,32 @@ export default {
   },
   methods: {
     signIn() {
-      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(() => {
-        this.$router.push({name: "Home"});
-        this.erorr = false;
-        this.errorMsg = "";
-        console.log(firebase.auth().currentUser.uid);
-      }).catch(err => {
-        this.error = true;
-        this.errorMsg = err.message;
-      });
+      if (this.email !== "" && this.password !== "") {
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(this.email, this.password)
+          .then(() => {
+            this.$router.push({ name: "Home" });
+            this.erorr = false;
+            this.errorMsg = "";
+            console.log(firebase.auth().currentUser.uid);
+          })
+          .catch((err) => {
+            this.error = true;
+            this.errorMsg = err.message;
+          });
+      } else {
+      this.error = true;
+      this.errorMsg = "Please fill out all the fields!";
+      return;
+      }
     },
   },
 };
 </script>
 
-<style lang="scss"> //not scoped because the template is shared w/ register & forgot-pw
+<style lang="scss">
+//not scoped because the template is shared w/ register & forgot-pw
 .form-wrap {
   overflow: hidden;
   display: flex;
@@ -69,7 +84,7 @@ export default {
   align-self: center;
   margin: 0 auto;
   width: 90%;
-  @media(min-width: 900px) {
+  @media (min-width: 900px) {
     width: 100%;
   }
 
@@ -89,7 +104,7 @@ export default {
     justify-content: center;
     align-items: center;
     flex: 1;
-    @media(min-width: 900px) {
+    @media (min-width: 900px) {
       padding: 0 50px;
     }
 
@@ -98,7 +113,7 @@ export default {
       font-size: 32px;
       color: #303030;
       margin-bottom: 40px;
-      @media(min-width: 900px) {
+      @media (min-width: 900px) {
         font-size: 40px;
       }
     }
@@ -140,7 +155,7 @@ export default {
       font-size: 14px;
       margin: 16px 0 32px;
       border-bottom: 1 px solid transparent;
-      transition: .5s ease all;
+      transition: 0.5s ease all;
 
       &:hover {
         border-color: #303030;
@@ -155,7 +170,7 @@ export default {
       width: 60px;
       right: -30px;
       height: 101%;
-      @media(min-width: 900px) {
+      @media (min-width: 900px) {
         display: initial;
       }
     }
@@ -168,9 +183,10 @@ export default {
     background-image: url("../assets/background.png");
     width: 100%;
     height: 100%;
-    @media(min-width: 900px) {
+    @media (min-width: 900px) {
       display: initial;
     }
   }
 }
-</style>>
+</style>
+>
