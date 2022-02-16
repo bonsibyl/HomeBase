@@ -27,7 +27,7 @@
               <v-icon>mdi-message-outline</v-icon>
             </v-btn>
             <v-btn
-              v-if="this.$store.state.seller"
+              v-show="!this.$store.state.seller"
               icon
               color="black"
               to="/cart"
