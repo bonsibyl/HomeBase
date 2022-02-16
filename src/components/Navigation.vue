@@ -10,16 +10,37 @@
         <ul v-show="!mobile">
           <!--only show if mobile nav is FALSE-->
           <v-row>
-            <v-btn icon color="black" to="/" exact-active-class="activebtn">
+            <v-btn
+              icon
+              color="black"
+              to="/search"
+              exact-active-class="activebtn"
+            >
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
-            <v-btn icon color="black" to="/message" exact-active-class="activebtn">
+            <v-btn
+              icon
+              color="black"
+              to="/message"
+              exact-active-class="activebtn"
+            >
               <v-icon>mdi-message-outline</v-icon>
             </v-btn>
-            <v-btn v-if="this.$store.state.seller" icon color="black" to="/cart" exact-active-class="activebtn">
+            <v-btn
+              v-if="this.$store.state.seller"
+              icon
+              color="black"
+              to="/cart"
+              exact-active-class="activebtn"
+            >
               <v-icon>mdi-cart</v-icon>
             </v-btn>
-            <v-btn icon color="black" to="profile" exact-active-class="activebtn">
+            <v-btn
+              icon
+              color="black"
+              to="profile"
+              exact-active-class="activebtn"
+            >
               <v-icon>mdi-account</v-icon>
             </v-btn>
           </v-row>
@@ -59,7 +80,7 @@
                 <signOutIcon class="icon" />
                 <p>Sign Out</p>
               </div> -->
-            <!-- </div>
+        <!-- </div>
           </div> -->
         <!-- </div> -->
       </div>
@@ -88,8 +109,7 @@ import "firebase/auth";
 
 export default {
   name: "navigation",
-  components: {
-  },
+  components: {},
   data() {
     //data for dropdown nav (mobile)
     return {
@@ -162,7 +182,7 @@ header {
 }
 
 .activebtn {
-  background-color: #FFF;
+  background-color: #fff;
 }
 
 nav {
