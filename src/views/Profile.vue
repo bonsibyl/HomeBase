@@ -30,7 +30,6 @@
           <input disabled type="text" id="email" v-model="email" />
         </div>
         <button @click="updateProfile">Save Changes</button>
-        <button @click="signOut">sign out</button>
       </div>
     </div>
   </div>
@@ -39,7 +38,7 @@
 <script>
 import Modal from "../components/Modal";
 import adminIcon from "../assets/Icons/user-crown-light.svg";
-import firebase from "firebase/app";
+
 export default {
   name: "Profile",
   components: {
@@ -59,10 +58,6 @@ export default {
     },
     closeModal() {
       this.modalActive = !this.modalActive;
-    },
-    signOut() {
-      firebase.auth().signOut();
-      this.$router.push({ name: "Home" });
     },
   },
   computed: {
