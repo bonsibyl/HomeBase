@@ -1,24 +1,32 @@
 <template>
-  <div class="app-wrapper">
-    <div class="app">
-      <Navigation v-if="!navigation" /> <!-- only show for pages excl. login/register/pw -->
-      <router-view />
-      <Footer v-if="!navigation" /> <!-- only show for pages excl. login/register/pw -->
+  <v-app>
+    <div class="app-wrapper">
+      <div class="app">
+        <Navigation v-if="!unauth" />
+        <UnauthNavigation v-else/>
+        <!-- only show for pages excl. login/register/pw -->
+        <router-view />
+        <Footer v-if="!unauth" />
+        <!-- only show for pages excl. login/register/pw -->
+      </div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script>
 import Footer from "./components/Footer";
 import Navigation from "./components/Navigation";
+import UnauthNavigation from "./components/UnauthNavigation"
+
 import firebase from "firebase/app";
 import "firebase/auth";
+
 export default {
   name: "app",
-  components: { Navigation, Footer },
+  components: { Navigation, Footer, UnauthNavigation },
   data() {
     return {
-      navigation: null, //for nav bar rendering, true === disabled
+      unauth: true, //for nav bar rendering, true === disabled
     };
   },
   created() {
@@ -26,36 +34,37 @@ export default {
       this.$store.commit("updateUser", user); //update user whenever there is new auth
       if (user) {
         this.$store.dispatch("getCurrentUser");
+        this.unauth=false;
       }
     });
-    this.checkRoute(); //initialise in lifecycle
+    //this.checkRoute(); //initialise in lifecycle
   },
   mounted() {},
   methods: {
     //detect route that we are on, for page rendering
-    checkRoute() {
-      if (
-        this.$route.name === "Login" ||
-        this.$route.name === "Register" ||
-        this.$route.name === "ForgotPassword"
-      ) {
-        this.navigation = true;
-        return;
-      }
-      this.navigation = false;
-    },
+    // checkRoute() {
+    //   if (
+    //     this.$route.name === "Login" ||
+    //     this.$route.name === "Register" ||
+    //     this.$route.name === "ForgotPassword"
+    //   ) {
+    //     this.unauth = true;
+    //     return;
+    //   }
+    //   this.unauth = false;
+    // },
   },
-  watch: {
-    $route() {
-      this.checkRoute(); //whenever route changes, run checkRoute() funct
-    },
-  },
+  // watch: {
+  //   $route() {
+  //     this.checkRoute(); //whenever route changes, run checkRoute() funct
+  //   },
+  // },
 };
 </script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
 
 * {
   margin: 0;

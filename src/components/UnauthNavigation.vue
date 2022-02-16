@@ -9,22 +9,26 @@
       <div class="nav-links">
         <ul v-show="!mobile">
           <!--only show if mobile nav is FALSE-->
-          <v-row>
-            <v-btn icon color="black" to="/" exact-active-class="activebtn">
-              <v-icon>mdi-magnify</v-icon>
-            </v-btn>
-            <v-btn icon color="black" to="/message" exact-active-class="activebtn">
-              <v-icon>mdi-message-outline</v-icon>
-            </v-btn>
-            <v-btn v-if="this.$store.state.seller" icon color="black" to="/cart" exact-active-class="activebtn">
-              <v-icon>mdi-cart</v-icon>
-            </v-btn>
-            <v-btn icon color="black" to="profile" exact-active-class="activebtn">
-              <v-icon>mdi-account</v-icon>
-            </v-btn>
-          </v-row>
+          <router-link class="link hover" :to="{ name: 'Home' }" exact
+            >About us</router-link
+          >
+          <router-link class="link hover" :to="{ name: 'Login' }"
+            >Login</router-link
+          >
+          <router-link
+            v-if="!user"
+            class="link hover"
+            :to="{ name: 'SellerRegister' }"
+            >Seller Register</router-link
+          >
+          <router-link
+            v-if="!user"
+            class="link hover"
+            :to="{ name: 'BuyerRegister' }"
+            >Buyer Register</router-link
+          >
         </ul>
-        <!-- <div
+        <div
           v-if="user"
           @click="toggleProfileMenu"
           class="profile"
@@ -58,10 +62,10 @@
               <div @click="signOut" class="option">
                 <signOutIcon class="icon" />
                 <p>Sign Out</p>
-              </div> -->
-            <!-- </div>
-          </div> -->
-        <!-- </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </nav>
     <menuIcon @click="toggleMobileNav" class="menu-icon" v-show="mobile" />
@@ -72,8 +76,6 @@
         <router-link class="link" :to="{ name: 'Home' }" exact
           >Home</router-link
         >
-        <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-        <router-link class="link" to="#">Create Post</router-link>
         <router-link v-if="!user" class="link" :to="{ name: 'Login' }"
           >Login/Register</router-link
         >
@@ -83,12 +85,20 @@
 </template>
 
 <script>
+import menuIcon from "../assets/Icons/bars-regular.svg";
+import userIcon from "../assets/Icons/user-alt-light.svg";
+import adminIcon from "../assets/Icons/user-crown-light.svg";
+import signOutIcon from "../assets/Icons/sign-out-alt-regular.svg";
 import firebase from "firebase/app";
 import "firebase/auth";
 
 export default {
   name: "navigation",
   components: {
+    menuIcon,
+    userIcon,
+    adminIcon,
+    signOutIcon,
   },
   data() {
     //data for dropdown nav (mobile)
@@ -161,10 +171,6 @@ header {
   }
 }
 
-.activebtn {
-  background-color: #FFF;
-}
-
 nav {
   display: flex;
   padding: 25px 0;
@@ -194,6 +200,11 @@ nav {
       .link {
         margin-right: 32px;
         color: #000;
+      }
+
+      .router-link-active,
+      .router-link-exact-active {
+        color: #dd905f;
       }
 
       .link:last-child {

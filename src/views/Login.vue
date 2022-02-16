@@ -7,7 +7,7 @@
           >Register</router-link
         >
       </p>
-      <h2>Login like a Donkey</h2>
+      <h2>Login</h2>
       <div class="inputs">
         <div class="input">
           <input type="text" placeholder="Email" v-model="email" />
@@ -65,9 +65,9 @@ export default {
             this.errorMsg = err.message;
           });
       } else {
-      this.error = true;
-      this.errorMsg = "Please fill out all the fields!";
-      return;
+        this.error = true;
+        this.errorMsg = "Please fill out all the fields!";
+        return;
       }
     },
   },

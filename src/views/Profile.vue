@@ -1,6 +1,10 @@
 <template>
   <div class="profile">
-    <Modal v-if="modalActive" :modalMessage="modalMessage" v-on:close-modal="closeModal" />
+    <Modal
+      v-if="modalActive"
+      :modalMessage="modalMessage"
+      v-on:close-modal="closeModal"
+    />
     <div class="container">
       <h2>Account Settings</h2>
       <div class="profile-info">
@@ -26,6 +30,7 @@
           <input disabled type="text" id="email" v-model="email" />
         </div>
         <button @click="updateProfile">Save Changes</button>
+        <button @click="signOut">sign out</button>
       </div>
     </div>
   </div>
@@ -34,6 +39,7 @@
 <script>
 import Modal from "../components/Modal";
 import adminIcon from "../assets/Icons/user-crown-light.svg";
+import firebase from "firebase/app";
 export default {
   name: "Profile",
   components: {
@@ -53,6 +59,10 @@ export default {
     },
     closeModal() {
       this.modalActive = !this.modalActive;
+    },
+    signOut() {
+      firebase.auth().signOut();
+      this.$router.push({ name: "Home" });
     },
   },
   computed: {
@@ -99,7 +109,8 @@ export default {
     }
     .profile-info {
       border-radius: 8px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
       padding: 32px;
       background-color: #f1f1f1;
       display: flex;

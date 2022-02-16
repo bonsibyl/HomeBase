@@ -3,7 +3,8 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Blogs from "../views/Blogs.vue";
 import Login from "../views/Login.vue";
-import Register from "../views/Register.vue";
+import BuyerRegister from "../views/BuyerRegister.vue";
+import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import Profile from "../views/Profile.vue";
 import Admin from "../views/Admin.vue";
@@ -37,11 +38,19 @@ const routes = [
     },
   },
   {
-    path: "/register",
-    name: "Register",
-    component: Register,
+    path: "/buyer-register",
+    name: "BuyerRegister",
+    component: BuyerRegister,
     meta: {
-      title: 'Register',
+      title: 'BuyerRegister',
+    },
+  },
+  {
+    path: "/seller-register",
+    name: "SellerRegister",
+    component: SellerRegister,
+    meta: {
+      title: 'SellerRegister',
     },
   },
   {
@@ -82,6 +91,7 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+  linkExactActiveClass: "active",
 });
 
 //document titles (name that appears on your tab display)

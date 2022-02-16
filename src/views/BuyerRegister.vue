@@ -7,7 +7,7 @@
           >Login</router-link
         >
       </p>
-      <h2>Create your Donkey Account</h2>
+      <h2>Create your Buyer Account</h2>
       <div class="inputs">
         <div class="input">
           <input
@@ -69,8 +69,9 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import db from "../firebase/firebaseInit";
 
+
 export default {
-  name: "Register",
+  name: "BuyerRegister",
   components: {
     email,
     password,
@@ -114,7 +115,9 @@ export default {
           lastName: this.lastName,
           username: this.username,
           email: this.email,
+          seller: false,
         });
+        console.log("success")
         this.$router.push({ name: "Home" }); //push user to homepage aft auth
         return;
         }
