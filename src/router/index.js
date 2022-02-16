@@ -8,7 +8,7 @@ import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import Profile from "../views/Profile.vue";
 import Admin from "../views/Admin.vue";
-import Vuetifytest from "../views/Vuetifytest.vue";
+import Search from "../views/Search.vue"
 
 Vue.use(VueRouter);
 
@@ -78,11 +78,11 @@ const routes = [
     },
   },
   {
-    path: "/vuetify",
-    name: "Vuetifytest",
-    component: Vuetifytest,
+    path: "/search",
+    name: "Search",
+    component: Search,
     meta: {
-      title: 'Vuetifytest',
+      title: 'Search',
     },
   },
 ];
