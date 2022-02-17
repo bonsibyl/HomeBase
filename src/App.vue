@@ -1,21 +1,23 @@
 <template>
   <div class="app-wrapper">
     <div class="app">
-      <Navigation v-if="!navigation" /> <!-- only show for pages excl. login/register/pw -->
+      <Navigation v-if="!navigation" />
+      <!-- only show for pages excl. login/register/pw -->
       <router-view />
-      <Footer v-if="!navigation" /> <!-- only show for pages excl. login/register/pw -->
+      <FooterLanding v-if="!navigation" />
+      <!-- only show for pages excl. login/register/pw -->
     </div>
   </div>
 </template>
 
 <script>
-import Footer from "./components/Footer";
+import FooterLanding from "./components/FooterLanding";
 import Navigation from "./components/Navigation";
 import firebase from "firebase/app";
 import "firebase/auth";
 export default {
   name: "app",
-  components: { Navigation, Footer },
+  components: { Navigation, FooterLanding },
   data() {
     return {
       navigation: null, //for nav bar rendering, true === disabled
@@ -55,6 +57,7 @@ export default {
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
 
 * {
   margin: 0;

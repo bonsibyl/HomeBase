@@ -1,12 +1,14 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+//import Home from "../views/Home.vue";
+import Landing from "../views/Landing.vue";
 import Blogs from "../views/Blogs.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import Profile from "../views/Profile.vue";
 import Admin from "../views/Admin.vue";
+import Vuetifytest from "../views/Vuetifytest.vue";
 
 Vue.use(VueRouter);
 
@@ -14,9 +16,9 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home,
+    component: Landing,
     meta: {
-      title: 'Home',
+      title: "Home",
     },
   },
   {
@@ -24,7 +26,7 @@ const routes = [
     name: "Blogs",
     component: Blogs,
     meta: {
-      title: 'Blogs',
+      title: "Blogs",
     },
   },
   {
@@ -32,7 +34,7 @@ const routes = [
     name: "Login",
     component: Login,
     meta: {
-      title: 'Login',
+      title: "Login",
     },
   },
   {
@@ -40,7 +42,7 @@ const routes = [
     name: "Register",
     component: Register,
     meta: {
-      title: 'Register',
+      title: "Register",
     },
   },
   {
@@ -48,7 +50,7 @@ const routes = [
     name: "ForgotPassword",
     component: ForgotPassword,
     meta: {
-      title: 'Forgot Password',
+      title: "Forgot Password",
     },
   },
   {
@@ -56,7 +58,7 @@ const routes = [
     name: "Profile",
     component: Profile,
     meta: {
-      title: 'Profile',
+      title: "Profile",
     },
   },
   {
@@ -64,7 +66,15 @@ const routes = [
     name: "Admin",
     component: Admin,
     meta: {
-      title: 'Admin',
+      title: "Admin",
+    },
+  },
+  {
+    path: "/vuetify",
+    name: "Vuetifytest",
+    component: Vuetifytest,
+    meta: {
+      title: "Vuetifytest",
     },
   },
 ];
