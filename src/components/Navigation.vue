@@ -49,8 +49,11 @@
                   </v-btn>
                 </template>
                 <v-list>
+                  <v-list-item>
+                    <v-list-item-title>{{this.$store.state.profileUsername}}</v-list-item-title>
+                  </v-list-item>
                   <v-list-item link to="/profile">
-                    <v-list-item-title >Profile</v-list-item-title>
+                    <v-list-item-title>Profile</v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="signOut">
                     <v-list-item-title>Sign Out</v-list-item-title>
@@ -151,7 +154,6 @@ header {
 .activebtn {
   background-color: #fff;
 }
-
 
 nav {
   display: flex;

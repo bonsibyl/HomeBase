@@ -8,11 +8,12 @@
               <h1 class="font-weight-bold">What are you craving today?</h1>
             </v-col>
             <v-col id="searchbar">
-              <v-responsive max-width="400">
+              <v-responsive max-width="650">
                 <v-text-field
                   prepend-inner-icon="mdi-magnify"
                   outlined
                   clearable
+                  label="Search for..."
                   color="#DD905F"
                 ></v-text-field>
               </v-responsive>
@@ -20,7 +21,7 @@
           </v-row>
           <v-row id="subheader">
             <v-col id="tabgrp">
-              <v-row no-gutters>
+              <v-row>
                 <v-col>
                   <h4 class="text--secondary">Results</h4>
                 </v-col>
@@ -52,7 +53,7 @@
               </v-row>
             </v-col>
           </v-row>
-          <v-divider id="divider"></v-divider>
+          <v-divider id="divider1"></v-divider>
           <v-container>
             <v-row>
               <v-col v-for="n in 16" :key="n" cols="4">
@@ -74,11 +75,19 @@ export default {};
 #sheet {
   margin-left: auto;
   margin-right: auto;
-  margin-top: 3vh;
+  margin-top: 2vh;
 }
 
 #content {
-  margin: 0px 5vw 0px 5vw;
+  margin: 0 5vw 0 5vw;
+}
+
+#header {
+  padding-top: 5vh;
+}
+
+.v-divider {
+  margin: 2vh 0 2vh 0;
 }
 
 #searchbar {
