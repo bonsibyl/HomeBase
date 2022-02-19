@@ -95,6 +95,7 @@ export default {
       firstName: "",
       lastName: "",
       username: "",
+      number: "",
       email: "",
       password: "",
       error: null,
@@ -108,7 +109,8 @@ export default {
         this.password !== "" &&
         this.firstName !== "" &&
         this.lastName !== "" &&
-        this.username !== ""
+        this.username !== "" &&
+        this.number !== ""
       ) {
         this.error = false;
         this.errorMsg = "";
@@ -127,6 +129,7 @@ export default {
           firstName: this.firstName,
           lastName: this.lastName,
           username: this.username,
+          number: this.number,
           email: this.email,
           seller: false,
         });

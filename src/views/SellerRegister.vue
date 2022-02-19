@@ -83,9 +83,9 @@ export default {
   },
   data() {
     return {
-      firstName: "",
-      lastName: "",
+      shopName: "",
       username: "",
+      number: "",
       email: "",
       password: "",
       error: null,
@@ -97,8 +97,8 @@ export default {
       if (
         this.email !== "" &&
         this.password !== "" &&
-        this.firstName !== "" &&
-        this.lastName !== "" &&
+        this.shopName !== "" &&
+        this.number !== "" &&
         this.username !== ""
       ) {
         this.error = false;
@@ -115,8 +115,8 @@ export default {
         if (!this.error) {
         const dataBase = db.collection("users").doc(result.user.uid);
         await dataBase.set({
-          firstName: this.firstName,
-          lastName: this.lastName,
+          shopName: this.shopName,
+          number: this.number,
           username: this.username,
           email: this.email,
           seller: true,
