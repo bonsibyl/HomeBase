@@ -19,48 +19,40 @@
               </v-responsive>
             </v-col>
           </v-row>
-          <v-row id="subheader">
-            <v-col id="tabgrp">
-              <v-row>
-                <v-col>
-                  <h4 class="text--secondary">Results</h4>
-                </v-col>
-                <v-col>
-                  <h4 class="text--secondary">Stores</h4>
-                </v-col>
-              </v-row>
+          <v-row id="subheader" align="end">
+            <v-col cols="auto">
+              <h4 class="text--secondary">Results</h4>
             </v-col>
-            <v-col>
-              <v-row id="btngrp" dense>
-                <v-col>
-                  <v-btn outlined>
-                    Sort By
-                    <v-icon right>mdi-menu-down</v-icon>
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn outlined>
-                    Price
-                    <v-icon right>mdi-menu-down</v-icon>
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn outlined>
-                    More Filters
-                    <v-icon right>mdi-tune</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
+            <v-col cols="auto">
+              <h4 class="text--secondary">Stores</h4>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col cols="auto">
+              <v-btn outlined>
+                Sort By
+                <v-icon right>mdi-menu-down</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col cols="auto">
+              <v-btn outlined>
+                Price
+                <v-icon right>mdi-menu-down</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col cols="auto">
+              <v-btn outlined>
+                More Filters
+                <v-icon right>mdi-tune</v-icon>
+              </v-btn>
             </v-col>
           </v-row>
           <v-divider id="divider1"></v-divider>
-          <v-container>
-            <v-row>
-              <v-col v-for="n in 16" :key="n" cols="4">
-                <v-card min-height="200" min-width="150"></v-card>
-              </v-col>
-            </v-row>
-          </v-container>
+
+          <v-row>
+            <v-col v-for="n in 16" :key="n" cols="4">
+              <v-card min-height="200" min-width="150"></v-card>
+            </v-col>
+          </v-row>
         </div>
       </v-sheet>
     </div>
