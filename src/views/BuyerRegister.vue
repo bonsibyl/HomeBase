@@ -1,13 +1,7 @@
 <template>
   <div class="form-wrap">
     <form class="register">
-      <p class="login-register">
-        Already have an account?
-        <router-link class="router-link" :to="{ name: 'Login' }"
-          >Login</router-link
-        >
-      </p>
-      <h2>Create your Buyer Account</h2>
+      <h2>Register As Customer</h2>
       <div class="inputs">
         <div class="input">
           <input
@@ -37,6 +31,15 @@
           <user class="icon" />
         </div>
         <div class="input">
+          <input
+            type="text"
+            placeholder="Contact No."
+            v-model="number"
+            required
+          />
+          <user class="icon" />
+        </div>
+        <div class="input">
           <input type="text" placeholder="Email" v-model="email" required />
           <email class="icon" />
         </div>
@@ -53,11 +56,21 @@
         <!-- only show if error == true -->
       </div>
 
-      <button @click.prevent="register">Sign Up</button>
+      <button @click.prevent="register"><b>Register</b></button>
       <!-- click.prevent stops page from refreshing -->
-      <div class="angle"></div>
+      <p class="login-register">
+        Already have an account?
+        <router-link class="router-link" :to="{ name: 'Login' }"
+          >Login</router-link
+        >
+      </p>
+      <p class="login-register">
+        Are you a business owner?
+        <router-link class="router-link" :to="{ name: 'SellerRegister' }"
+          >Register here</router-link
+        >
+      </p>
     </form>
-    <div class="background"></div>
   </div>
 </template>
 
@@ -133,8 +146,13 @@ export default {
 
 <style lang="scss" scoped>
 .register {
-  h2 {
-    max-width: 350px;
+  background-color: white;
+  width: 200px;
+  height: 700px;
+  margin: 5% 25% 10% 25%;
+
+  button {
+    width: 300px;
   }
 }
 </style>
