@@ -1,7 +1,7 @@
 <template>
   <div class="form-wrap">
     <form class="login">
-      <h2>Login to your account!</h2>
+      <h2>Login to HomeBase!</h2>
       <div class="inputs">
         <div class="input">
           <input type="text" placeholder="Email" v-model="email" />
@@ -17,6 +17,12 @@
         Forgot your password?
       </router-link>
       <button type="submit" @click.prevent="signIn"><b>Sign In</b></button>
+      <p class="redirect-register">
+        Don't have an account yet?
+        <router-link class="router-link" :to="{ name: 'BuyerRegister' }"
+          >Register here!</router-link
+        >
+      </p>
     </form>
   </div>
 </template>
