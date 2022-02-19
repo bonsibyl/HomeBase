@@ -44,7 +44,14 @@ export default {
     }
 
     button {
+      background-color: rgb(170, 114, 11);
+      color: white;
       align-self: center;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: rgb(121, 121, 121);
     }
   }
 }

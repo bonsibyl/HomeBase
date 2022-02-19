@@ -4,22 +4,20 @@
     <Loading v-if="loading" />
     <div class="form-wrap">
       <form class="reset">
-        <p class="login-register">
-          Back to
-          <router-link class="router-link" :to="{ name: 'Login' }">Login</router-link>
-        </p>
-        <h2>Reset Password</h2>
-        <p>Forgot your password? Enter your email to reset it.</p>
+        <h2>Forgot Password</h2>
+        <p>We will send a password reset email to your registered email address.</p>
         <div class="inputs">
           <div class="input">
             <input type="text" placeholder="Email" v-model="email" />
             <email class="icon" />
           </div>
         </div>
-        <button @click.prevent="resetPassword">Reset</button>
-        <div class="angle"></div>
+        <button @click.prevent="resetPassword"><b>Reset Password</b></button>
+        <p class="login-register">
+          Back to
+          <router-link class="router-link" :to="{ name: 'Login' }">Login</router-link>
+        </p>
       </form>
-      <div class="background"></div>
     </div>
   </div>
 </template>
@@ -68,17 +66,33 @@ export default {
 
 <style lang="scss" scoped>
 .reset-password {
+  background-color: rgb(255, 245, 228);
   position: relative;
-  .form-wrap {
-    .reset {
-      h2 {
-        margin-bottom: 8px;
-      }
-      p {
-        text-align: center;
-        margin-bottom: 32px;
-      }
-    }
+  h2 {
+    margin-bottom: 10px;
   }
+  p {
+    margin-bottom: 20px;
+  }
+}
+
+.reset {
+    background-color: white;
+    width: 200px;
+    height: 500px;
+    margin: 5% 25% 10% 25%;
+}
+
+button {
+  background-color: rgb(206, 137, 81);
+  border-radius: 5px;
+  width: 30%;
+  color: white;
+  margin-top: 15px;
+  margin-bottom: 25px;
+}
+
+button:hover {
+  background-color: rgb(31, 104, 42);
 }
 </style>
