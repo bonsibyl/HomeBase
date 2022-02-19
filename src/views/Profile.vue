@@ -130,9 +130,10 @@ export default {
         align-self: center;
         color: #fff;
         font-size: 14px;
+        font-weight: bold;
         padding: 8px 24px;
         border-radius: 8px;
-        background-color: #303030;
+        background-color: #0c6b09;
         margin: 16px 0;
         text-align: center;
         text-transform: capitalize;
@@ -164,6 +165,20 @@ export default {
       }
       button {
         align-self: center;
+        background-color: rgb(148, 189, 140);
+        transition: 500ms ease all;
+        cursor: pointer;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        margin-top: 15px;
+        margin-bottom: 25px; 
+        font-weight: bold;
+      }
+
+      button:hover {
+        background-color: lightslategray;
       }
     }
   }

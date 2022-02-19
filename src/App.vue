@@ -110,7 +110,7 @@ export default {
   }
 }
 
-button, .router-button {
+.router-button {
   transition: 500ms ease all;
   cursor: pointer;
   padding: 12px 24px;

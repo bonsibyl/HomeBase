@@ -96,8 +96,16 @@ export default {
     padding: 0 50px;
 
     button {
-      color: white;
+      transition: 500ms ease all;
+      cursor: pointer;
+      padding: 12px 24px;
+      border: none;
       background-color: rgb(206, 137, 81);
+      border-radius: 5px;
+      color: white;
+      margin-top: 15px;
+      margin-bottom: 25px; 
+      font-weight: bold;
       width: 300px;
     }
     
