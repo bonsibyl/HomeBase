@@ -28,10 +28,41 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
-              <v-btn outlined>
-                Sort By
-                <v-icon right>mdi-menu-down</v-icon>
-              </v-btn>
+              <v-menu
+                close-on-click="false"
+                close-on-content-click="false"
+                open-on-hover
+                offset-y
+                transition="slide-y-transition"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn outlined v-bind="attrs" v-on="on">
+                    Sort By
+                    <v-icon right>mdi-menu-down</v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-group
+                    v-model="ActiveFilters"
+                    multiple
+                  >
+                    <template v-for="(Filter, i) in Filters">
+                      <v-list-item :key="`Filter-${i}`" :value="Filter">
+                        <template v-slot:default="{ active }">
+                          <v-list-item-action>
+                            <v-checkbox :input-value="active"></v-checkbox>
+                          </v-list-item-action>
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-text="Filter"
+                            ></v-list-item-title>
+                          </v-list-item-content>
+                        </template>
+                      </v-list-item>
+                    </template>
+                  </v-list-item-group>
+                </v-card>
+              </v-menu>
             </v-col>
             <v-col cols="auto">
               <v-btn outlined>
@@ -48,26 +79,22 @@
           </v-row>
           <v-divider id="divider1"></v-divider>
           <v-row>
-            <v-col
-              v-for="n in 9"
-              :key="n"
-              cols="4"
-              class="d-flex justify-center"
-            >
+            <v-col v-for="result in results" :key="result" cols="4">
               <v-card
                 class="rounded-lg"
-                height="350"
-                width="500"
                 min-width="150"
                 min-height="100"
+                height="400"
                 :to="'/'"
+                hover
               >
                 <v-img
-                  class="white--text align-end"
-                  height="350"
+                  gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
+                  class="white--text align-end bottom-gradient"
+                  height="100%"
                   src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
                 >
-                  <v-card-title>Cake</v-card-title>
+                  <v-card-title>{{ result }}</v-card-title>
                 </v-img></v-card
               >
             </v-col>
@@ -79,7 +106,23 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: "Search",
+
+  data: () => ({
+    results: [
+      "Blueberry",
+      "Strawberry",
+      "Macarons",
+      "Cupcake",
+      "Brownie",
+      "Cookie",
+      "Tart",
+    ],
+    Filters: ["Filter 1", "Filter 2", "Filter 3", "Filter 4"],
+    ActiveFilters: [],
+  }),
+};
 </script>
 
 <style scoped>

@@ -3,10 +3,10 @@
     <div class="app-wrapper">
       <div class="app">
         <Navigation v-if="!unauth" />
-        <UnauthNavigation v-else/>
+        <UnauthNavigation v-else />
         <!-- only show for pages excl. login/register/pw -->
         <router-view />
-        <Footer v-if="!unauth" />
+        <!-- <Footer v-if="!unauth" /> -->
         <!-- only show for pages excl. login/register/pw -->
       </div>
     </div>
@@ -14,16 +14,16 @@
 </template>
 
 <script>
-import Footer from "./components/Footer";
+//import Footer from "./components/Footer";
 import Navigation from "./components/Navigation";
-import UnauthNavigation from "./components/UnauthNavigation"
+import UnauthNavigation from "./components/UnauthNavigation";
 
 import firebase from "firebase/app";
 import "firebase/auth";
 
 export default {
   name: "app",
-  components: { Navigation, Footer, UnauthNavigation },
+  components: { Navigation, UnauthNavigation },
   data() {
     return {
       unauth: true, //for nav bar rendering, true === disabled
@@ -34,7 +34,7 @@ export default {
       this.$store.commit("updateUser", user); //update user whenever there is new auth
       if (user) {
         this.$store.dispatch("getCurrentUser");
-        this.unauth=false;
+        this.unauth = false;
       }
     });
     //this.checkRoute(); //initialise in lifecycle
