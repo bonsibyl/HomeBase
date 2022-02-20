@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <div id="sheet">
-      <v-sheet min-height="70vh" rounded="sm" width="95vw" elevation="1">
+      <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
           <v-row id="header">
             <v-col>
@@ -47,10 +47,29 @@
             </v-col>
           </v-row>
           <v-divider id="divider1"></v-divider>
-
           <v-row>
-            <v-col v-for="n in 16" :key="n" cols="4">
-              <v-card min-height="200" min-width="150"></v-card>
+            <v-col
+              v-for="n in 9"
+              :key="n"
+              cols="4"
+              class="d-flex justify-center"
+            >
+              <v-card
+                class="rounded-lg"
+                height="350"
+                width="500"
+                min-width="150"
+                min-height="100"
+                :to="'/'"
+              >
+                <v-img
+                  class="white--text align-end"
+                  height="350"
+                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
+                >
+                  <v-card-title>Cake</v-card-title>
+                </v-img></v-card
+              >
             </v-col>
           </v-row>
         </div>
