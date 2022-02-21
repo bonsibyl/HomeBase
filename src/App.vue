@@ -26,7 +26,7 @@ export default {
   components: { Navigation, UnauthNavigation },
   data() {
     return {
-      unauth: true, //for nav bar rendering, true === disabled
+      unauth: this.$store.state.user, //for nav bar rendering, true === disabled
     };
   },
   created() {

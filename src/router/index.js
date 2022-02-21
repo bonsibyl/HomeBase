@@ -6,9 +6,10 @@ import Login from "../views/Login.vue";
 import BuyerRegister from "../views/BuyerRegister.vue";
 import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
-import Profile from "../views/Profile.vue";
+import EditAccount from "../views/EditAccount.vue";
 import Admin from "../views/Admin.vue";
 import Search from "../views/Search.vue"
+import Profile from "../views/Profile.vue"
 
 
 Vue.use(VueRouter);
@@ -63,11 +64,11 @@ const routes = [
     },
   },
   {
-    path: "/profile",
-    name: "Profile",
-    component: Profile,
+    path: "/editaccount",
+    name: "EditAccount",
+    component: EditAccount,
     meta: {
-      title: 'Profile',
+      title: 'EditProfile',
     },
   },
   {
@@ -86,6 +87,15 @@ const routes = [
       title: 'Search',
     },
   },
+  {
+    path: "/profile/:id",
+    name: "Profile",
+    component: Profile,
+    meta: {
+      title: 'Profile',
+    },
+  },
+  
 ];
 
 const router = new VueRouter({

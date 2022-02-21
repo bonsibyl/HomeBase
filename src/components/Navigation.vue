@@ -63,13 +63,19 @@
                     <template v-slot:activator>
                       <v-list-item-title>Profile</v-list-item-title>
                     </template>
-                    <v-list-item link to="/profile">
+                    <v-list-item link :to="{ name: 'Profile', params: { id: this.$store.state.profileId }}">
                       <v-list-item-icon>
-                        <v-icon>mdi-pencil</v-icon>
+                        <v-icon>mdi-account-box</v-icon>
                       </v-list-item-icon>
-                      <v-list-item-title>Edit Profile</v-list-item-title>
+                      <v-list-item-title>View Profile</v-list-item-title>
                     </v-list-item>
-                    <v-list-item link to="/dashboard">
+                    <v-list-item link to="/editaccount">
+                      <v-list-item-icon>
+                        <v-icon>mdi-account-cog</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Settings</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link to="/dashboard" v-show=this.$store.state.seller>
                       <v-list-item-icon>
                         <v-icon>mdi-chart-pie</v-icon>
                       </v-list-item-icon>
@@ -144,7 +150,6 @@ export default {
     },
     signOut() {
       firebase.auth().signOut();
-      window.location.reload();
       this.$router.push({ name: "Home" });
     },
   },
