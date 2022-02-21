@@ -45,7 +45,7 @@
               ><strong v-if="isSeller"
                 >Authentic Reviews & Ratings For Better Decision-Making</strong
               ><strong v-else
-                >Customer Communication System for Quick Order Handling></strong
+                >Customer Communication System for Quick Order Handling</strong
               ></span
             >
           </div>
@@ -98,7 +98,6 @@ export default {
   methods: {
     updateSeller: function () {
       this.$store.commit("updateSeller");
-      console.log(this.$store.state.isSeller);
     },
   },
   computed: {

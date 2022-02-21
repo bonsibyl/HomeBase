@@ -4,7 +4,7 @@
       <Navigation v-if="!navigation" />
       <!-- only show for pages excl. login/register/pw -->
       <router-view />
-      <FooterLanding v-if="!navigation" />
+      <FooterLanding v-if="footerRendering" />
       <!-- only show for pages excl. login/register/pw -->
     </div>
   </div>
@@ -21,6 +21,7 @@ export default {
   data() {
     return {
       navigation: null, //for nav bar rendering, true === disabled
+      footerRendering: null, //for landing page footer rendering, true === enabled
     };
   },
   created() {
@@ -36,6 +37,11 @@ export default {
   methods: {
     //detect route that we are on, for page rendering
     checkRoute() {
+      this.navigation = false;
+      this.footerRendering = false;
+      if (this.$route.name === "Home") {
+        this.footerRendering = true;
+      }
       if (
         this.$route.name === "Login" ||
         this.$route.name === "Register" ||
@@ -44,7 +50,6 @@ export default {
         this.navigation = true;
         return;
       }
-      this.navigation = false;
     },
   },
   watch: {
@@ -107,9 +112,8 @@ button,
 .router-button {
   transition: 500ms ease all;
   cursor: pointer;
-  margin-top: 24px;
+  // margin-top: 24px;
   padding: 12px 24px;
-  background-color: #303030;
   color: #fff;
   border-radius: 20px;
   border: none;

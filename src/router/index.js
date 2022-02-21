@@ -9,6 +9,8 @@ import ForgotPassword from "../views/ForgotPassword.vue";
 import Profile from "../views/Profile.vue";
 import Admin from "../views/Admin.vue";
 import Vuetifytest from "../views/Vuetifytest.vue";
+import Listing from "../views/Listing.vue";
+import EditListing from "../views/EditListing.vue";
 
 Vue.use(VueRouter);
 
@@ -19,6 +21,22 @@ const routes = [
     component: Landing,
     meta: {
       title: "Home",
+    },
+  },
+  {
+    path: "/listing/:id",
+    name: "Listing",
+    component: Listing,
+    meta: {
+      title: "Listing",
+    },
+  },
+  {
+    path: "/EditListing/:id",
+    name: "EditListing",
+    component: EditListing,
+    meta: {
+      title: "EditListing",
     },
   },
   {
