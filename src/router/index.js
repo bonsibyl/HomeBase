@@ -10,6 +10,7 @@ import Profile from "../views/Profile.vue";
 import Admin from "../views/Admin.vue";
 import Search from "../views/Search.vue"
 
+
 Vue.use(VueRouter);
 
 const routes = [

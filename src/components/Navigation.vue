@@ -50,12 +50,36 @@
                 </template>
                 <v-list>
                   <v-list-item>
-                    <v-list-item-title>{{this.$store.state.profileUsername}}</v-list-item-title>
+                    <v-list-item-title
+                      >Welcome,
+                      {{ this.$store.state.profileUsername }}</v-list-item-title
+                    >
                   </v-list-item>
-                  <v-list-item link to="/profile">
-                    <v-list-item-title>Profile</v-list-item-title>
-                  </v-list-item>
+                  <v-divider></v-divider>
+                  <v-list-group
+                    prepend-icon="mdi-account-circle"
+                    @click.stop.prevent
+                  >
+                    <template v-slot:activator>
+                      <v-list-item-title>Profile</v-list-item-title>
+                    </template>
+                    <v-list-item link to="/profile">
+                      <v-list-item-icon>
+                        <v-icon>mdi-pencil</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Edit Profile</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link to="/dashboard">
+                      <v-list-item-icon>
+                        <v-icon>mdi-chart-pie</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Dashboard</v-list-item-title>
+                    </v-list-item>
+                  </v-list-group>
                   <v-list-item @click="signOut">
+                    <v-list-item-icon>
+                      <v-icon>mdi-logout</v-icon>
+                    </v-list-item-icon>
                     <v-list-item-title>Sign Out</v-list-item-title>
                   </v-list-item>
                 </v-list>
@@ -120,6 +144,7 @@ export default {
     },
     signOut() {
       firebase.auth().signOut();
+      window.location.reload();
       this.$router.push({ name: "Home" });
     },
   },

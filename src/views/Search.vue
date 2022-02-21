@@ -3,7 +3,7 @@
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
-          <v-row id="header">
+          <v-row id="searchrow">
             <v-col>
               <h1 class="font-weight-bold">What are you craving today?</h1>
             </v-col>
@@ -19,7 +19,7 @@
               </v-responsive>
             </v-col>
           </v-row>
-          <v-row id="subheader" align="end">
+          <v-row id="filterrow" align="end">
             <v-col cols="auto">
               <h4 class="text--secondary">Results</h4>
             </v-col>
@@ -29,8 +29,6 @@
             <v-spacer></v-spacer>
             <v-col cols="auto">
               <v-menu
-                close-on-click="false"
-                close-on-content-click="false"
                 open-on-hover
                 offset-y
                 transition="slide-y-transition"
@@ -42,12 +40,90 @@
                   </v-btn>
                 </template>
                 <v-card>
-                  <v-list-item-group
-                    v-model="ActiveFilters"
-                    multiple
-                  >
+                  <v-list-item-group v-model="ActiveSort">
+                    <template v-for="(Sort, i) in Sorts">
+                      <v-list-item
+                        :key="`Sort-${i}`"
+                        :value="Sort"
+                        @click.stop.prevent
+                      >
+                        <template v-slot:default="{ active }">
+                          <v-list-item-action>
+                            <v-checkbox :input-value="active"></v-checkbox>
+                          </v-list-item-action>
+
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-text="Sort"
+                            ></v-list-item-title>
+                          </v-list-item-content>
+                        </template>
+                      </v-list-item>
+                    </template>
+                  </v-list-item-group>
+                </v-card>
+              </v-menu>
+            </v-col>
+            <v-col cols="auto">
+              <v-menu
+                close-on-click="false"
+                close-on-content-click="false"
+                open-on-hover
+                offset-y
+                transition="slide-y-transition"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn outlined v-bind="attrs" v-on="on">
+                    Price
+                    <v-icon right>mdi-menu-down</v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-group v-model="ActiveRanges" multiple>
+                    <template v-for="(Range, i) in PriceRanges">
+                      <v-list-item
+                        :key="`Range-${i}`"
+                        :value="Range"
+                        @click.stop.prevent
+                      >
+                        <template v-slot:default="{ active }">
+                          <v-list-item-action>
+                            <v-checkbox :input-value="active"></v-checkbox>
+                          </v-list-item-action>
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-text="Range"
+                            ></v-list-item-title>
+                          </v-list-item-content>
+                        </template>
+                      </v-list-item>
+                    </template>
+                  </v-list-item-group>
+                </v-card>
+              </v-menu>
+            </v-col>
+            <v-col cols="auto">
+              <v-menu
+                close-on-click="false"
+                close-on-content-click="false"
+                open-on-hover
+                offset-y
+                transition="slide-y-transition"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn outlined v-bind="attrs" v-on="on">
+                    More Filters
+                    <v-icon right>mdi-tune</v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-group v-model="ActiveFilters" multiple>
                     <template v-for="(Filter, i) in Filters">
-                      <v-list-item :key="`Filter-${i}`" :value="Filter">
+                      <v-list-item
+                        :key="`Filter-${i}`"
+                        :value="Filter"
+                        @click.stop.prevent
+                      >
                         <template v-slot:default="{ active }">
                           <v-list-item-action>
                             <v-checkbox :input-value="active"></v-checkbox>
@@ -63,18 +139,6 @@
                   </v-list-item-group>
                 </v-card>
               </v-menu>
-            </v-col>
-            <v-col cols="auto">
-              <v-btn outlined>
-                Price
-                <v-icon right>mdi-menu-down</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col cols="auto">
-              <v-btn outlined>
-                More Filters
-                <v-icon right>mdi-tune</v-icon>
-              </v-btn>
             </v-col>
           </v-row>
           <v-divider id="divider1"></v-divider>
@@ -119,7 +183,11 @@ export default {
       "Cookie",
       "Tart",
     ],
-    Filters: ["Filter 1", "Filter 2", "Filter 3", "Filter 4"],
+    Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
+    ActiveSort: "",
+    PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
+    ActiveRanges: [],
+    Filters: ["Vegan", "Halal", "Gluten-Free"],
     ActiveFilters: [],
   }),
 };
@@ -136,7 +204,7 @@ export default {
   margin: 0 5vw 0 5vw;
 }
 
-#header {
+#searchrow {
   padding-top: 5vh;
 }
 
