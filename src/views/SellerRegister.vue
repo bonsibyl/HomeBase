@@ -1,28 +1,13 @@
 <template>
   <div class="form-wrap">
     <form class="register">
-      <p class="login-register">
-        Already have an account?
-        <router-link class="router-link" :to="{ name: 'Login' }"
-          >Login</router-link
-        >
-      </p>
-      <h2>Create your Seller Account</h2>
+      <h2>Register Your Business</h2>
       <div class="inputs">
         <div class="input">
           <input
             type="text"
-            placeholder="First Name"
-            v-model="firstName"
-            required
-          />
-          <user class="icon" />
-        </div>
-        <div class="input">
-          <input
-            type="text"
-            placeholder="Last Name"
-            v-model="lastName"
+            placeholder="Shop Name"
+            v-model="shopName"
             required
           />
           <user class="icon" />
@@ -37,7 +22,16 @@
           <user class="icon" />
         </div>
         <div class="input">
-          <input type="text" placeholder="Email" v-model="email" required />
+          <input
+            type="text"
+            placeholder="Contact No."
+            v-model="number"
+            required
+          />
+          <user class="icon" />
+        </div>
+        <div class="input">
+          <input type="text" placeholder="Business Email" v-model="email" required />
           <email class="icon" />
         </div>
         <div class="input">
@@ -53,11 +47,22 @@
         <!-- only show if error == true -->
       </div>
 
-      <button @click.prevent="register">Sign Up</button>
+      <button @click.prevent="register"><b>Sign Up</b></button>
       <!-- click.prevent stops page from refreshing -->
-      <div class="angle"></div>
+
+      <p class="login-register">
+        Already have an account?
+        <router-link class="router-link" :to="{ name: 'Login' }"
+          >Login</router-link
+        >
+      </p>
+      <p class="login-register">
+        Are you a customer?
+        <router-link class="router-link" :to="{ name: 'BuyerRegister' }"
+          >Register here</router-link
+        >
+      </p>
     </form>
-    <div class="background"></div>
   </div>
 </template>
 
@@ -78,9 +83,9 @@ export default {
   },
   data() {
     return {
-      firstName: "",
-      lastName: "",
+      shopName: "",
       username: "",
+      number: "",
       email: "",
       password: "",
       error: null,
@@ -92,8 +97,8 @@ export default {
       if (
         this.email !== "" &&
         this.password !== "" &&
-        this.firstName !== "" &&
-        this.lastName !== "" &&
+        this.shopName !== "" &&
+        this.number !== "" &&
         this.username !== ""
       ) {
         this.error = false;
@@ -110,8 +115,8 @@ export default {
         if (!this.error) {
         const dataBase = db.collection("users").doc(result.user.uid);
         await dataBase.set({
-          firstName: this.firstName,
-          lastName: this.lastName,
+          shopName: this.shopName,
+          number: this.number,
           username: this.username,
           email: this.email,
           seller: true,
@@ -131,8 +136,9 @@ export default {
 
 <style lang="scss" scoped>
 .register {
-  h2 {
-    max-width: 350px;
-  }
+  background-color: white;
+  width: 200px;
+  height: 700px;
+  margin: 5% 25% 10% 25%;
 }
 </style>

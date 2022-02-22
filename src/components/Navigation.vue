@@ -8,7 +8,6 @@
       </div>
       <div class="nav-links">
         <ul>
-          <!--only show if mobile nav is FALSE-->
           <v-row dense>
             <v-col>
               <v-btn
@@ -114,8 +113,6 @@ export default {
     //data for dropdown nav (mobile)
     return {
       profileMenu: null,
-      mobile: null, //boolean, check if mobile mode
-      mobileNav: null, //boolean, check if nav open
       windowWidth: null, //num value, check window width VS threshold
     };
   },
@@ -127,21 +124,6 @@ export default {
   },
 
   methods: {
-    //functions for drop-down nav bar
-    checkScreen() {
-      this.windowWidth = window.innerWidth;
-      if (this.windowWidth <= 750) {
-        this.mobile = true; //set state to mobile mode
-        return;
-      } else {
-        this.mobile = false; //set state to desktop
-        this.mobileNav = false; //ensure mobile nav is not showing
-        return;
-      }
-    },
-    toggleMobileNav() {
-      this.mobileNav = !this.mobileNav; //opp of current state when toggling
-    },
     toggleProfileMenu(event) {
       if (event.target === this.$refs.profile) {
         //look for profile ref to see what user is toggling
@@ -209,7 +191,7 @@ nav {
     justify-content: flex-end;
 
     ul {
-      margin-right: 32px;
+      margin-right: 20px;
     }
 
     .profile {
@@ -229,41 +211,5 @@ nav {
       }
     }
   }
-}
-
-.mobile-nav {
-  padding: 20px;
-  width: 70%;
-  max-width: 250px;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  height: 100%;
-  background-color: #303030;
-  top: 0;
-  left: 0;
-
-  .link {
-    padding: 15px 0;
-    color: #fff;
-  }
-}
-
-.mobile-nav-enter-active,
-.mobile-nav-leave-active {
-  //target the enter and leaving of toggling button only
-  transition: all 1s ease;
-}
-
-.mobile-nav-enter {
-  transform: translateX(-250px); //nav bar out of screen
-}
-
-.mobile-nav-enter-to {
-  transform: translateX(0); //nav bar back onto screen
-}
-
-.mobile-nav-leave-to {
-  transform: translateX(-250px); //nav bar out of screen
 }
 </style>

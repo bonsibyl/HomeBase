@@ -110,24 +110,25 @@ export default {
   }
 }
 
-button,
 .router-button {
   transition: 500ms ease all;
   cursor: pointer;
-  //margin-top: 24px;
   padding: 12px 24px;
-  background-color: #303030;
-  color: #fff;
-  border-radius: 20px;
   border: none;
   text-transform: uppercase;
+  background-color: rgb(206, 137, 81);
+  border-radius: 5px;
+  color: white;
+  margin-top: 15px;
+  margin-bottom: 25px; 
+  font-weight: bold;
 
   &:focus {
     outline: none;
   }
 
   &:hover {
-    background-color: rgba(48, 48, 48, 0.7);
+    background-color: rgb(114, 114, 114);
   }
 }
 
@@ -163,8 +164,11 @@ button,
 
 .error {
   text-align: center;
-  font-size: 12px;
-  color: maroon;
+  font-size: 15px;
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+  border-radius: 10px;
+  padding: 4px;
 }
 
 .blog-card-wrap {
