@@ -15,8 +15,12 @@
                 <h4 class="text--secondary">
                   Business Email: {{ this.$store.state.profileEmail }}
                 </h4>
-                <h4 class="text--secondary">Contact Number: {{ this.$store.state.number }}</h4>
-                <h4 class="text--secondary">Address: {{ this.$store.state.address }}</h4>
+                <h4 class="text--secondary">
+                  Contact Number: {{ this.$store.state.number }}
+                </h4>
+                <h4 class="text--secondary">
+                  Address: {{ this.$store.state.address }}
+                </h4>
               </v-col>
               <v-col v-else class="col-info">
                 <h4 class="text--secondary">
@@ -25,8 +29,12 @@
                 <h4 class="text--secondary">
                   Email: {{ this.$store.state.profileEmail }}
                 </h4>
-                <h4 class="text--secondary">Contact Number: {{ this.$store.state.number }}</h4>
-                <h4 class="text--secondary">Address: {{ this.$store.state.address }}</h4>
+                <h4 class="text--secondary">
+                  Contact Number: {{ this.$store.state.number }}
+                </h4>
+                <h4 class="text--secondary">
+                  Address: {{ this.$store.state.address }}
+                </h4>
               </v-col>
               <v-col cols="auto" class="col-btn">
                 <v-btn>
