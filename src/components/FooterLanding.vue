@@ -2,7 +2,7 @@
   <footer>
     <div class="container">
       <div class="left">
-        <div class="col-1">
+        <div class="left-col">
           <div class="landing-text">
             <img src="../assets/Icons/trophy-landing.png" class="png-icon" />
             <span class="footer-text">
@@ -27,7 +27,7 @@
             >
           </div>
         </div>
-        <div class="col-2">
+        <div class="right-col">
           <div class="landing-text">
             <img src="../assets/Icons/deliver-landing.png" class="png-icon" />
             <span class="footer-text"
@@ -114,9 +114,14 @@ export default {
 <!-- basic styling-->
 <style lang="scss" scoped>
 footer {
-  margin-top: auto;
-  padding: 30px 25px;
+  margin-top: 0;
+  padding: 15px 25px;
   background-color: #fffbf5;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 25%;
   .container {
     display: flex;
     flex-direction: column;
@@ -141,18 +146,9 @@ footer {
       display: flex;
       flex-direction: row;
       gap: 50px;
-      width: 55%;
+      width: 60%;
 
-      .col-1 {
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        flex-direction: column;
-        gap: 30px;
-        font-size: 15px;
-        width: 40%;
-      }
-      .col-2 {
+      .left-col {
         display: flex;
         align-items: flex-start;
         justify-content: center;
@@ -160,6 +156,15 @@ footer {
         gap: 30px;
         font-size: 15px;
         width: 50%;
+      }
+      .right-col {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        gap: 30px;
+        font-size: 15px;
+        width: 60%;
       }
     }
     .right {

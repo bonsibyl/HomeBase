@@ -26,18 +26,18 @@
           <v-col>
             <v-sheet min-height="70vh" rounded="lg">
               <v-container>
-                  <v-alert type="success">Success alert</v-alert>
-                  <v-btn elevation="2">Click me</v-btn>
-                  <v-divider></v-divider>
-                  <v-card elevation="2" outlined>
-                    <v-card-title>
-                      <v-icon large left> mdi-twitter </v-icon>
-                      <span class="title font-weight-light">Twitter</span>
-                    </v-card-title>
-                    <v-card-text class="headline font-weight-medium">
-                      Test card
-                    </v-card-text></v-card
-                  >
+                <v-alert type="success">Success alert</v-alert>
+                <v-btn elevation="2">Click me</v-btn>
+                <v-divider></v-divider>
+                <v-card elevation="2" outlined>
+                  <v-card-title>
+                    <v-icon large left> mdi-twitter </v-icon>
+                    <span class="title font-weight-light">Twitter</span>
+                  </v-card-title>
+                  <v-card-text class="headline font-weight-medium">
+                    Test card
+                  </v-card-text></v-card
+                >
               </v-container>
             </v-sheet>
           </v-col>

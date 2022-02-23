@@ -1,93 +1,126 @@
 <template>
-  <div class="listing-container">
-    <div class="listing-buttons">
-      <div class="back-button">
-        <BackButton backButtonText="Back to your listings" />
-      </div>
-      <div v-if="isSeller" class="edit-button">
-        <EditListingButton :route="test" />
-      </div>
-    </div>
+  <v-container>
+    <v-row>
+      <!-- add route return to listing -->
+      <v-col :cols="2">
+        <v-btn block color="#B4B4B4" class="mr-4 black--text" text>
+          <v-icon dark left> mdi-arrow-left </v-icon>
+          Return to Listings
+        </v-btn>
+      </v-col>
+      <v-col :cols="2" class="offset-md-8">
+        <v-btn
+          block
+          color="#6B7855"
+          class="white--text"
+          :to="{ name: 'EditListing', params: { id: this.$route.params.id } }"
+        >
+          Edit Listing
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col :cols="5">
+        <v-img height="490" :src="image"></v-img>
+      </v-col>
+      <v-col :cols="6" class="offset-md-1">
+        <v-row
+          ><h3>{{ shopName }}</h3></v-row
+        >
+        <v-row
+          ><h1>{{ productName }}</h1></v-row
+        >
+        <v-row class="grey--text"
+          ><h3>{{ productDetails }}</h3></v-row
+        >
+        <v-row></v-row>
+        <v-row class="rating-stars">
+          <RatingStars :numReviews="numReviews" :rating="rating"
+        /></v-row>
+        <v-row>
+          <h2 v-if="price % 1 == 0">${{ price }}.00</h2>
+          <h2 v-else>${{ price }}0</h2></v-row
+        >
+        <v-row class="add-to-cart-btn">
+          <v-col :cols="7">
+            <v-btn block color="#A76E2A" class="mr-4 white--text">
+              <v-icon dark left> mdi-cart </v-icon>
+              Add to Cart
+            </v-btn>
+          </v-col></v-row
+        >
+        <v-row>{{ productDescription }}</v-row>
+        <v-row class="store-tags">
+          <v-chip-group active-class="">
+            <v-chip v-for="tag in tags" :key="tag" label>
+              {{ tag }}
+            </v-chip>
+          </v-chip-group></v-row
+        >
+      </v-col>
+    </v-row>
     <br />
-    <br />
-    <div class="listing-info">
-      <div class="listing-image">
-        <img src="../assets/background.png" />
-      </div>
-      <div class="listing-details">
-        <h3>{{ shopName }}</h3>
-        <h1>{{ productName }}</h1>
-        <h4 class="product-details">{{ productDetails }}</h4>
-        <br />
-        <RatingStars :numReviews="numReviews" :rating="rating" />
-        <br />
-        <h2 v-if="price % 1 == 0">${{ price }}.00</h2>
-        <h2 v-else>${{ price }}0</h2>
-        <br />
-        <AddToCart />
-        <br />
-        <div class="item-desc-text">
-          {{ productDescription }}
-        </div>
-        <br />
-        <div>
-          <!-- <ListingTags v-for="tag in tags" :key="tag" :tag="tag" /> -->
-          <v-row justify="space-around">
-            <v-col cols="12" sm="10" md="8">
-              <v-sheet elevation="10" class="py-4 px-1">
-                <v-chip-group mandatory active-class="primary--text">
-                  <v-chip v-for="tag in tags" :key="tag">
-                    {{ tag }}
-                  </v-chip>
-                </v-chip-group>
-              </v-sheet>
-            </v-col>
-          </v-row>
-        </div>
-      </div>
-    </div>
+    <hr />
+    <v-row class="store-details">
+      <v-col :cols="6">
+        <v-row>
+          <v-col :cols="12">
+            <v-subheader
+              ><strong><u>Opening Hours</u></strong></v-subheader
+            >
+          </v-col>
+          <v-col :cols="5">
+            <v-row>Monday</v-row>
+            <v-row>Tuesday</v-row>
+            <v-row>Wednesday</v-row>
+            <v-row>Thursday</v-row>
+            <v-row>Friday</v-row>
+            <v-row>Saturday</v-row>
+            <v-row>Sunday</v-row>
+          </v-col>
+          <v-col :cols="7">
+            <v-row v-for="(hours, index) in openingHours" :key="index">{{
+              hours
+            }}</v-row>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col :cols="6">
+        <v-row>
+          <v-col :cols="12">
+            <v-subheader
+              ><strong><u>The Maker</u></strong></v-subheader
+            >
+          </v-col>
+          <v-row>{{ makerDetails }}</v-row>
+        </v-row>
+
+        <v-row>
+          <v-col :cols="12">
+            <v-subheader
+              ><strong><u>Store Details</u></strong></v-subheader
+            >
+          </v-col>
+          <v-row>{{ storeDetails }}</v-row>
+        </v-row>
+      </v-col>
+    </v-row>
     <br />
     <br />
     <hr />
-    <br />
-    <br />
-    <div class="seller-info">
-      <div class="opening-hours">
-        <OpeningHours :OpeningHours="openingHours" />
-      </div>
-      <div class="seller-details">
-        <div class="maker-details">
-          <strong><u>The Maker</u></strong>
-          <p>{{ makerDetails }}</p>
-        </div>
-        <br />
-        <div class="store-details">
-          <strong><u>Store Details</u></strong>
-          <p>{{ storeDetails }}</p>
-        </div>
-      </div>
-    </div>
-    <br />
-    <br />
-    <hr />
-    <br />
-    <br />
-    <div class="review-info"></div>
-  </div>
+    <!-- REVIEW COMPONENT BELOW -->
+  </v-container>
 </template>
 
 <script>
-import BackButton from "../components/BackButton.vue";
-import EditListingButton from "../components/EditListingButton.vue";
-// import ListingTags from "../components/ListingTags.vue";
-import AddToCart from "../components/AddToCart.vue";
 import RatingStars from "../components/RatingStars.vue";
-import OpeningHours from "../components/OpeningHours.vue";
+import image from "../assets/background.png";
 
 export default {
   name: "Listing",
   data() {
     return {
+      image: image,
       shopName: "@nuttybutterybakery",
       productName: "Almond Financiers",
       productDetails: "Box of 8 Bite-Sized Financiers",
@@ -114,12 +147,7 @@ export default {
   },
   props: {},
   components: {
-    BackButton,
-    EditListingButton,
-    // ListingTags,
-    AddToCart,
     RatingStars,
-    OpeningHours,
   },
   computed: {
     isSeller() {
@@ -130,80 +158,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.listing-container {
-  .listing-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0 0 0;
-    .back-button {
-      display: inline-block;
-      position: relative;
-      left: 9%;
-    }
-    .edit-button {
-      display: inline-block;
-      position: relative;
-      right: 11%;
-    }
-  }
-  .listing-info {
-    display: flex;
-    .listing-image {
-      width: 50%;
-      height: auto;
-
-      img {
-        position: relative;
-        left: 20%;
-        height: auto;
-        width: 70%;
-      }
-    }
-    .listing-details {
-      width: 50%;
-      .product-details {
-        color: #797979;
-      }
-    }
-
-    .item-desc-text {
-      color: #797979;
-      width: 80%;
-    }
-    .listing-tags {
-      display: flex;
-      flex-direction: row;
-
-      background-color: #f4f4f4;
-      padding: 17px;
-      border-radius: 10px;
-      margin: 0;
-      width: 77%;
-      min-width: 55%;
-    }
-  }
-  .seller-info {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    .opening-hours {
-      color: #797979;
-      position: relative;
-      left: 5%;
-      width: 50%;
-    }
-    .seller-details {
-      color: #797979;
-      display: flex;
-      width: 50%;
-      flex-direction: column;
-      .maker-details {
-        width: 80%;
-      }
-      .store-details {
-        width: 80%;
-      }
-    }
-  }
+.v-subheader {
+  font-size: 1.2em;
+  position: relative;
+  left: -5%;
+}
+.rating-stars {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.add-to-cart-btn {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  position: relative;
+  left: -1%;
+}
+.store-tags {
+  padding-top: 50px;
+}
+.store-details {
+  position: relative;
+  left: 1%;
 }
 </style>

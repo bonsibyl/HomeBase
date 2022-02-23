@@ -4,12 +4,11 @@
       <strong class="supporting-header"
         >Home-Based Food Businesses At Your Fingertips.</strong
       >
-      <br />
+
       <p class="supporting-text">
         With over 100 reputable small local food businesses on our platform,
         there is sure to be an option for you.
       </p>
-      <br />
       <router-link
         :to="{ name: 'Register' }"
         tag="button"
@@ -22,12 +21,10 @@
       <strong class="supporting-header"
         >Boost Your Online Presence & Reach With HomeBase.</strong
       >
-      <br />
       <p class="supporting-text">
         Our platform encompasses an integrated e-commerce system for your
         business that's as easy as 1,2,3.
       </p>
-      <br />
       <router-link
         :to="{ name: 'Register' }"
         tag="button"
@@ -67,7 +64,7 @@ export default {
     top: 10%;
     width: 25%;
     .supporting-header {
-      font-size: 30px;
+      font-size: 25px;
       text-align: center;
     }
   }
