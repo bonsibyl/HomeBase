@@ -6,28 +6,36 @@
       v-on:close-modal="closeModal"
     />
     <div class="container">
-      <h2>Account Settings</h2>
+      <h2><b>Account Settings</b></h2>
       <div class="profile-info">
-        <div class="initials">{{ $store.state.profileInitials }}</div>
+        <div class="initials">{{ firstName[0] + lastName[0] }}</div>
         <div class="admin-badge">
           <adminIcon class="icon" />
-          <span>admin</span>
-        </div>
-        <div class="input">
-          <label for="firstName">First Name:</label>
-          <input type="text" id="firstName" v-model="firstName" />
-        </div>
-        <div class="input">
-          <label for="lastName">Last Name:</label>
-          <input type="text" id="lastName" v-model="lastName" />
+          <span>Business</span>
         </div>
         <div class="input">
           <label for="username">Username:</label>
-          <input type="text" id="username" v-model="username" />
+          <input disabled type="text" id="username" v-model="username" />
+        </div>
+        <div class="input">
+          <label for="shopName">Shop Name:</label>
+          <input type="text" id="shopName" v-model="shopName" />
+        </div>
+        <div class="input">
+          <label for="address">Address:</label>
+          <input type="text" id="address" v-model="address" />
+        </div>
+        <div class="input">
+          <label for="hpNumber">Contact No.:</label>
+          <input type="number" id="hpNumber" v-model="hpNumber" />
         </div>
         <div class="input">
           <label for="email">Email:</label>
           <input disabled type="text" id="email" v-model="email" />
+        </div>
+        <div class="input">
+          <label for="password">Password:</label>
+          <input type="password" id="password" v-model="password" />
         </div>
         <button @click="updateProfile">Save Changes</button>
       </div>
@@ -40,7 +48,7 @@ import Modal from "../components/Modal";
 import adminIcon from "../assets/Icons/user-crown-light.svg";
 
 export default {
-  name: "Profile",
+  name: "SellerProfile",
   components: {
     Modal,
     adminIcon,
@@ -96,6 +104,7 @@ export default {
   .container {
     max-width: 1000px;
     padding: 60px 25px;
+
     h2 {
       text-align: center;
       margin-bottom: 16px;
@@ -110,14 +119,15 @@ export default {
       background-color: #f1f1f1;
       display: flex;
       flex-direction: column;
-      max-width: 600px;
+      max-width: 100%;
       margin: 32px auto;
       .initials {
         position: initial;
         width: 80px;
         height: 80px;
         font-size: 32px;
-        background-color: #303030;
+        text-transform: uppercase;
+        background-color: #818181;
         color: #fff;
         display: flex;
         align-self: center;
@@ -133,7 +143,7 @@ export default {
         font-weight: bold;
         padding: 8px 24px;
         border-radius: 8px;
-        background-color: #0c6b09;
+        background-color: #86560e;
         margin: 16px 0;
         text-align: center;
         text-transform: capitalize;
@@ -165,7 +175,7 @@ export default {
       }
       button {
         align-self: center;
-        background-color: rgb(148, 189, 140);
+        background-color: rgb(50, 126, 34);
         transition: 500ms ease all;
         cursor: pointer;
         padding: 12px 24px;
@@ -178,7 +188,7 @@ export default {
       }
 
       button:hover {
-        background-color: lightslategray;
+        background-color: rgb(63, 158, 44);
       }
     }
   }

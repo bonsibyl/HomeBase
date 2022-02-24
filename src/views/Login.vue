@@ -78,18 +78,18 @@ export default {
 .login {
     background-color: white;
     width: 200px;
-    height: 500px;
-    margin: 5% 25% 10% 25%;
+    margin: 3% 15% 5% 15%;
 }
 
 .form-wrap {
   background-color: rgb(255, 245, 228);
   overflow: hidden;
   display: flex;
-  height: 100vh;
+  height: 100%;
   justify-content: center;
   align-self: center;
   width: 100%;
+  flex-grow:1;
 
   form {
     padding: 0 10px;
@@ -99,7 +99,6 @@ export default {
     justify-content: center;
     align-items: center;
     flex: 1;
-    padding: 0 50px;
 
     button {
       transition: 500ms ease all;
@@ -175,4 +174,3 @@ export default {
 }
 
 </style>
->

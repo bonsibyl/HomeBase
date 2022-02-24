@@ -51,7 +51,7 @@
                   <v-list-item>
                     <v-list-item-title>{{this.$store.state.profileUsername}}</v-list-item-title>
                   </v-list-item>
-                  <v-list-item link to="/profile">
+                  <v-list-item link to="/buyer-profile">
                     <v-list-item-title>Profile</v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="signOut">

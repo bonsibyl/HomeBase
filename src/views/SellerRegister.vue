@@ -138,7 +138,6 @@ export default {
 .register {
   background-color: white;
   width: 200px;
-  height: 700px;
-  margin: 5% 25% 10% 25%;
+  margin: 3% 15% 5% 15%;
 }
 </style>
