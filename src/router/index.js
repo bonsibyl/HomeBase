@@ -6,12 +6,11 @@ import Login from "../views/Login.vue";
 import BuyerRegister from "../views/BuyerRegister.vue";
 import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
-import BuyerProfile from "../views/BuyerProfile.vue";
-import SellerProfile from "../views/SellerProfile.vue";
+import EditAccount from "../views/EditAccount.vue";
 import Admin from "../views/Admin.vue";
-import Search from "../views/Search.vue";
-import Checkout from "../views/Checkout.vue";
-import Payment from "../views/Payment.vue";
+import Search from "../views/Search.vue"
+import Profile from "../views/Profile.vue"
+
 
 Vue.use(VueRouter);
 
@@ -65,19 +64,11 @@ const routes = [
     },
   },
   {
-    path: "/buyer-profile",
-    name: "BuyerProfile",
-    component: BuyerProfile,
+    path: "/editaccount",
+    name: "EditAccount",
+    component: EditAccount,
     meta: {
-      title: 'BuyerProfile',
-    },
-  },
-  {
-    path: "/seller-profile",
-    name: "SellerProfile",
-    component: SellerProfile,
-    meta: {
-      title: 'SellerProfile',
+      title: 'EditProfile',
     },
   },
   {
@@ -112,6 +103,15 @@ const routes = [
       title: 'Payment',
     },
 },
+  {
+    path: "/profile/:id",
+    name: "Profile",
+    component: Profile,
+    meta: {
+      title: 'Profile',
+    },
+  },
+  
 ];
 
 const router = new VueRouter({

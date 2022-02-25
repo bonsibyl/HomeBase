@@ -49,12 +49,42 @@
                 </template>
                 <v-list>
                   <v-list-item>
-                    <v-list-item-title>{{this.$store.state.profileUsername}}</v-list-item-title>
+                    <v-list-item-title
+                      >Welcome,
+                      {{ this.$store.state.profileUsername }}</v-list-item-title
+                    >
                   </v-list-item>
-                  <v-list-item link to="/buyer-profile">
-                    <v-list-item-title>Profile</v-list-item-title>
-                  </v-list-item>
+                  <v-divider></v-divider>
+                  <v-list-group
+                    prepend-icon="mdi-account-circle"
+                    @click.stop.prevent
+                  >
+                    <template v-slot:activator>
+                      <v-list-item-title>Profile</v-list-item-title>
+                    </template>
+                    <v-list-item link :to="{ name: 'Profile', params: { id: this.$store.state.profileId }}">
+                      <v-list-item-icon>
+                        <v-icon>mdi-account-box</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>View Profile</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link to="/editaccount">
+                      <v-list-item-icon>
+                        <v-icon>mdi-account-cog</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Settings</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link to="/dashboard" v-show=this.$store.state.seller>
+                      <v-list-item-icon>
+                        <v-icon>mdi-chart-pie</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Dashboard</v-list-item-title>
+                    </v-list-item>
+                  </v-list-group>
                   <v-list-item @click="signOut">
+                    <v-list-item-icon>
+                      <v-icon>mdi-logout</v-icon>
+                    </v-list-item-icon>
                     <v-list-item-title>Sign Out</v-list-item-title>
                   </v-list-item>
                 </v-list>

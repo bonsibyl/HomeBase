@@ -6,7 +6,7 @@ import db from "../firebase/firebaseInit";
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     sampleBlogCards: [
       { blogTitle: "Donkey #1", blogCoverPhoto: "stock-1", blogDate: "May 1, 2021"},
@@ -23,6 +23,8 @@ export default new Vuex.Store({
     profileId: null,
     profileInitials: null,
     seller: null,
+    number: null,
+    address: null,
   },
   mutations: {
     toggleEditPost(state, payload) {
@@ -39,6 +41,8 @@ export default new Vuex.Store({
       state.profileLastName = doc.data().lastName;
       state.profileUsername = doc.data().username;
       state.seller = doc.data().seller;
+      state.number = doc.data().number;
+      state.address = doc.data().Address;
     },
     setProfileInitials(state) {
       state.setProfileInitials = //get initials of first + last name
@@ -72,7 +76,12 @@ export default new Vuex.Store({
       });
       commit("setProfileInitials");
     },
+
   },
   modules: {
   }
 })
+
+
+
+export default store
