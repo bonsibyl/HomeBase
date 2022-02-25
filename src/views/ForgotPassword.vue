@@ -68,6 +68,7 @@ export default {
 .reset-password {
   background-color: rgb(255, 245, 228);
   position: relative;
+  flex-grow: 1;
   h2 {
     margin-bottom: 10px;
   }
@@ -80,7 +81,7 @@ export default {
     background-color: white;
     width: 200px;
     height: 500px;
-    margin: 5% 25% 10% 25%;
+    margin: 3% 15% 5% 15%;
 }
 
 button {

@@ -87,6 +87,22 @@ const routes = [
       title: 'Search',
     },
   },
+    {
+      path: "/checkout",
+      name: "Checkout",
+      component: Checkout,
+      meta: {
+        title: 'Checkout',
+      },
+  },
+  {
+    path: "/payment",
+    name: "Payment",
+    component: Payment,
+    meta: {
+      title: 'Payment',
+    },
+},
   {
     path: "/profile/:id",
     name: "Profile",

@@ -46,8 +46,8 @@ const store = new Vuex.Store({
     },
     setProfileInitials(state) {
       state.setProfileInitials = //get initials of first + last name
-        state.profileFirstName.match(/(\b\S)?/g).join("") + 
-        state.profileLastName.match(/(\b\S)?/g).join("");
+        state.profileFirstName.slice(0) + 
+        state.profileLastName.slice(0);
     },
     changeFirstName(state, payload) {
       state.profileFirstName = payload;
