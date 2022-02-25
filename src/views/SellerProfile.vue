@@ -8,7 +8,7 @@
     <div class="container">
       <h2><b>Account Settings</b></h2>
       <div class="profile-info">
-        <div class="initials">{{ firstName[0] + lastName[0] }}</div>
+        <div class="initials">{{ shopName[0] }}</div>
         <div class="admin-badge">
           <adminIcon class="icon" />
           <span>Business</span>
