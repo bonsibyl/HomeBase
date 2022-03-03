@@ -9,7 +9,7 @@
             class="hide-input"
             accept="image/png, image/jpeg, image/bmp"
           ></v-file-input>
-          <v-img height="590" :src="image" @click="changePicture"></v-img>
+          <v-img height="570" :src="image" @click="changePicture"></v-img>
         </v-col>
 
         <v-col :cols="7">
@@ -130,7 +130,6 @@ export default {
   name: "EditListing",
   data() {
     return {
-      url: null,
       image: ListingImage,
       productName: "Almond Financiers",
       quantityDesc: "Box of 8 Bite-Sized Financiers",
@@ -142,9 +141,7 @@ export default {
   },
   methods: {
     changePicture() {
-      console.log(this.url);
       document.getElementById("pic-input").click();
-      console.log(this.url);
     },
     placeHolder() {},
   },

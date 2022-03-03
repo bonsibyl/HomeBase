@@ -11,6 +11,7 @@ import Admin from "../views/Admin.vue";
 import Vuetifytest from "../views/Vuetifytest.vue";
 import Listing from "../views/Listing.vue";
 import EditListing from "../views/EditListing.vue";
+import UserProfile from "../views/UserProfile.vue";
 
 Vue.use(VueRouter);
 
@@ -37,6 +38,14 @@ const routes = [
     component: EditListing,
     meta: {
       title: "EditListing",
+    },
+  },
+  {
+    path: "/UserProfile/:id",
+    name: "UserProfile",
+    component: UserProfile,
+    meta: {
+      title: "UserProfile",
     },
   },
   {

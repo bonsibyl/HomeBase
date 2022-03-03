@@ -21,7 +21,7 @@
     </v-row>
     <v-row>
       <v-col :cols="5">
-        <v-img height="490" :src="image"></v-img>
+        <v-img height="455" :src="image"></v-img>
       </v-col>
       <v-col :cols="6" class="offset-md-1">
         <v-row
@@ -52,7 +52,7 @@
         <v-row>{{ productDescription }}</v-row>
         <v-row class="store-tags">
           <v-chip-group active-class="">
-            <v-chip v-for="tag in tags" :key="tag" label>
+            <v-chip class="tags" v-for="tag in tags" :key="tag" label>
               {{ tag }}
             </v-chip>
           </v-chip-group></v-row
@@ -108,6 +108,35 @@
     <br />
     <br />
     <hr />
+    <br />
+
+    <v-row align="center">
+      <v-col :cols="12" class="review-header"
+        ><strong>Customer Reviews</strong></v-col
+      >
+      <v-col
+        :cols="12"
+        v-for="review in reviewDetails"
+        :key="review"
+        class="review-spacing"
+      >
+        <v-row class="grey lighten-3 rounded-lg">
+          <v-col :cols="0" class="mr-0 reduce-space-circle">
+            <div class="circle">{{ review.name }}</div>
+          </v-col>
+          <v-col :cols="11" class="pt-md-6 ml-0">
+            <RatingStars :rating="review.rating" :isReview="true" />
+          </v-col>
+          <v-col :cols="12"
+            ><strong>{{ review.title }}</strong></v-col
+          >
+          <v-col :cols="12">{{ review.description }}</v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <br />
+    <br />
+
     <!-- REVIEW COMPONENT BELOW -->
   </v-container>
 </template>
@@ -143,6 +172,29 @@ export default {
         "Nutty Buttery Bakery is a small home-based bakery established in 2019. We specialise in French desserts, such as financiers, macarons and eclairs. We also bake whole cakes to-order.",
       storeDetails: "14 Serangoon Drive, Singapore 340214",
       test: this.$route.params.id,
+      reviewDetails: [
+        {
+          name: "XY",
+          rating: 3,
+          title: "Rich and Nutty Goodness",
+          description:
+            "Their shop name reflects their bakes accurately - they are nutty and buttery in all the right ratios. The box is also extremely value for money!",
+        },
+        {
+          name: "XY",
+          rating: 3,
+          title: "Rich and Nutty Goodness",
+          description:
+            "Their shop name reflects their bakes accurately - they are nutty and buttery in all the right ratios. The box is also extremely value for money!",
+        },
+        {
+          name: "XY",
+          rating: 3,
+          title: "Rich and Nutty Goodness",
+          description:
+            "Their shop name reflects their bakes accurately - they are nutty and buttery in all the right ratios. The box is also extremely value for money!",
+        },
+      ],
     };
   },
   props: {},
@@ -179,5 +231,23 @@ export default {
 .store-details {
   position: relative;
   left: 1%;
+}
+.circle {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: #90caf9;
+  text-align: center;
+  padding: 12px;
+}
+.reduce-space-circle {
+  max-width: 70px;
+}
+.review-spacing {
+  padding: 20px;
+}
+.review-header {
+  color: #6f4411;
+  font-size: 1.2em;
 }
 </style>

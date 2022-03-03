@@ -10,7 +10,9 @@
       src="../assets/Icons/rating-star-grey.png"
       :key="'grey' + index"
     />
-    <span class="rating-star-text">{{ numReviews }} Reviews</span>
+    <span v-if="!isReview" class="rating-star-text"
+      >{{ numReviews }} Reviews</span
+    >
   </div>
 </template>
 
@@ -20,6 +22,7 @@ export default {
   props: {
     rating: Number,
     numReviews: Number,
+    isReview: Boolean,
   },
 };
 </script>
