@@ -12,6 +12,7 @@ import Search from "../views/Search.vue";
 import Profile from "../views/Profile.vue";
 import Checkout from "../views/Checkout.vue";
 import Payment from "../views/Payment.vue";
+import Dashboard from "../views/Dashboard.vue";
 
 import BuyerProfile from "../views/BuyerProfile.vue";
 import SellerProfile from "../views/SellerProfile.vue";
@@ -130,6 +131,14 @@ const routes = [
     component: SellerProfile,
     meta: {
       title: 'SellerProfile',
+    },
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
+    meta: {
+      title: 'Dashboard',
     },
   },
 ];
