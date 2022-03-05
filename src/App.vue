@@ -2,8 +2,8 @@
   <v-app>
     <div class="app-wrapper">
       <div class="app">
-        <Navigation v-if="!unauth" />
-        <UnauthNavigation v-else />
+        <Navigation v-if="authenticated" />
+        <UnauthNavigation v-if="unauthenticated" />
         <!-- only show for pages excl. login/register/pw -->
         <router-view />
         <FooterLanding v-if="footerRendering" />
@@ -28,7 +28,8 @@ export default {
     return {
       navigation: null, //for nav bar rendering, true === disabled
       footerRendering: null, //for landing page footer rendering, true === enabled
-      unauth: this.$store.state.user
+      unauthenticated: true,
+      authenticated: false,
     };
   },
   created() {
@@ -36,7 +37,8 @@ export default {
       this.$store.commit("updateUser", user); //update user whenever there is new auth
       if (user) {
         this.$store.dispatch("getCurrentUser");
-        this.unauth = false;
+        this.unauthenticated = false;
+        this.authenticated = true;
       }
     });
     //this.checkRoute(); //initialise in lifecycle
@@ -63,6 +65,7 @@ export default {
   watch: {
     $route() {
       this.checkRoute(); //whenever route changes, run checkRoute() funct
+
     },
   },
 };

@@ -132,6 +132,12 @@ export default {
     },
     signOut() {
       firebase.auth().signOut();
+      let newState = {};
+      Object.keys(this.$store.state).forEach(key => {
+        newState[key] = null;
+      });
+      this.$store.replaceState(newState)
+      //this.unauth = true;
       this.$router.push({ name: "Home" });
     },
   },
