@@ -9,16 +9,15 @@ import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import EditAccount from "../views/EditAccount.vue";
 import Admin from "../views/Admin.vue";
-import Vuetifytest from "../views/Vuetifytest.vue";
 import Listing from "../views/Listing.vue";
 import EditListing from "../views/EditListing.vue";
+import EditShop from "../views/EditShop.vue";
 import UserProfile from "../views/UserProfile.vue";
 import Search from "../views/Search.vue";
 import Profile from "../views/Profile.vue";
 import Checkout from "../views/Checkout.vue";
 import Payment from "../views/Payment.vue";
 import Dashboard from "../views/Dashboard.vue";
-
 import BuyerProfile from "../views/BuyerProfile.vue";
 import SellerProfile from "../views/SellerProfile.vue";
 //import store from "../store/index.js"
@@ -115,14 +114,6 @@ const routes = [
     },
   },
   {
-    path: "/vuetify",
-    name: "Vuetifytest",
-    component: Vuetifytest,
-    meta: {
-      title: "Vuetifytest",
-    },
-  },
-  {
     path: "/search",
     name: "Search",
     component: Search,
@@ -176,6 +167,14 @@ const routes = [
     component: Dashboard,
     meta: {
       title: "Dashboard",
+    },
+  },
+  {
+    path: "/editshop",
+    name: "EditShop",
+    component: EditShop,
+    meta: {
+      title: "EditShop",
     },
   },
 ];
