@@ -5,11 +5,7 @@ import store from "./store";
 import Vue2Editor from "vue2-editor";
 import firebase from "firebase/app";
 import "firebase/auth";
-<<<<<<< HEAD
-import vuetify from './plugins/vuetify'
-=======
-import vuetify from "@/plugins/vuetify"
->>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
+import vuetify from "@/plugins/vuetify";
 
 Vue.use(Vue2Editor);
 
@@ -22,8 +18,7 @@ firebase.auth().onAuthStateChanged(() => {
       vuetify,
       router,
       store,
-      vuetify,
-      render: (h) => h(App)
+      render: (h) => h(App),
     }).$mount("#app");
   }
-})
+});
