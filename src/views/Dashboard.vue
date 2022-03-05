@@ -1,45 +1,51 @@
 <template>
     <v-app>
-        <div id="sheet">
-            <v-sheet width="95vw">
+        <v-navigation-drawer app>
+            <v-list>
+                <v-list-item v-for="page in pages" :key="page" link>
+                    <v-list-item-content>
+                        {{ page }}
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+        </v-navigation-drawer>
+        <v-main>
+            <v-container>
                 <v-row id="headerrow">
                     <v-col>
                         <h1>Analytics</h1>
                     </v-col>
                 </v-row>
-                <v-row id="summaryrow">
-                    <v-col>
-                        <h2>Number of Visits</h2>
-                        <p class="stats">100</p>
-                    </v-col>
-                    <v-col>
-                        <h2>Revenue</h2>
-                        <p class="stats">$1000</p>
-                    </v-col>
-                    <v-col>
-                        <h2>Average Review Score</h2>
-                        <p class="stats">4.3</p>
-                    </v-col>
-                    <v-col>
-                        <h2>Reviews</h2>
-                        <p class="stats">42</p>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <h1 id="graphheader">Graph</h1>
+                <v-row id="summrow">
+                    <v-col v-for="[metric, number] in metrics" :key="metric">
+                        <h2> {{ metric }} </h2>
+                        <p class="stats"> {{ number }} </p>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-img src="https://i.stack.imgur.com/mHu9f.jpg" contain height="500px"></v-img>
-                </v-row>
-            </v-sheet>
-        </div>
+                </v-row>         
+            </v-container>
+        </v-main>
     </v-app>
 </template>
 
 <script>
 export default {
+    data: () => ({
+        pages: [
+            "Overview",
+            "Orders",
+            "Reviews",
+            "Analytics",
+        ],
+        metrics: [
+            ["Number of Visits", 1],
+            ["Revenue", 2],
+            ["Average Review Score", 3],
+            ["Reviews", 4],
+        ]
+    })
 
 }
 </script>
