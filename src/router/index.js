@@ -18,6 +18,8 @@ import Profile from "../views/Profile.vue";
 import Checkout from "../views/Checkout.vue";
 import Payment from "../views/Payment.vue";
 import Dashboard from "../views/Dashboard.vue";
+import SellerOrderOverview from "../views/SellerOrderOverview.vue"
+import SellerOrderManagement from "../views/SellerOrderManagement.vue"
 
 import BuyerProfile from "../views/BuyerProfile.vue";
 import SellerProfile from "../views/SellerProfile.vue";
@@ -178,6 +180,22 @@ const routes = [
       title: "Dashboard",
     },
   },
+  {
+    path: "/sellerorderoverview",
+    name: "Seller Order Overview",
+    component: SellerOrderOverview,
+    meta: {
+      title: 'Seller Order Overview',
+    },
+  },
+  {
+    path: "/sellerordermanagement",
+    name: "Seller Order Management",
+    component: SellerOrderManagement,
+    meta: {
+      title: 'Seller Order Management',
+    },
+  }
 ];
 
 const router = new VueRouter({
