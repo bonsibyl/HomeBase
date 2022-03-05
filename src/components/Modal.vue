@@ -44,7 +44,21 @@ export default {
     }
 
     button {
-      align-self: center;
+        align-self: center;
+        background-color: rgb(50, 126, 34);
+        transition: 500ms ease all;
+        cursor: pointer;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        margin-top: 15px;
+        margin-bottom: 25px; 
+        font-weight: bold;
+    }
+
+    button:hover {
+      background-color: rgb(121, 121, 121);
     }
   }
 }

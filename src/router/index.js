@@ -4,14 +4,23 @@ import VueRouter from "vue-router";
 import Landing from "../views/Landing.vue";
 import Blogs from "../views/Blogs.vue";
 import Login from "../views/Login.vue";
-import Register from "../views/Register.vue";
+import BuyerRegister from "../views/BuyerRegister.vue";
+import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
-import Profile from "../views/Profile.vue";
+import EditAccount from "../views/EditAccount.vue";
 import Admin from "../views/Admin.vue";
 import Vuetifytest from "../views/Vuetifytest.vue";
 import Listing from "../views/Listing.vue";
 import EditListing from "../views/EditListing.vue";
 import UserProfile from "../views/UserProfile.vue";
+import Search from "../views/Search.vue";
+import Profile from "../views/Profile.vue";
+import Checkout from "../views/Checkout.vue";
+import Payment from "../views/Payment.vue";
+import Dashboard from "../views/Dashboard.vue";
+
+import BuyerProfile from "../views/BuyerProfile.vue";
+import SellerProfile from "../views/SellerProfile.vue";
 
 Vue.use(VueRouter);
 
@@ -65,11 +74,19 @@ const routes = [
     },
   },
   {
-    path: "/register",
-    name: "Register",
-    component: Register,
+    path: "/buyer-register",
+    name: "BuyerRegister",
+    component: BuyerRegister,
     meta: {
-      title: "Register",
+      title: "BuyerRegister",
+    },
+  },
+  {
+    path: "/seller-register",
+    name: "SellerRegister",
+    component: SellerRegister,
+    meta: {
+      title: "SellerRegister",
     },
   },
   {
@@ -81,11 +98,11 @@ const routes = [
     },
   },
   {
-    path: "/profile",
-    name: "Profile",
-    component: Profile,
+    path: "/editaccount",
+    name: "EditAccount",
+    component: EditAccount,
     meta: {
-      title: "Profile",
+      title: "EditProfile",
     },
   },
   {
@@ -104,12 +121,69 @@ const routes = [
       title: "Vuetifytest",
     },
   },
+  {
+    path: "/search",
+    name: "Search",
+    component: Search,
+    meta: {
+      title: "Search",
+    },
+  },
+  {
+    path: "/checkout",
+    name: "Checkout",
+    component: Checkout,
+    meta: {
+      title: "Checkout",
+    },
+  },
+  {
+    path: "/payment",
+    name: "Payment",
+    component: Payment,
+    meta: {
+      title: "Payment",
+    },
+  },
+  {
+    path: "/profile/:id",
+    name: "Profile",
+    component: Profile,
+    meta: {
+      title: "Profile",
+    },
+  },
+  {
+    path: "/buyer-profile",
+    name: "BuyerProfile",
+    component: BuyerProfile,
+    meta: {
+      title: "BuyerProfile",
+    },
+  },
+  {
+    path: "/seller-profile",
+    name: "SellerProfile",
+    component: SellerProfile,
+    meta: {
+      title: "SellerProfile",
+    },
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
+    meta: {
+      title: "Dashboard",
+    },
+  },
 ];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+  linkExactActiveClass: "active",
 });
 
 //document titles (name that appears on your tab display)

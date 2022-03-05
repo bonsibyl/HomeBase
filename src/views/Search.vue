@@ -5,60 +5,65 @@
         <div id="content">
           <v-row id="searchrow">
             <v-col>
-              <h1 class="font-weight-bold">
-                @{{ this.$store.state.profileUsername }}
-              </h1>
-              <v-col v-if="this.$store.state.seller" class="col-info">
-                <h4 class="text--secondary">
-                  Store Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Business Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
-              </v-col>
-              <v-col v-else class="col-info">
-                <h4 class="text--secondary">
-                  Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
-              </v-col>
-              <v-col cols="auto" class="col-btn">
-                <v-btn>
-                  Edit Details
-                  <v-icon right>mdi-pencil</v-icon>
-                </v-btn>
-              </v-col>
+              <h1 class="font-weight-bold">What are you craving today?</h1>
             </v-col>
-            <v-spacer></v-spacer>
-            <v-col id="img">
-              <v-card height="400" width="650">
-                <v-img
-                  height="100%"
-                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378"
-                >
-                </v-img>
-              </v-card>
+            <v-col id="searchbar">
+              <v-responsive max-width="650">
+                <v-text-field
+                  prepend-inner-icon="mdi-magnify"
+                  outlined
+                  clearable
+                  label="Search for..."
+                  color="#DD905F"
+                ></v-text-field>
+              </v-responsive>
             </v-col>
           </v-row>
           <v-row id="filterrow" align="end">
             <v-col cols="auto">
-              <h4 class="text--secondary">Listings</h4>
+              <h4 class="text--secondary">Results</h4>
+            </v-col>
+            <v-col cols="auto">
+              <h4 class="text--secondary">Stores</h4>
             </v-col>
             <v-spacer></v-spacer>
+            <v-col cols="auto">
+              <v-menu
+                open-on-hover
+                offset-y
+                transition="slide-y-transition"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn outlined v-bind="attrs" v-on="on">
+                    Sort By
+                    <v-icon right>mdi-menu-down</v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-group v-model="ActiveSort">
+                    <template v-for="(Sort, i) in Sorts">
+                      <v-list-item
+                        :key="`Sort-${i}`"
+                        :value="Sort"
+                        @click.stop.prevent
+                      >
+                        <template v-slot:default="{ active }">
+                          <v-list-item-action>
+                            <v-checkbox :input-value="active"></v-checkbox>
+                          </v-list-item-action>
+
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-text="Sort"
+                            ></v-list-item-title>
+                          </v-list-item-content>
+                        </template>
+                      </v-list-item>
+                    </template>
+                  </v-list-item-group>
+                </v-card>
+              </v-menu>
+            </v-col>
             <v-col cols="auto">
               <v-menu
                 close-on-click="false"
@@ -69,7 +74,45 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn outlined v-bind="attrs" v-on="on">
-                    Filter By
+                    Price
+                    <v-icon right>mdi-menu-down</v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-group v-model="ActiveRanges" multiple>
+                    <template v-for="(Range, i) in PriceRanges">
+                      <v-list-item
+                        :key="`Range-${i}`"
+                        :value="Range"
+                        @click.stop.prevent
+                      >
+                        <template v-slot:default="{ active }">
+                          <v-list-item-action>
+                            <v-checkbox :input-value="active"></v-checkbox>
+                          </v-list-item-action>
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-text="Range"
+                            ></v-list-item-title>
+                          </v-list-item-content>
+                        </template>
+                      </v-list-item>
+                    </template>
+                  </v-list-item-group>
+                </v-card>
+              </v-menu>
+            </v-col>
+            <v-col cols="auto">
+              <v-menu
+                close-on-click="false"
+                close-on-content-click="false"
+                open-on-hover
+                offset-y
+                transition="slide-y-transition"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn outlined v-bind="attrs" v-on="on">
+                    More Filters
                     <v-icon right>mdi-tune</v-icon>
                   </v-btn>
                 </template>
@@ -128,7 +171,8 @@
 
 <script>
 export default {
-  name: "Profile",
+  name: "Search",
+
   data: () => ({
     results: [
       "Blueberry",
@@ -164,15 +208,6 @@ export default {
   padding-top: 5vh;
 }
 
-.col-info {
-  padding: 0px;
-  margin-top: 3px;
-}
-.col-btn {
-  padding: 0px;
-  margin-top: 20px;
-}
-
 .v-divider {
   margin: 2vh 0 2vh 0;
 }
@@ -182,6 +217,7 @@ export default {
   flex: 1;
   justify-content: flex-end;
 }
+
 #btngrp {
   position: relative;
   display: flex;

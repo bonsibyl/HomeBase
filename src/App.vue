@@ -2,10 +2,18 @@
   <v-app>
     <div class="app-wrapper">
       <div class="app">
+<<<<<<< HEAD
         <Navigation v-if="!navigation" />
         <!-- only show for pages excl. login/register/pw -->
         <router-view />
         <FooterLanding v-if="footerRendering" />
+=======
+        <Navigation v-if="!unauth" />
+        <UnauthNavigation v-else />
+        <!-- only show for pages excl. login/register/pw -->
+        <router-view />
+        <!-- <Footer v-if="!unauth" /> -->
+>>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
         <!-- only show for pages excl. login/register/pw -->
       </div>
     </div>
@@ -13,17 +21,31 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 import FooterLanding from "./components/FooterLanding";
+=======
+//import Footer from "./components/Footer";
+>>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
 import Navigation from "./components/Navigation";
+import UnauthNavigation from "./components/UnauthNavigation";
+
 import firebase from "firebase/app";
 import "firebase/auth";
+
 export default {
   name: "app",
+<<<<<<< HEAD
   components: { Navigation, FooterLanding },
   data() {
     return {
       navigation: null, //for nav bar rendering, true === disabled
       footerRendering: null, //for landing page footer rendering, true === enabled
+=======
+  components: { Navigation, UnauthNavigation },
+  data() {
+    return {
+      unauth: this.$store.state.user, //for nav bar rendering, true === disabled
+>>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
     };
   },
   created() {
@@ -31,13 +53,15 @@ export default {
       this.$store.commit("updateUser", user); //update user whenever there is new auth
       if (user) {
         this.$store.dispatch("getCurrentUser");
+        this.unauth = false;
       }
     });
-    this.checkRoute(); //initialise in lifecycle
+    //this.checkRoute(); //initialise in lifecycle
   },
   mounted() {},
   methods: {
     //detect route that we are on, for page rendering
+<<<<<<< HEAD
     checkRoute() {
       this.navigation = false;
       this.footerRendering = false;
@@ -58,13 +82,35 @@ export default {
     $route() {
       this.checkRoute(); //whenever route changes, run checkRoute() funct
     },
+=======
+    // checkRoute() {
+    //   if (
+    //     this.$route.name === "Login" ||
+    //     this.$route.name === "Register" ||
+    //     this.$route.name === "ForgotPassword"
+    //   ) {
+    //     this.unauth = true;
+    //     return;
+    //   }
+    //   this.unauth = false;
+    // },
+>>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
   },
+  // watch: {
+  //   $route() {
+  //     this.checkRoute(); //whenever route changes, run checkRoute() funct
+  //   },
+  // },
 };
 </script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
 * {
   margin: 0;
   padding: 0;
@@ -102,6 +148,7 @@ export default {
     fill: #fff;
   }
 }
+<<<<<<< HEAD
 button,
 .router-button {
   transition: 500ms ease all;
@@ -112,11 +159,27 @@ button,
   border-radius: 20px;
   border: none;
   text-transform: uppercase;
+=======
+
+.router-button {
+  transition: 500ms ease all;
+  cursor: pointer;
+  padding: 12px 24px;
+  border: none;
+  text-transform: uppercase;
+  background-color: rgb(206, 137, 81);
+  border-radius: 5px;
+  color: white;
+  margin-top: 15px;
+  margin-bottom: 25px; 
+  font-weight: bold;
+
+>>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
   &:focus {
     outline: none;
   }
   &:hover {
-    background-color: rgba(48, 48, 48, 0.7);
+    background-color: rgb(114, 114, 114);
   }
 }
 .button-ghost {
@@ -147,7 +210,10 @@ button,
 }
 .error {
   text-align: center;
-  font-size: 12px;
-  color: maroon;
+  font-size: 15px;
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+  border-radius: 10px;
+  padding: 4px;
 }
 </style>

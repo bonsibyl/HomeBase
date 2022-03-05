@@ -3,92 +3,116 @@
     <nav class="container">
       <div class="branding">
         <router-link class="header" :to="{ name: 'Home' }"
-          >BT3103Donkeys</router-link
+          >Homebase</router-link
         >
       </div>
       <div class="nav-links">
-        <ul v-show="!mobile">
-          <!--only show if mobile nav is FALSE-->
-          <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
-          <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-          <router-link class="link" to="#">Create Post</router-link>
-          <router-link v-if="!user" class="link" :to="{ name: 'Login' }"
-            >Login/Register</router-link
-          >
+        <ul>
+          <v-row dense>
+            <v-col>
+              <v-btn
+                icon
+                color="black"
+                to="/search"
+                exact-active-class="activebtn"
+              >
+                <v-icon>mdi-magnify</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn
+                icon
+                color="black"
+                to="/message"
+                exact-active-class="activebtn"
+              >
+                <v-icon>mdi-message-outline</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn
+                v-show="!this.$store.state.seller"
+                icon
+                color="black"
+                to="/cart"
+                exact-active-class="activebtn"
+              >
+                <v-icon>mdi-cart</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-menu offset-y transition="slide-y-transition">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon color="black" v-bind="attrs" v-on="on">
+                    <v-icon>mdi-account-circle</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item>
+                    <v-list-item-title
+                      >Welcome,
+                      {{ this.$store.state.profileUsername }}</v-list-item-title
+                    >
+                  </v-list-item>
+                  <v-divider></v-divider>
+                  <v-list-group
+                    prepend-icon="mdi-account-circle"
+                    @click.stop.prevent
+                  >
+                    <template v-slot:activator>
+                      <v-list-item-title>Profile</v-list-item-title>
+                    </template>
+                    <v-list-item link :to="{ name: 'Profile', params: { id: this.$store.state.profileId }}">
+                      <v-list-item-icon>
+                        <v-icon>mdi-account-box</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>View Profile</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link to="/editaccount">
+                      <v-list-item-icon>
+                        <v-icon>mdi-account-cog</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Settings</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link to="/dashboard" v-show=this.$store.state.seller>
+                      <v-list-item-icon>
+                        <v-icon>mdi-chart-pie</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Dashboard</v-list-item-title>
+                    </v-list-item>
+                  </v-list-group>
+                  <v-list-item @click="signOut">
+                    <v-list-item-icon>
+                      <v-icon>mdi-logout</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Sign Out</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-col>
+            <!-- <v-col>
+              <v-btn icon color="black" @click="signOut">
+                <v-icon>mdi-logout</v-icon>
+              </v-btn>
+            </v-col> -->
+          </v-row>
         </ul>
-        <div v-if="user" @click="toggleProfileMenu" class="profile" ref="profile"> 
-          <span>{{ this.$store.state.profileInitials }}</span>
-          <div v-show="profileMenu" class="profile-menu">
-            <div class="info">
-              <div class="right">
-                <p>
-                  {{ this.$store.state.profileFirstName }}
-                  {{ this.$store.state.profileLastName }}
-                </p>
-                <p>{{ this.$store.state.profileUsername }}</p>
-                <p>{{ this.$store.state.profileEmail }}</p>
-              </div>
-            </div>
-            <div class="options">
-              <div class="option">
-                <router-link class="option" :to="{ name: 'Profile' }">
-                  <userIcon class="icon" />
-                  <p>Profile</p>
-                </router-link>
-              </div>
-              <div class="option">
-                <router-link class="option" :to="{ name: 'Admin' }">
-                  <adminIcon class="icon" />
-                  <p>Admin</p>
-                </router-link>
-              </div>
-              <div @click="signOut" class="option">
-                <signOutIcon class="icon" />
-                <p>Sign Out</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </nav>
-    <menuIcon @click="toggleMobileNav" class="menu-icon" v-show="mobile" />
-    <!--on click toggle mobile nav-->
-    <transition name="mobile-nav">
-      <ul class="mobile-nav" v-show="mobileNav">
-        <!--only show if mobile nav is TRUE-->
-        <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
-        <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-        <router-link class="link" to="#">Create Post</router-link>
-        <router-link v-if="!user" class="link" :to="{ name: 'Login' }"
-          >Login/Register</router-link
-        >
-      </ul>
-    </transition>
   </header>
 </template>
 
 <script>
-import menuIcon from "../assets/Icons/bars-regular.svg";
-import userIcon from "../assets/Icons/user-alt-light.svg";
-import adminIcon from "../assets/Icons/user-crown-light.svg";
-import signOutIcon from "../assets/Icons/sign-out-alt-regular.svg";
 import firebase from "firebase/app";
 import "firebase/auth";
 
 export default {
   name: "navigation",
-  components: {
-    menuIcon,
-    userIcon,
-    adminIcon,
-    signOutIcon,
-  },
+  components: {},
   data() {
     //data for dropdown nav (mobile)
     return {
       profileMenu: null,
-      mobile: null, //boolean, check if mobile mode
-      mobileNav: null, //boolean, check if nav open
       windowWidth: null, //num value, check window width VS threshold
     };
   },
@@ -100,21 +124,6 @@ export default {
   },
 
   methods: {
-    //functions for drop-down nav bar
-    checkScreen() {
-      this.windowWidth = window.innerWidth;
-      if (this.windowWidth <= 750) {
-        this.mobile = true; //set state to mobile mode
-        return;
-      } else {
-        this.mobile = false; //set state to desktop
-        this.mobileNav = false; //ensure mobile nav is not showing
-        return;
-      }
-    },
-    toggleMobileNav() {
-      this.mobileNav = !this.mobileNav; //opp of current state when toggling
-    },
     toggleProfileMenu(event) {
       if (event.target === this.$refs.profile) {
         //look for profile ref to see what user is toggling
@@ -123,21 +132,21 @@ export default {
     },
     signOut() {
       firebase.auth().signOut();
-      window.location.reload();
+      this.$router.push({ name: "Home" });
     },
   },
 
   computed: {
     user() {
       return this.$store.state.user; //returns value of true or false
-    }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 header {
-  background-color: #fff;
+  background-color: #f5e4d0;
   padding: 0 25px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -152,6 +161,10 @@ header {
       color: #1eb8ba;
     }
   }
+}
+
+.activebtn {
+  background-color: #fff;
 }
 
 nav {
@@ -178,15 +191,7 @@ nav {
     justify-content: flex-end;
 
     ul {
-      margin-right: 32px;
-
-      .link {
-        margin-right: 32px;
-      }
-
-      .link:last-child {
-        margin-right: 0;
-      }
+      margin-right: 20px;
     }
 
     .profile {
@@ -204,110 +209,7 @@ nav {
       span {
         pointer-events: none;
       }
-
-      .profile-menu {
-        position: absolute;
-        top: 60px;
-        right: 0;
-        width: 250px;
-        background-color: #303030;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-          0 2px 4px -1px rgba(0, 0, 0, 0.06);
-
-        .info {
-          display: flex;
-          align-items: center;
-          padding: 15px;
-          border-bottom: 1px solid #fff;
-
-          .initials {
-            position: initial;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: #303030;
-            background-color: #fff;
-          }
-
-          .right {
-            flex: 1;
-            margin-left: 12px;
-          }
-        }
-
-        .options {
-          padding: 15px;
-          .option {
-            text-decoration: none;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-
-            .icon {
-              width: 18px;
-              height: auto;
-            }
-
-            p {
-              font-size: 14px;
-              margin-left: 12px;
-            }
-          }
-          .option:last-child {
-            margin-bottom: 0px;
-          }
-        }
-      }
     }
   }
-}
-
-.menu-icon {
-  cursor: pointer;
-  position: absolute;
-  top: 32px;
-  right: 25px;
-  height: 25px;
-  width: auto;
-}
-
-.mobile-nav {
-  padding: 20px;
-  width: 70%;
-  max-width: 250px;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  height: 100%;
-  background-color: #303030;
-  top: 0;
-  left: 0;
-
-  .link {
-    padding: 15px 0;
-    color: #fff;
-  }
-}
-
-.mobile-nav-enter-active,
-.mobile-nav-leave-active {
-  //target the enter and leaving of toggling button only
-  transition: all 1s ease;
-}
-
-.mobile-nav-enter {
-  transform: translateX(-250px); //nav bar out of screen
-}
-
-.mobile-nav-enter-to {
-  transform: translateX(0); //nav bar back onto screen
-}
-
-.mobile-nav-leave-to {
-  transform: translateX(-250px); //nav bar out of screen
 }
 </style>
