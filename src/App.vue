@@ -39,7 +39,9 @@ export default {
     });
     //this.checkRoute(); //initialise in lifecycle
   },
-  mounted() {},
+  mounted() {
+    this.checkRoute();
+  },
   methods: {
     //detect route that we are on, for page rendering
     checkRoute() {

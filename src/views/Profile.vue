@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <div id="sheet">
+    <div v-if="seller" id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
           <v-row id="searchrow">
@@ -121,12 +121,21 @@
         </div>
       </v-sheet>
     </div>
+    <div v-else id="user-page">
+      <UserProfile />
+    </div>
   </v-app>
 </template>
 
 <script>
+import UserProfile from "../views/UserProfile.vue";
+import db from "../firebase/firebaseInit";
+
 export default {
   name: "Profile",
+  components: {
+    UserProfile,
+  },
   data: () => ({
     results: [
       "Blueberry",
@@ -143,7 +152,23 @@ export default {
     ActiveRanges: [],
     Filters: ["Vegan", "Halal", "Gluten-Free"],
     ActiveFilters: [],
+    seller: null,
   }),
+
+  async mounted() {
+    const information = await this.retrieveUserType(this.$route.params.id);
+    this.seller = information;
+  },
+  methods: {
+    async retrieveUserType(id) {
+      const docRef = db.collection("users").doc(id);
+      var sellerType = null;
+      await docRef.get().then((doc) => {
+        sellerType = doc.data().seller;
+      });
+      return sellerType;
+    },
+  },
 };
 </script>
 

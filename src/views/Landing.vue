@@ -10,7 +10,7 @@
         there is sure to be an option for you.
       </p>
       <router-link
-        :to="{ name: 'Register' }"
+        :to="{ name: 'BuyerRegister' }"
         tag="button"
         class="landing-register-button"
       >
@@ -26,7 +26,7 @@
         business that's as easy as 1,2,3.
       </p>
       <router-link
-        :to="{ name: 'Register' }"
+        :to="{ name: 'SellerRegister' }"
         tag="button"
         class="landing-register-button"
         >Join our team of merchants!</router-link

@@ -222,7 +222,7 @@
 
 <script>
 export default {
-  name: "Profile",
+  name: "UserProfile",
   data: () => ({
     isOrder: false,
     results: [
