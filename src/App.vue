@@ -2,18 +2,11 @@
   <v-app>
     <div class="app-wrapper">
       <div class="app">
-<<<<<<< HEAD
-        <Navigation v-if="!navigation" />
-        <!-- only show for pages excl. login/register/pw -->
-        <router-view />
-        <FooterLanding v-if="footerRendering" />
-=======
         <Navigation v-if="!unauth" />
         <UnauthNavigation v-else />
         <!-- only show for pages excl. login/register/pw -->
         <router-view />
-        <!-- <Footer v-if="!unauth" /> -->
->>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
+        <FooterLanding v-if="footerRendering" />
         <!-- only show for pages excl. login/register/pw -->
       </div>
     </div>
@@ -21,11 +14,7 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 import FooterLanding from "./components/FooterLanding";
-=======
-//import Footer from "./components/Footer";
->>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
 import Navigation from "./components/Navigation";
 import UnauthNavigation from "./components/UnauthNavigation";
 
@@ -34,18 +23,12 @@ import "firebase/auth";
 
 export default {
   name: "app",
-<<<<<<< HEAD
-  components: { Navigation, FooterLanding },
+  components: { Navigation, FooterLanding, UnauthNavigation },
   data() {
     return {
       navigation: null, //for nav bar rendering, true === disabled
       footerRendering: null, //for landing page footer rendering, true === enabled
-=======
-  components: { Navigation, UnauthNavigation },
-  data() {
-    return {
-      unauth: this.$store.state.user, //for nav bar rendering, true === disabled
->>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
+      unauth: this.$store.state.user
     };
   },
   created() {
@@ -61,7 +44,6 @@ export default {
   mounted() {},
   methods: {
     //detect route that we are on, for page rendering
-<<<<<<< HEAD
     checkRoute() {
       this.navigation = false;
       this.footerRendering = false;
@@ -82,35 +64,13 @@ export default {
     $route() {
       this.checkRoute(); //whenever route changes, run checkRoute() funct
     },
-=======
-    // checkRoute() {
-    //   if (
-    //     this.$route.name === "Login" ||
-    //     this.$route.name === "Register" ||
-    //     this.$route.name === "ForgotPassword"
-    //   ) {
-    //     this.unauth = true;
-    //     return;
-    //   }
-    //   this.unauth = false;
-    // },
->>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
   },
-  // watch: {
-  //   $route() {
-  //     this.checkRoute(); //whenever route changes, run checkRoute() funct
-  //   },
-  // },
 };
 </script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
-<<<<<<< HEAD
-=======
-
->>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
 * {
   margin: 0;
   padding: 0;
@@ -148,18 +108,6 @@ export default {
     fill: #fff;
   }
 }
-<<<<<<< HEAD
-button,
-.router-button {
-  transition: 500ms ease all;
-  cursor: pointer;
-  // margin-top: 24px;
-  padding: 12px 24px;
-  color: #fff;
-  border-radius: 20px;
-  border: none;
-  text-transform: uppercase;
-=======
 
 .router-button {
   transition: 500ms ease all;
@@ -174,7 +122,6 @@ button,
   margin-bottom: 25px; 
   font-weight: bold;
 
->>>>>>> 5f913d2a30566edaeb4839c17888ee0f4e6e956f
   &:focus {
     outline: none;
   }
