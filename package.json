@@ -20,7 +20,8 @@
     "vue-svg-loader": "^0.16.0",
     "vue2-editor": "^2.10.2",
     "vuetify": "^2.6.3",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "vuex-extensions": "^4.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
