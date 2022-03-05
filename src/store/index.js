@@ -5,6 +5,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import db from "../firebase/firebaseInit";
 
+
 Vue.use(Vuex);
 
 const store = createStore(Vuex.Store,{
@@ -20,6 +21,7 @@ const store = createStore(Vuex.Store,{
     seller: null,
     number: null,
     address: null,
+    authenticated: false,
   },
   mutations: {
     toggleEditPost(state, payload) {
@@ -42,6 +44,7 @@ const store = createStore(Vuex.Store,{
       state.seller = doc.data().seller;
       state.number = doc.data().number;
       state.address = doc.data().Address;
+      state.authenticated = true;
     },
     setProfileInitials(state) {
       state.setProfileInitials = //get initials of first + last name

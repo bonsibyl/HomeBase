@@ -21,6 +21,7 @@ import Dashboard from "../views/Dashboard.vue";
 
 import BuyerProfile from "../views/BuyerProfile.vue";
 import SellerProfile from "../views/SellerProfile.vue";
+//import store from "../store/index.js"
 
 Vue.use(VueRouter);
 

@@ -109,27 +109,7 @@ import "firebase/auth";
 export default {
   name: "navigation",
   components: {},
-  data() {
-    //data for dropdown nav (mobile)
-    return {
-      profileMenu: null,
-      windowWidth: null, //num value, check window width VS threshold
-    };
-  },
-
-  created() {
-    //created lifecycle hook
-    window.addEventListener("resize", this.checkScreen); //whenever encounter resize, will run checkScreen funct
-    this.checkScreen(); //run the checkScreen funct
-  },
-
   methods: {
-    toggleProfileMenu(event) {
-      if (event.target === this.$refs.profile) {
-        //look for profile ref to see what user is toggling
-        this.profileMenu = !this.profileMenu;
-      }
-    },
     signOut() {
       firebase.auth().signOut();
       let newState = {};
@@ -137,7 +117,6 @@ export default {
         newState[key] = null;
       });
       this.$store.replaceState(newState)
-      //this.unauth = true;
       this.$router.push({ name: "Home" });
     },
   },
