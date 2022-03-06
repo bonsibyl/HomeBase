@@ -1,186 +1,214 @@
 <template>
-  <div class="profile">
-    <Modal
-      v-if="modalActive"
-      :modalMessage="modalMessage"
-      v-on:close-modal="closeModal"
-    />
-    <div class="container">
-      <h2>Account Settings</h2>
-      <div class="profile-info">
-        <div class="initials">{{ $store.state.profileInitials }}</div>
-        <div class="admin-badge">
-          <adminIcon class="icon" />
-          <span>admin</span>
+  <v-app>
+    <div v-if="seller" id="sheet">
+      <v-sheet rounded="sm" width="95vw" elevation="1">
+        <div id="content">
+          <v-row id="searchrow">
+            <v-col>
+              <h1 class="font-weight-bold">
+                @{{ this.$store.state.profileUsername }}
+              </h1>
+              <v-col v-if="this.$store.state.seller" class="col-info">
+                <h4 class="text--secondary">
+                  Store Name: {{ this.$store.state.profileFirstName }}
+                </h4>
+                <h4 class="text--secondary">
+                  Business Email: {{ this.$store.state.profileEmail }}
+                </h4>
+                <h4 class="text--secondary">
+                  Contact Number: {{ this.$store.state.number }}
+                </h4>
+                <h4 class="text--secondary">
+                  Address: {{ this.$store.state.address }}
+                </h4>
+              </v-col>
+              <v-col v-else class="col-info">
+                <h4 class="text--secondary">
+                  Name: {{ this.$store.state.profileFirstName }}
+                </h4>
+                <h4 class="text--secondary">
+                  Email: {{ this.$store.state.profileEmail }}
+                </h4>
+                <h4 class="text--secondary">
+                  Contact Number: {{ this.$store.state.number }}
+                </h4>
+                <h4 class="text--secondary">
+                  Address: {{ this.$store.state.address }}
+                </h4>
+              </v-col>
+              <v-col cols="auto" class="col-btn">
+                <v-btn>
+                  Edit Details
+                  <v-icon right>mdi-pencil</v-icon>
+                </v-btn>
+              </v-col>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col id="img">
+              <v-card height="400" width="650">
+                <v-img
+                  height="100%"
+                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378"
+                >
+                </v-img>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row id="filterrow" align="end">
+            <v-col cols="auto">
+              <h4 class="text--secondary">Listings</h4>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col cols="auto">
+              <v-menu
+                open-on-hover
+                offset-y
+                transition="slide-y-transition"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn outlined v-bind="attrs" v-on="on">
+                    Filter By
+                    <v-icon right>mdi-tune</v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-group v-model="ActiveFilters" multiple>
+                    <template v-for="(Filter, i) in Filters">
+                      <v-list-item
+                        :key="`Filter-${i}`"
+                        :value="Filter"
+                        @click.stop.prevent
+                      >
+                        <template v-slot:default="{ active }">
+                          <v-list-item-action>
+                            <v-checkbox :input-value="active"></v-checkbox>
+                          </v-list-item-action>
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-text="Filter"
+                            ></v-list-item-title>
+                          </v-list-item-content>
+                        </template>
+                      </v-list-item>
+                    </template>
+                  </v-list-item-group>
+                </v-card>
+              </v-menu>
+            </v-col>
+          </v-row>
+          <v-divider id="divider1"></v-divider>
+          <v-row>
+            <v-col v-for="result in results" :key="result" cols="4">
+              <v-card
+                class="rounded-lg"
+                min-width="150"
+                min-height="100"
+                height="400"
+                :to="'/'"
+                hover
+              >
+                <v-img
+                  gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
+                  class="white--text align-end bottom-gradient"
+                  height="100%"
+                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
+                >
+                  <v-card-title>{{ result }}</v-card-title>
+                </v-img></v-card
+              >
+            </v-col>
+          </v-row>
         </div>
-        <div class="input">
-          <label for="firstName">First Name:</label>
-          <input type="text" id="firstName" v-model="firstName" />
-        </div>
-        <div class="input">
-          <label for="lastName">Last Name:</label>
-          <input type="text" id="lastName" v-model="lastName" />
-        </div>
-        <div class="input">
-          <label for="username">Username:</label>
-          <input type="text" id="username" v-model="username" />
-        </div>
-        <div class="input">
-          <label for="email">Email:</label>
-          <input disabled type="text" id="email" v-model="email" />
-        </div>
-        <button @click="updateProfile">Save Changes</button>
-      </div>
+      </v-sheet>
     </div>
-  </div>
+    <div v-else id="user-page">
+      <UserProfile />
+    </div>
+  </v-app>
 </template>
 
 <script>
-import Modal from "../components/Modal";
-import adminIcon from "../assets/Icons/user-crown-light.svg";
+import UserProfile from "../views/UserProfile.vue";
+import db from "../firebase/firebaseInit";
 
 export default {
   name: "Profile",
   components: {
-    Modal,
-    adminIcon,
+    UserProfile,
   },
-  data() {
-    return {
-      modalMessage: "Changes were saved!",
-      modalActive: null,
-    };
+  data: () => ({
+    results: [
+      "Blueberry",
+      "Strawberry",
+      "Macarons",
+      "Cupcake",
+      "Brownie",
+      "Cookie",
+      "Tart",
+    ],
+    Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
+    ActiveSort: "",
+    PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
+    ActiveRanges: [],
+    Filters: ["Vegan", "Halal", "Gluten-Free"],
+    ActiveFilters: [],
+    seller: null,
+  }),
+
+  async mounted() {
+    const information = await this.retrieveUserType(this.$route.params.id);
+    this.seller = information;
   },
   methods: {
-    updateProfile() {
-      this.$store.dispatch("updateUserSettings");
-      this.modalActive = !this.modalActive;
-    },
-    closeModal() {
-      this.modalActive = !this.modalActive;
-    },
-  },
-  computed: {
-    firstName: {
-      get() {
-        return this.$store.state.profileFirstName;
-      },
-      set(payload) {
-        this.$store.commit("changeFirstName", payload);
-      },
-    },
-    lastName: {
-      get() {
-        return this.$store.state.profileLastName;
-      },
-      set(payload) {
-        this.$store.commit("changeLastName", payload);
-      },
-    },
-    username: {
-      get() {
-        return this.$store.state.profileUsername;
-      },
-      set(payload) {
-        this.$store.commit("changeUsername", payload);
-      },
-    },
-    email() {
-      return this.$store.state.profileEmail;
+    async retrieveUserType(id) {
+      const docRef = db.collection("users").doc(id);
+      var sellerType = null;
+      await docRef.get().then((doc) => {
+        sellerType = doc.data().seller;
+      });
+      return sellerType;
     },
   },
 };
 </script>
-<style lang="scss" scoped>
-.profile {
-  .container {
-    max-width: 1000px;
-    padding: 60px 25px;
-    h2 {
-      text-align: center;
-      margin-bottom: 16px;
-      font-weight: 300;
-      font-size: 32px;
-    }
-    .profile-info {
-      border-radius: 8px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-        0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      padding: 32px;
-      background-color: #f1f1f1;
-      display: flex;
-      flex-direction: column;
-      max-width: 600px;
-      margin: 32px auto;
-      .initials {
-        position: initial;
-        width: 80px;
-        height: 80px;
-        font-size: 32px;
-        background-color: #303030;
-        color: #fff;
-        display: flex;
-        align-self: center;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-      }
-      .admin-badge {
-        display: flex;
-        align-self: center;
-        color: #fff;
-        font-size: 14px;
-        font-weight: bold;
-        padding: 8px 24px;
-        border-radius: 8px;
-        background-color: #0c6b09;
-        margin: 16px 0;
-        text-align: center;
-        text-transform: capitalize;
-        .icon {
-          width: 14px;
-          height: auto;
-          margin-right: 8px;
-        }
-      }
-      .input {
-        margin: 16px 0;
-        label {
-          font-size: 14px;
-          display: block;
-          padding-bottom: 6px;
-        }
-        input {
-          width: 100%;
-          border: none;
-          background-color: #f2f7f6;
-          padding: 8px;
-          height: 50px;
-          @media (min-width: 900px) {
-          }
-          &:focus {
-            outline: none;
-          }
-        }
-      }
-      button {
-        align-self: center;
-        background-color: rgb(148, 189, 140);
-        transition: 500ms ease all;
-        cursor: pointer;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 5px;
-        color: white;
-        margin-top: 15px;
-        margin-bottom: 25px; 
-        font-weight: bold;
-      }
 
-      button:hover {
-        background-color: lightslategray;
-      }
-    }
-  }
+<style scoped>
+#sheet {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2vh;
+}
+
+#content {
+  margin: 0 5vw 0 5vw;
+}
+
+#searchrow {
+  padding-top: 5vh;
+}
+
+.col-info {
+  padding: 0px;
+  margin-top: 3px;
+}
+.col-btn {
+  padding: 0px;
+  margin-top: 20px;
+}
+
+.v-divider {
+  margin: 2vh 0 2vh 0;
+}
+
+#searchbar {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+}
+#btngrp {
+  position: relative;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
 }
 </style>

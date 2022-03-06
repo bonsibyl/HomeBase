@@ -2,7 +2,7 @@
   <header>
     <nav class="container">
       <div class="branding">
-        <router-link class="header" :to="{ name: 'Home' }"
+        <router-link class="header" :to="{ name: 'AuthHome' }"
           >Homebase</router-link
         >
       </div>
@@ -49,12 +49,42 @@
                 </template>
                 <v-list>
                   <v-list-item>
-                    <v-list-item-title>{{this.$store.state.profileUsername}}</v-list-item-title>
+                    <v-list-item-title
+                      >Welcome,
+                      {{ this.$store.state.profileUsername }}</v-list-item-title
+                    >
                   </v-list-item>
-                  <v-list-item link to="/profile">
-                    <v-list-item-title>Profile</v-list-item-title>
-                  </v-list-item>
+                  <v-divider></v-divider>
+                  <v-list-group
+                    prepend-icon="mdi-account-circle"
+                    @click.stop.prevent
+                  >
+                    <template v-slot:activator>
+                      <v-list-item-title>Profile</v-list-item-title>
+                    </template>
+                    <v-list-item link :to="{ name: 'Profile', params: { id: this.$store.state.profileId }}">
+                      <v-list-item-icon>
+                        <v-icon>mdi-account-box</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>View Profile</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link to="/editaccount">
+                      <v-list-item-icon>
+                        <v-icon>mdi-account-cog</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Settings</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link to="/dashboard" v-show=this.$store.state.seller>
+                      <v-list-item-icon>
+                        <v-icon>mdi-chart-pie</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title>Dashboard</v-list-item-title>
+                    </v-list-item>
+                  </v-list-group>
                   <v-list-item @click="signOut">
+                    <v-list-item-icon>
+                      <v-icon>mdi-logout</v-icon>
+                    </v-list-item-icon>
                     <v-list-item-title>Sign Out</v-list-item-title>
                   </v-list-item>
                 </v-list>
@@ -79,29 +109,14 @@ import "firebase/auth";
 export default {
   name: "navigation",
   components: {},
-  data() {
-    //data for dropdown nav (mobile)
-    return {
-      profileMenu: null,
-      windowWidth: null, //num value, check window width VS threshold
-    };
-  },
-
-  created() {
-    //created lifecycle hook
-    window.addEventListener("resize", this.checkScreen); //whenever encounter resize, will run checkScreen funct
-    this.checkScreen(); //run the checkScreen funct
-  },
-
   methods: {
-    toggleProfileMenu(event) {
-      if (event.target === this.$refs.profile) {
-        //look for profile ref to see what user is toggling
-        this.profileMenu = !this.profileMenu;
-      }
-    },
     signOut() {
       firebase.auth().signOut();
+      let newState = {};
+      Object.keys(this.$store.state).forEach(key => {
+        newState[key] = null;
+      });
+      this.$store.replaceState(newState)
       this.$router.push({ name: "Home" });
     },
   },

@@ -31,6 +31,15 @@
           <user class="icon" />
         </div>
         <div class="input">
+          <input
+            type="text"
+            placeholder="Shop Address"
+            v-model="address"
+            required
+          />
+          <user class="icon" />
+        </div>
+        <div class="input">
           <input type="text" placeholder="Business Email" v-model="email" required />
           <email class="icon" />
         </div>
@@ -87,6 +96,7 @@ export default {
       username: "",
       number: "",
       email: "",
+      address: "",
       password: "",
       error: null,
       errorMsg: "",
@@ -99,6 +109,7 @@ export default {
         this.password !== "" &&
         this.shopName !== "" &&
         this.number !== "" &&
+        this.address !== "" &&
         this.username !== ""
       ) {
         this.error = false;
@@ -116,12 +127,13 @@ export default {
         const dataBase = db.collection("users").doc(result.user.uid);
         await dataBase.set({
           shopName: this.shopName,
-          number: this.number,
           username: this.username,
+          number: this.number,
+          address: this.address,
           email: this.email,
           seller: true,
         });
-        this.$router.push({ name: "Home" }); //push user to homepage aft auth
+        this.$router.push({ name: "AuthHome" }); //push user to homepage aft auth
         return;
         }
       } else {
@@ -138,7 +150,6 @@ export default {
 .register {
   background-color: white;
   width: 200px;
-  height: 700px;
-  margin: 5% 25% 10% 25%;
+  margin: 3% 15% 5% 15%;
 }
 </style>

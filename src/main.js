@@ -5,9 +5,11 @@ import store from "./store";
 import Vue2Editor from "vue2-editor";
 import firebase from "firebase/app";
 import "firebase/auth";
-import vuetify from "@/plugins/vuetify"
+import vuetify from "@/plugins/vuetify";
+import VModal from "vue-js-modal";
 
 Vue.use(Vue2Editor);
+Vue.use(VModal);
 
 Vue.config.productionTip = false;
 
@@ -21,4 +23,4 @@ firebase.auth().onAuthStateChanged(() => {
       render: (h) => h(App),
     }).$mount("#app");
   }
-})
+});

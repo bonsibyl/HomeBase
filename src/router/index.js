@@ -1,14 +1,29 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+//import Home from "../views/Home.vue";
+import Landing from "../views/Landing.vue";
+import AuthHome from "../views/AuthHome.vue";
 import Blogs from "../views/Blogs.vue";
 import Login from "../views/Login.vue";
 import BuyerRegister from "../views/BuyerRegister.vue";
 import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
-import Profile from "../views/Profile.vue";
+import EditAccount from "../views/EditAccount.vue";
 import Admin from "../views/Admin.vue";
-import Search from "../views/Search.vue"
+import Vuetifytest from "../views/Vuetifytest.vue";
+import Listing from "../views/Listing.vue";
+import EditListing from "../views/EditListing.vue";
+import UserProfile from "../views/UserProfile.vue";
+import Search from "../views/Search.vue";
+import Profile from "../views/Profile.vue";
+import Checkout from "../views/Checkout.vue";
+import Payment from "../views/Payment.vue";
+import Dashboard from "../views/Dashboard.vue";
+import SellerOrderOverview from "../views/SellerOrderOverview.vue"
+import SellerOrderManagement from "../views/SellerOrderManagement.vue"
+import ScreenshotUpload from "../views/ScreenshotUpload.vue";
+
+//import store from "../store/index.js"
 
 Vue.use(VueRouter);
 
@@ -16,9 +31,41 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home,
+    component: Landing,
     meta: {
-      title: 'Home',
+      title: "Home",
+    },
+  },
+  {
+    path: "/authhome",
+    name: "AuthHome",
+    component: AuthHome,
+    meta: {
+      title: "AuthHome",
+    },
+  },
+  {
+    path: "/listing/:id",
+    name: "Listing",
+    component: Listing,
+    meta: {
+      title: "Listing",
+    },
+  },
+  {
+    path: "/EditListing/:id",
+    name: "EditListing",
+    component: EditListing,
+    meta: {
+      title: "EditListing",
+    },
+  },
+  {
+    path: "/UserProfile/:id",
+    name: "UserProfile",
+    component: UserProfile,
+    meta: {
+      title: "UserProfile",
     },
   },
   {
@@ -26,7 +73,7 @@ const routes = [
     name: "Blogs",
     component: Blogs,
     meta: {
-      title: 'Blogs',
+      title: "Blogs",
     },
   },
   {
@@ -34,7 +81,7 @@ const routes = [
     name: "Login",
     component: Login,
     meta: {
-      title: 'Login',
+      title: "Login",
     },
   },
   {
@@ -42,7 +89,7 @@ const routes = [
     name: "BuyerRegister",
     component: BuyerRegister,
     meta: {
-      title: 'BuyerRegister',
+      title: "BuyerRegister",
     },
   },
   {
@@ -50,7 +97,7 @@ const routes = [
     name: "SellerRegister",
     component: SellerRegister,
     meta: {
-      title: 'SellerRegister',
+      title: "SellerRegister",
     },
   },
   {
@@ -58,15 +105,15 @@ const routes = [
     name: "ForgotPassword",
     component: ForgotPassword,
     meta: {
-      title: 'Forgot Password',
+      title: "Forgot Password",
     },
   },
   {
-    path: "/profile",
-    name: "Profile",
-    component: Profile,
+    path: "/editaccount",
+    name: "EditAccount",
+    component: EditAccount,
     meta: {
-      title: 'Profile',
+      title: "EditProfile",
     },
   },
   {
@@ -74,7 +121,15 @@ const routes = [
     name: "Admin",
     component: Admin,
     meta: {
-      title: 'Admin',
+      title: "Admin",
+    },
+  },
+  {
+    path: "/vuetify",
+    name: "Vuetifytest",
+    component: Vuetifytest,
+    meta: {
+      title: "Vuetifytest",
     },
   },
   {
@@ -82,9 +137,65 @@ const routes = [
     name: "Search",
     component: Search,
     meta: {
-      title: 'Search',
+      title: "Search",
     },
   },
+  {
+    path: "/checkout",
+    name: "Checkout",
+    component: Checkout,
+    meta: {
+      title: "Checkout",
+    },
+  },
+  {
+    path: "/payment",
+    name: "Payment",
+    component: Payment,
+    meta: {
+      title: "Payment",
+    },
+  },
+  {
+    path: "/profile/:id",
+    name: "Profile",
+    component: Profile,
+    meta: {
+      title: "Profile",
+    },
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
+    meta: {
+      title: "Dashboard",
+    },
+  },
+  {
+    path: "/sellerorderoverview",
+    name: "Seller Order Overview",
+    component: SellerOrderOverview,
+    meta: {
+      title: 'Seller Order Overview',
+    },
+  },
+  {
+    path: "/sellerordermanagement",
+    name: "Seller Order Management",
+    component: SellerOrderManagement,
+    meta: {
+      title: 'Seller Order Management',
+    },
+  },
+  {
+    path: "/screenshotupload",
+    name: "Screenshot Upload",
+    component: ScreenshotUpload,
+    meta: {
+      title: 'Screenshot Upload',
+    },
+  }
 ];
 
 const router = new VueRouter({
