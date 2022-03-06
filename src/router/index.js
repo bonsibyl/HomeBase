@@ -21,8 +21,6 @@ import Dashboard from "../views/Dashboard.vue";
 import SellerOrderOverview from "../views/SellerOrderOverview.vue"
 import SellerOrderManagement from "../views/SellerOrderManagement.vue"
 
-import BuyerProfile from "../views/BuyerProfile.vue";
-import SellerProfile from "../views/SellerProfile.vue";
 //import store from "../store/index.js"
 
 Vue.use(VueRouter);
@@ -154,22 +152,6 @@ const routes = [
     component: Profile,
     meta: {
       title: "Profile",
-    },
-  },
-  {
-    path: "/buyer-profile",
-    name: "BuyerProfile",
-    component: BuyerProfile,
-    meta: {
-      title: "BuyerProfile",
-    },
-  },
-  {
-    path: "/seller-profile",
-    name: "SellerProfile",
-    component: SellerProfile,
-    meta: {
-      title: "SellerProfile",
     },
   },
   {
