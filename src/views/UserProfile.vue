@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <review-form />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
@@ -205,7 +206,9 @@
                     <v-btn v-else color="orange lighten-1">Processing</v-btn>
                   </v-row>
                   <v-row class="pt-4" v-if="order.status == 'fulfilled'">
-                    <v-btn color="yellow darken-2">Leave a review!</v-btn>
+                    <v-btn color="yellow darken-2" @click="showModal"
+                      >Leave a review!</v-btn
+                    >
                   </v-row>
                 </v-col>
                 <v-col>{{ order.total }}</v-col>
@@ -221,7 +224,9 @@
 </template>
 
 <script>
+import ReviewForm from "./ReviewForm.vue";
 export default {
+  components: { ReviewForm },
   name: "UserProfile",
   data: () => ({
     isOrder: false,
@@ -304,6 +309,9 @@ export default {
     toggleOrder() {
       this.isOrder = !this.isOrder;
       this.ActiveFilters = [];
+    },
+    showModal() {
+      this.$modal.show("review");
     },
   },
 };
