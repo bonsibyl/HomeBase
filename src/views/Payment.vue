@@ -15,8 +15,8 @@
         </h3>
         
         <div class="btns">
-            <button @click.prevent="addItems" class="back"><b>Go back</b></button>
-            <button @click.prevent="makePayment" class="screenshot"><b>Upload Screenshot</b></button>
+            <button @click.prevent="$router.push({name: 'Checkout'})" class="back"><b>Go back</b></button>
+            <button @click.prevent="uploadScreenshot" class="screenshot"><b>Upload Screenshot</b></button>
         </div>
 
       </form>

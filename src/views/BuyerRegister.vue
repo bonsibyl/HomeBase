@@ -40,6 +40,15 @@
           <user class="icon" />
         </div>
         <div class="input">
+          <input
+            type="text"
+            placeholder="Home Address"
+            v-model="address"
+            required
+          />
+          <user class="icon" />
+        </div>
+        <div class="input">
           <input type="text" placeholder="Email" v-model="email" required />
           <email class="icon" />
         </div>
@@ -96,6 +105,7 @@ export default {
       lastName: "",
       username: "",
       number: "",
+      address: "",
       email: "",
       password: "",
       error: null,
@@ -110,7 +120,8 @@ export default {
         this.firstName !== "" &&
         this.lastName !== "" &&
         this.username !== "" &&
-        this.number !== ""
+        this.number !== "" &&
+        this.address !== ""
       ) {
         this.error = false;
         this.errorMsg = "";
@@ -130,11 +141,12 @@ export default {
           lastName: this.lastName,
           username: this.username,
           number: this.number,
+          address: this.address,
           email: this.email,
           seller: false,
         });
         console.log("success")
-        this.$router.push({ name: "Home" }); //push user to homepage aft auth
+        this.$router.push({ name: "AuthHome" }); //push user to homepage aft auth
         return;
         }
       } else {

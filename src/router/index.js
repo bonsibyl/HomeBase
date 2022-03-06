@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 //import Home from "../views/Home.vue";
 import Landing from "../views/Landing.vue";
+import AuthHome from "../views/AuthHome.vue";
 import Blogs from "../views/Blogs.vue";
 import Login from "../views/Login.vue";
 import BuyerRegister from "../views/BuyerRegister.vue";
@@ -20,9 +21,8 @@ import Payment from "../views/Payment.vue";
 import Dashboard from "../views/Dashboard.vue";
 import SellerOrderOverview from "../views/SellerOrderOverview.vue"
 import SellerOrderManagement from "../views/SellerOrderManagement.vue"
+import ScreenshotUpload from "../views/ScreenshotUpload.vue";
 
-import BuyerProfile from "../views/BuyerProfile.vue";
-import SellerProfile from "../views/SellerProfile.vue";
 //import store from "../store/index.js"
 
 Vue.use(VueRouter);
@@ -34,6 +34,14 @@ const routes = [
     component: Landing,
     meta: {
       title: "Home",
+    },
+  },
+  {
+    path: "/authhome",
+    name: "AuthHome",
+    component: AuthHome,
+    meta: {
+      title: "AuthHome",
     },
   },
   {
@@ -157,22 +165,6 @@ const routes = [
     },
   },
   {
-    path: "/buyer-profile",
-    name: "BuyerProfile",
-    component: BuyerProfile,
-    meta: {
-      title: "BuyerProfile",
-    },
-  },
-  {
-    path: "/seller-profile",
-    name: "SellerProfile",
-    component: SellerProfile,
-    meta: {
-      title: "SellerProfile",
-    },
-  },
-  {
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
@@ -194,6 +186,14 @@ const routes = [
     component: SellerOrderManagement,
     meta: {
       title: 'Seller Order Management',
+    },
+  },
+  {
+    path: "/screenshotupload",
+    name: "Screenshot Upload",
+    component: ScreenshotUpload,
+    meta: {
+      title: 'Screenshot Upload',
     },
   }
 ];
