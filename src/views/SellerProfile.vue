@@ -5,10 +5,10 @@
       :modalMessage="modalMessage"
       v-on:close-modal="closeModal"
     />
-    <div class="container">
+    <div class="container" v-if="$store.state.seller">
       <h2><b>Account Settings</b></h2>
       <div class="profile-info">
-        <div class="initials">{{ shopName[0] }}</div>
+        <div class="initials">{{ $store.state.profileInitials }}</div>
         <div class="admin-badge">
           <adminIcon class="icon" />
           <span>Business</span>

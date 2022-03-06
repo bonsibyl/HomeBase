@@ -5,13 +5,49 @@
       :modalMessage="modalMessage"
       v-on:close-modal="closeModal"
     />
-    <div class="container">
-      <h2>Account Settings</h2>
+    <div class="container" v-if="$store.state.seller">
+      <h2><b>Account Settings</b></h2>
       <div class="profile-info">
         <div class="initials">{{ $store.state.profileInitials }}</div>
         <div class="admin-badge">
           <adminIcon class="icon" />
-          <span>admin</span>
+          <span>Business</span>
+        </div>
+        <div class="input">
+          <label for="username">Username:</label>
+          <input disabled type="text" id="username" v-model="username" />
+        </div>
+        <div class="input">
+          <label for="shopName">Shop Name:</label>
+          <input type="text" id="shopName" v-model="shopName" />
+        </div>
+        <div class="input">
+          <label for="address">Address:</label>
+          <input type="text" id="address" v-model="address" />
+        </div>
+        <div class="input">
+          <label for="hpNumber">Contact No.:</label>
+          <input type="text" id="hpNumber" v-model="hpNumber" />
+        </div>
+        <div class="input">
+          <label for="email">Email:</label>
+          <input disabled type="text" id="email" v-model="email" />
+        </div>
+        <div class="input">
+          <label for="password">Password:</label>
+          <input type="password" id="password" v-model="password" />
+        </div>
+        <button @click="updateProfile">Save Changes</button>
+      </div>
+    </div>
+
+    <div class="container" v-else>
+      <h2><b>Account Settings</b></h2>
+      <div class="profile-info">
+        <div class="initials">{{ firstName[0] + lastName[0] }}</div>
+        <div class="admin-badge">
+          <adminIcon class="icon" />
+          <span>Customer</span>
         </div>
         <div class="input">
           <label for="firstName">First Name:</label>
@@ -23,17 +59,30 @@
         </div>
         <div class="input">
           <label for="username">Username:</label>
-          <input type="text" id="username" v-model="username" />
+          <input disabled type="text" id="username" v-model="username" />
+        </div>
+        <div class="input">
+          <label for="address">Address:</label>
+          <input type="text" id="address" v-model="address" />
+        </div>
+        <div class="input">
+          <label for="hpNumber">Contact No.:</label>
+          <input type="text" id="hpNumber" v-model="hpNumber" />
         </div>
         <div class="input">
           <label for="email">Email:</label>
           <input disabled type="text" id="email" v-model="email" />
+        </div>
+        <div class="input">
+          <label for="password">Password:</label>
+          <input type="password" id="password" v-model="password" />
         </div>
         <button @click="updateProfile">Save Changes</button>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 import Modal from "../components/Modal";
@@ -77,12 +126,36 @@ export default {
         this.$store.commit("changeLastName", payload);
       },
     },
+    shopName: {
+      get() {
+        return this.$store.state.profileShopName;
+      },
+      set(payload) {
+        this.$store.commit("changeShopName", payload);
+      },
+    },
     username: {
       get() {
         return this.$store.state.profileUsername;
       },
       set(payload) {
         this.$store.commit("changeUsername", payload);
+      },
+    },
+    address: {
+      get() {
+        return this.$store.state.address;
+      },
+      set(payload) {
+        this.$store.commit("changeAddress", payload);
+      },
+    },
+    hpNumber: {
+      get() {
+        return this.$store.state.number;
+      },
+      set(payload) {
+        this.$store.commit("changeNumber", payload);
       },
     },
     email() {
@@ -96,6 +169,7 @@ export default {
   .container {
     max-width: 1000px;
     padding: 60px 25px;
+
     h2 {
       text-align: center;
       margin-bottom: 16px;
@@ -110,14 +184,15 @@ export default {
       background-color: #f1f1f1;
       display: flex;
       flex-direction: column;
-      max-width: 600px;
+      max-width: 100%;
       margin: 32px auto;
       .initials {
         position: initial;
         width: 80px;
         height: 80px;
         font-size: 32px;
-        background-color: #303030;
+        text-transform: uppercase;
+        background-color: #818181;
         color: #fff;
         display: flex;
         align-self: center;
@@ -130,9 +205,10 @@ export default {
         align-self: center;
         color: #fff;
         font-size: 14px;
+        font-weight: bold;
         padding: 8px 24px;
         border-radius: 8px;
-        background-color: #303030;
+        background-color: #86560e;
         margin: 16px 0;
         text-align: center;
         text-transform: capitalize;
@@ -164,6 +240,20 @@ export default {
       }
       button {
         align-self: center;
+        background-color: rgb(50, 126, 34);
+        transition: 500ms ease all;
+        cursor: pointer;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        margin-top: 15px;
+        margin-bottom: 25px; 
+        font-weight: bold;
+      }
+
+      button:hover {
+        background-color: rgb(63, 158, 44);
       }
     }
   }
