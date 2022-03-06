@@ -133,7 +133,7 @@ export default {
           email: this.email,
           seller: true,
         });
-        this.$router.push({ name: "Home" }); //push user to homepage aft auth
+        this.$router.push({ name: "AuthHome" }); //push user to homepage aft auth
         return;
         }
       } else {

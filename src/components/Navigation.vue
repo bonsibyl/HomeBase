@@ -2,7 +2,7 @@
   <header>
     <nav class="container">
       <div class="branding">
-        <router-link class="header" :to="{ name: 'Home' }"
+        <router-link class="header" :to="{ name: 'AuthHome' }"
           >Homebase</router-link
         >
       </div>
