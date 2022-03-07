@@ -31,10 +31,10 @@
             </v-col>
             <v-col>
               <v-btn
-                v-show="!this.$store.state.seller"
+                v-if="!this.$store.state.seller"
                 icon
                 color="black"
-                to="/cart"
+                @click="drawer = !drawer"
                 exact-active-class="activebtn"
               >
                 <v-icon>mdi-cart</v-icon>
@@ -62,7 +62,13 @@
                     <template v-slot:activator>
                       <v-list-item-title>Profile</v-list-item-title>
                     </template>
-                    <v-list-item link :to="{ name: 'Profile', params: { id: this.$store.state.profileId }}">
+                    <v-list-item
+                      link
+                      :to="{
+                        name: 'Profile',
+                        params: { id: this.$store.state.profileId },
+                      }"
+                    >
                       <v-list-item-icon>
                         <v-icon>mdi-account-box</v-icon>
                       </v-list-item-icon>
@@ -74,7 +80,11 @@
                       </v-list-item-icon>
                       <v-list-item-title>Settings</v-list-item-title>
                     </v-list-item>
-                    <v-list-item link to="/dashboard" v-show=this.$store.state.seller>
+                    <v-list-item
+                      link
+                      to="/dashboard"
+                      v-show="this.$store.state.seller"
+                    >
                       <v-list-item-icon>
                         <v-icon>mdi-chart-pie</v-icon>
                       </v-list-item-icon>
@@ -90,14 +100,24 @@
                 </v-list>
               </v-menu>
             </v-col>
-            <!-- <v-col>
-              <v-btn icon color="black" @click="signOut">
-                <v-icon>mdi-logout</v-icon>
-              </v-btn>
-            </v-col> -->
           </v-row>
         </ul>
       </div>
+      <v-navigation-drawer  v-model="drawer" fixed temporary right>
+        <template v-slot:prepend>
+          <v-list-item >
+            <v-list-item-icon >
+              <v-icon  color="#A76E2A">mdi-cart</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title class="font-weight-bold">Shopping Cart</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+        <v-divider id="sidedivider"></v-divider>
+        <v-icon x-large color="#A76E2A">mdi-cart</v-icon>
+        <h3 class="font-weight-bold">Your shopping cart is looking a little empty!</h3>
+      </v-navigation-drawer>
     </nav>
   </header>
 </template>
@@ -108,15 +128,20 @@ import "firebase/auth";
 
 export default {
   name: "navigation",
+  data() {
+    return {
+      drawer: false,
+    };
+  },
   components: {},
   methods: {
     signOut() {
       firebase.auth().signOut();
       let newState = {};
-      Object.keys(this.$store.state).forEach(key => {
+      Object.keys(this.$store.state).forEach((key) => {
         newState[key] = null;
       });
-      this.$store.replaceState(newState)
+      this.$store.replaceState(newState);
       this.$router.push({ name: "Home" });
     },
   },
@@ -150,6 +175,10 @@ header {
 
 .activebtn {
   background-color: #fff;
+}
+
+#sidedivider {
+  margin-top: 0;
 }
 
 nav {
