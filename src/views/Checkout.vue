@@ -102,8 +102,8 @@
         </h3>
         
         <div class="btns">
-            <button @click.prevent="addItems" class="addItems"><b>Add More Items</b></button>
-            <button @click.prevent="makePayment" class="payment"><b>Make Payment</b></button>
+            <button @click.prevent="$router.push({name: 'Search'})" class="addItems"><b>Add More Items</b></button>
+            <button @click.prevent="$router.push({name: 'Payment'})" class="payment"><b>Make Payment</b></button>
         </div>
       </form>
     </div>
