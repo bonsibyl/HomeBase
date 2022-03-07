@@ -13,11 +13,19 @@
             <v-container>
                 <h1>Order Overview</h1>
                 <v-data-table :headers="headers" :items="orders">
+
+                    <template v-slot:item.orderid="{ item }">
+                        <v-chip :to="getLink(item.orderid)"> 
+                            {{ item.orderid }}
+                        </v-chip>
+                    </template>
+
                     <template v-slot:item.orderstatus="{ item }">
-                        <v-chip :color="getColor(item.orderstatus)" dark>
+                        <v-chip :color="getColor(item.orderstatus)" dark> 
                             {{ item.orderstatus }}
                         </v-chip>
                     </template>
+                    
                 </v-data-table>
             </v-container>
         </v-main>
@@ -41,25 +49,25 @@ export default {
                 {text: 'Total Earnings', value: 'earnings'}
         ],
         orders: [
-                {orderid: '#1012',
+                {orderid: '1012',
                  date: '01/02/2022',
                  custname: 'Constance Tang',
                  orderstatus: 'In Progress',
                  earnings: '$44.00'},
 
-                {orderid: '#1005',
+                {orderid: '1005',
                  date: '01/02/2022',
                  custname: 'Elon Musk',
                  orderstatus: 'Pending Payment',
                  earnings: '$12.00'},
 
-                {orderid: '#1003',
+                {orderid: '1003',
                  date: '01/02/2022',
                  custname: 'Tan Ah Mah',
                  orderstatus: 'Fulfilled',
                  earnings: '$12.00'},
                 
-                {orderid: '#1002',
+                {orderid: '1002',
                  date: '01/02/2022',
                  custname: 'Tan Wei Yang',
                  orderstatus: 'Fulfilled',
@@ -71,6 +79,10 @@ export default {
             if (orderstatus == 'Fulfilled') return 'green'
             else if (orderstatus == 'In Progress') return '#dbaa23'
             else if (orderstatus == 'Pending Payment') return '#bf1802'
+        },
+
+        getLink(orderid) {
+            return ("/order" + orderid)
         }
     }
 }
