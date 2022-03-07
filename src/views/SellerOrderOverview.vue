@@ -2,7 +2,7 @@
     <v-app>
         <v-navigation-drawer app>
             <v-list>
-                <v-list-item v-for="page in pages" :key="page" link>
+                <v-list-item v-for="[page, route] in pages" :key="page" link :to="route">
                     <v-list-item-content>
                         {{ page }}
                     </v-list-item-content>
@@ -23,10 +23,10 @@
 export default {
     data: () => ({
         pages: [
-            "Overview",
-            "Orders",
-            "Reviews",
-            "Analytics",
+            ["Overview", "/sellerorderoverview"],
+            ["Orders", "/sellerordermanagement"],
+            ["Reviews", "/"],
+            ["Analytics", "/dashboard"]
         ],
         headers: [
                 {text: 'Item', value: 'item'},
