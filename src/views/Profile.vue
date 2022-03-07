@@ -37,7 +37,7 @@
                 </h4>
               </v-col>
               <v-col cols="auto" class="col-btn">
-                <v-btn>
+                <v-btn @click="toggleEditMode">
                   Edit Details
                   <v-icon right>mdi-pencil</v-icon>
                 </v-btn>
@@ -102,7 +102,7 @@
           <v-row>
             <v-col v-for="result in results" :key="result" cols="4">
               <v-card
-                class="rounded-lg"
+                class="rounded-lg test"
                 min-width="150"
                 min-height="100"
                 height="400"
@@ -111,10 +111,31 @@
               >
                 <v-img
                   gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
-                  class="white--text align-end bottom-gradient"
+                  class="white--text align-end bottom-gradient test"
                   height="100%"
                   src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
                 >
+                  <v-btn
+                    v-if="editMode"
+                    class="edit-listing-buttons test"
+                    @click="triggerDelete"
+                    :to="checkRoute"
+                    text
+                    plain
+                    small
+                  >
+                    <v-icon dark>mdi-delete</v-icon>
+                  </v-btn>
+                  <v-btn
+                    v-if="editMode"
+                    :to="'/editlisting/1'"
+                    class="edit-listing-buttons test"
+                    text
+                    plain
+                    small
+                  >
+                    <v-icon dark>mdi-pencil</v-icon>
+                  </v-btn>
                   <v-card-title>{{ result }}</v-card-title>
                 </v-img></v-card
               >
@@ -155,6 +176,7 @@ export default {
     Filters: ["Vegan", "Halal", "Gluten-Free"],
     ActiveFilters: [],
     seller: null,
+    editMode: false,
   }),
 
   async mounted() {
@@ -169,6 +191,17 @@ export default {
         sellerType = doc.data().seller;
       });
       return sellerType;
+    },
+    toggleEditMode() {
+      this.editMode = !this.editMode;
+    },
+    triggerDelete() {
+      console.log("working");
+    },
+  },
+  computed: {
+    checkRoute() {
+      return this.$route.params.id;
     },
   },
 };
@@ -212,5 +245,11 @@ export default {
   display: flex;
   flex: 1;
   justify-content: flex-end;
+}
+.edit-listing-buttons {
+  position: relative;
+  top: -330px;
+  right: 10px;
+  float: right;
 }
 </style>
