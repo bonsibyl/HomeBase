@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <delete-listing-modal />
     <div v-if="seller" id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
@@ -118,7 +119,7 @@
                   <v-btn
                     v-if="editMode"
                     class="edit-listing-buttons test"
-                    @click="triggerDelete"
+                    @click="triggerDelete()"
                     :to="checkRoute"
                     text
                     plain
@@ -153,11 +154,13 @@
 <script>
 import UserProfile from "../views/UserProfile.vue";
 import db from "../firebase/firebaseInit";
+import DeleteListingModal from "../components/DeleteListingModal.vue";
 
 export default {
   name: "Profile",
   components: {
     UserProfile,
+    DeleteListingModal,
   },
   data: () => ({
     results: [
@@ -197,6 +200,7 @@ export default {
     },
     triggerDelete() {
       console.log("working");
+      this.$modal.show("delete-listing");
     },
   },
   computed: {
