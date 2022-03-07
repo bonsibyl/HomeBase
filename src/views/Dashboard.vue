@@ -1,8 +1,8 @@
 <template>
     <v-app>
-        <v-navigation-drawer app>
-            <v-list class="mt-16">
-                <v-list-item v-for="[page, route] in pages" :key="page" link :to="route" class="mt-4" height="400">
+        <v-navigation-drawer app class="mt-16">
+            <v-list class="mt-5">
+                <v-list-item v-for="[page, route] in pages" :key="page" link :to="route" height="400">
                     <v-list-item-content>
                         {{ page }}
                     </v-list-item-content>
