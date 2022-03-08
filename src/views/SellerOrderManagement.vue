@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <v-app id="appcontainer">
         <v-navigation-drawer app class="mt-16">
             <v-list class="mt-5">
                 <v-list-item v-for="[page, route] in pages" :key="page" link :to="route">
@@ -89,5 +89,8 @@ export default {
 </script>
 
 <style>
-
+#appcontainer {
+    background: url("../assets/SellerBackground.png");
+    background-size: cover;
+}
 </style>

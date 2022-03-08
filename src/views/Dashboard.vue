@@ -1,5 +1,6 @@
 <template>
-    <v-app>
+    <div class="background">
+    <v-app id="appcontainer">
         <v-navigation-drawer app class="mt-16">
             <v-list class="mt-5">
                 <v-list-item v-for="[page, route] in pages" :key="page" link :to="route" height="400">
@@ -25,12 +26,21 @@
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-img src="https://i.stack.imgur.com/mHu9f.jpg" contain height="500px"></v-img>
-                </v-row>         
+                    <v-col>
+                        <v-card width="1980" id="graphcard">
+                            <v-card-title id="graphcardtitle" class="justify-center"> Monthly Sales Trends </v-card-title>
+                            <v-card-text>
+                                <v-sparkline :value="value" height="100" line-width="1">  
+                                </v-sparkline>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+                         
             </v-container>
-        </v-main>
-        
+        </v-main> 
     </v-app>
+    </div>
 </template>
 
 <script>
@@ -47,13 +57,28 @@ export default {
             ["Revenue", "$2000"],
             ["Average Review Score", 3],
             ["Reviews", 50],
-        ]
+        ],
+        value: [
+            423,
+            446,
+            675,
+            510,
+            590,
+            750,
+            850,
+            905,
+        ],
     })
 
 }
 </script>
 
 <style scoped>
+#appcontainer {
+    background: url("../assets/SellerBackground.png");
+    background-size: cover;
+}
+
 #sheet {
     margin-left: auto;
     margin-right: auto;
@@ -74,6 +99,10 @@ h2 {
 }
 
 #graphheader {
+    text-align: center;
+}
+
+#graphcardtitle {
     text-align: center;
 }
 </style>
