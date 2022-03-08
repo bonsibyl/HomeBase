@@ -11,7 +11,7 @@
         </v-navigation-drawer>
         <v-main>
             <v-container>
-                <h1>Order Overview</h1>
+                <h1>Order Management</h1>
                 <v-data-table :headers="headers" :items="orders">
 
                     <template v-slot:item.orderid="{ item }">
