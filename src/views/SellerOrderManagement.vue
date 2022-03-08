@@ -93,4 +93,10 @@ export default {
     background: url("../assets/SellerBackground.png");
     background-size: cover;
 }
+
+h1 {
+    text-align: center;
+    background-color: rgb(255,255,255, 0.75);
+    margin-bottom: 10px;
+}
 </style>

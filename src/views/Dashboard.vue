@@ -92,6 +92,7 @@ export default {
 
 h1 {
     text-align: center;
+    background-color: rgb(255,255,255, 0.75)
 }
 
 h2 {
