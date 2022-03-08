@@ -61,11 +61,7 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
-              <v-menu
-                open-on-hover
-                offset-y
-                transition="slide-y-transition"
-              >
+              <v-menu open-on-hover offset-y transition="slide-y-transition">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn outlined v-bind="attrs" v-on="on">
                     Filter By
@@ -116,8 +112,8 @@
                 >
                   <v-btn
                     v-if="editMode"
-                    class="edit-listing-buttons test"
-                    @click="triggerDelete()"
+                    class="edit-listing-buttons"
+                    @click="triggerDeletePopup()"
                     :to="checkRoute"
                     text
                     plain
@@ -128,7 +124,7 @@
                   <v-btn
                     v-if="editMode"
                     :to="'/editlisting/1'"
-                    class="edit-listing-buttons test"
+                    class="edit-listing-buttons"
                     text
                     plain
                     small
@@ -196,8 +192,7 @@ export default {
     toggleEditMode() {
       this.editMode = !this.editMode;
     },
-    triggerDelete() {
-      console.log("working");
+    triggerDeletePopup() {
       this.$modal.show("delete-listing");
     },
   },
