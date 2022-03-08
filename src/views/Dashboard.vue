@@ -18,8 +18,10 @@
                 </v-row>
                 <v-row id="summrow">
                     <v-col v-for="[metric, number] in metrics" :key="metric">
-                        <h2> {{ metric }} </h2>
-                        <p class="stats"> {{ number }} </p>
+                        <v-card color=#f5e4d0>
+                            <v-card-title class="font-weight-bold">{{ metric }} </v-card-title>
+                            <v-card-text class="text-subtitle-1"> {{ number }} </v-card-text>
+                        </v-card>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -41,10 +43,10 @@ export default {
             ["Analytics", "/dashboard"]
         ],
         metrics: [
-            ["Number of Visits", 1],
-            ["Revenue", 2],
+            ["Number of Visits", 100],
+            ["Revenue", "$2000"],
             ["Average Review Score", 3],
-            ["Reviews", 4],
+            ["Reviews", 50],
         ]
     })
 
