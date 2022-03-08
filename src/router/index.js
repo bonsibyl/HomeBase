@@ -19,10 +19,10 @@ import Profile from "../views/Profile.vue";
 import Checkout from "../views/Checkout.vue";
 import Payment from "../views/Payment.vue";
 import Dashboard from "../views/Dashboard.vue";
-import SellerOrderOverview from "../views/SellerOrderOverview.vue"
-import SellerOrderManagement from "../views/SellerOrderManagement.vue"
+import SellerOrderOverview from "../views/SellerOrderOverview.vue";
+import SellerOrderManagement from "../views/SellerOrderManagement.vue";
 import ScreenshotUpload from "../views/ScreenshotUpload.vue";
-
+import CreateListing from "../views/CreateListing.vue";
 //import store from "../store/index.js"
 
 Vue.use(VueRouter);
@@ -58,6 +58,14 @@ const routes = [
     component: EditListing,
     meta: {
       title: "EditListing",
+    },
+  },
+  {
+    path: "/CreateListing/:id",
+    name: "CreateListing",
+    component: CreateListing,
+    meta: {
+      title: "CreateListing",
     },
   },
   {
@@ -177,7 +185,7 @@ const routes = [
     name: "Seller Order Overview",
     component: SellerOrderOverview,
     meta: {
-      title: 'Seller Order Overview',
+      title: "Seller Order Overview",
     },
   },
   {
@@ -185,7 +193,7 @@ const routes = [
     name: "Seller Order Management",
     component: SellerOrderManagement,
     meta: {
-      title: 'Seller Order Management',
+      title: "Seller Order Management",
     },
   },
   {
@@ -193,9 +201,9 @@ const routes = [
     name: "Screenshot Upload",
     component: ScreenshotUpload,
     meta: {
-      title: 'Screenshot Upload',
+      title: "Screenshot Upload",
     },
-  }
+  },
 ];
 
 const router = new VueRouter({

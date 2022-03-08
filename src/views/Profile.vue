@@ -59,6 +59,11 @@
             <v-col cols="auto">
               <h4 class="text--secondary">Listings</h4>
             </v-col>
+            <v-col class="pl-0" v-if="editMode">
+              <v-btn plain x-small :to="createListing"
+                ><v-icon>mdi-plus</v-icon></v-btn
+              ></v-col
+            >
             <v-spacer></v-spacer>
             <v-col cols="auto">
               <v-menu open-on-hover offset-y transition="slide-y-transition">
@@ -199,6 +204,9 @@ export default {
   computed: {
     checkRoute() {
       return this.$route.params.id;
+    },
+    createListing() {
+      return "/CreateListing/" + this.$route.params.id;
     },
   },
 };
