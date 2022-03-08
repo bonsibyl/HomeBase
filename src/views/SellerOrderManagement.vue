@@ -1,7 +1,9 @@
 <template>
     <v-app id="appcontainer">
-        <v-navigation-drawer app class="mt-16">
-            <v-list class="mt-5">
+        <v-navigation-drawer app>
+            <v-list>
+                <v-list-item></v-list-item>
+                <v-list-item></v-list-item>
                 <v-list-item v-for="[page, route] in pages" :key="page" link :to="route">
                     <v-list-item-content>
                         {{ page }}
