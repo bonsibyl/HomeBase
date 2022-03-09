@@ -29,11 +29,15 @@
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-card width="1980" id="graphcard">
-                            <v-card-title id="graphcardtitle" class="justify-center"> Monthly Sales Trends </v-card-title>
-                            <v-card-text>
-                                <v-sparkline :value="value" height="100" line-width="1">  
-                                </v-sparkline>
+                        <v-card width="1980" id="graphcard" color=#f5e4d0>
+                            <v-card-title id="graphcardtitle" class="text-h5 justify-center"> Monthly Sales Trends </v-card-title>
+                            <v-card-text id="graphcardtext">
+                                <!-- <v-sparkline :value="value" height="100" width="300" line-width="1" color="rgba(0,0,0)">
+                                    <template v-slot:label="item">
+                                        $ {{ item.value }}
+                                    </template>
+                                </v-sparkline> -->
+                                <line-chart :data="chartData"></line-chart>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -70,6 +74,21 @@ export default {
             850,
             905,
         ],
+        labels: [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+        ],
+        chartData: {
+            1: 500,
+            2: 600,
+            3: 700
+        }
     })
 
 }
@@ -107,5 +126,9 @@ h2 {
 
 #graphcardtitle {
     text-align: center;
+}
+
+#graphcardtext {
+    margin: 10px;
 }
 </style>

@@ -7,9 +7,12 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import vuetify from "@/plugins/vuetify";
 import VModal from "vue-js-modal";
+import Chartkick from "vue-chartkick";
+import Chart from "chart.js/auto";
 
 Vue.use(Vue2Editor);
 Vue.use(VModal);
+Vue.use(Chartkick.use(Chart));
 
 Vue.config.productionTip = false;
 
