@@ -125,26 +125,26 @@
             </v-list-item>
             <v-divider id="sidedivider"></v-divider>
             <v-list-item
-              v-if="listings.length === 0"
+              v-if="cart.length === 0"
               class="px-0 py-0 align-center justify-center "
             >
               <v-icon size="108" color="#A76E2A">mdi-emoticon-sad</v-icon>
             </v-list-item>
-            <v-list-item v-if="listings.length === 0" class="ml-4">
+            <v-list-item v-if="cart.length === 0" class="ml-4">
               <v-list-item-content class="font-weight-bold">
                 Your shopping cart is looking a little empty!
               </v-list-item-content>
             </v-list-item>
-            <template v-for="(listing, index) in listings">
+            <template v-for="(listing, index) in cart">
               <v-divider v-show="index !== 0" :key="`${index}-divider`" />
               <v-list-item :key="index" class="pl-0 pr-8">
                 <v-row no-gutters>
                   <v-col id="btns" cols="2" align="center">
-                    <v-btn icon @click="listing.qty++">
+                    <v-btn icon @click="incrementQty(listing)">
                       <v-icon>mdi-plus</v-icon>
                     </v-btn>
                     <h5>{{ listing.qty }}</h5>
-                    <v-btn icon @click="listing.qty--" :disabled="listing.qty === 0">
+                    <v-btn icon @click="decrementQty(listing)" :disabled="listing.qty === 0">
                       <v-icon>mdi-minus</v-icon>
                     </v-btn>
                   </v-col>
@@ -161,7 +161,7 @@
                       tile
                       color="#FF5A5F"
                       class="white--text mt-5"
-                      @click="deleteCartItem(index)"
+                      @click="deleteCartItem(listing)"
                       >Remove</v-btn
                     >
                   </v-col>
@@ -222,15 +222,25 @@ export default {
       this.$store.replaceState(newState);
       this.$router.push({ name: "Home" });
     },
-    deleteCartItem(index) {
-      this.listings.splice(index, 1);
-      console.log("delete");
+    deleteCartItem(listing) {
+      this.$store.commit("removeCartItem",listing);
+    },
+    incrementQty(listing) {
+      this.$store.commit("incrementQty",listing);
+    },
+    decrementQty(listing) {
+      this.$store.commit("decrementQty",listing);
     },
   },
 
   computed: {
     user() {
       return this.$store.state.user; //returns value of true or false
+    },
+    cart: {
+      get() {
+        return this.$store.state.cartItems;
+      },
     },
   },
 };
