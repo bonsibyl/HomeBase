@@ -6,6 +6,7 @@ import "firebase/auth";
 import db from "../firebase/firebaseInit";
 
 
+
 Vue.use(Vuex);
 
 const store = createStore(Vuex.Store,{
@@ -22,6 +23,29 @@ const store = createStore(Vuex.Store,{
     number: null,
     address: null,
     authenticated: false,
+    cartItems: [
+    {
+      title: "Cake",
+      price: 27.80,
+      qty: 2,
+      store: "nuttybutterybakery",
+      desc: "10' Strawberry Cake",
+    },
+    {
+      title: "Almond Financiers",
+      price: 15.50,
+      qty: 1,
+      store: "susanbakes",
+      desc: "Box of 8 Bite-Sized Financiers",
+    },
+    {
+      title: "Berry Financiers",
+      price: 15.50,
+      qty: 1,
+      store: "susanbakes",
+      desc: "Box of 8 Bite-Sized Financiers",
+    },
+  ],
   },
   mutations: {
     toggleEditPost(state, payload) {
@@ -68,6 +92,29 @@ const store = createStore(Vuex.Store,{
     },
     changeAddress(state, payload) {
       state.address = payload;
+
+    },
+    addCartItem(state, listing) {
+      state.cartItems = state.cartItems.push(listing);
+    },
+    removeCartItem(state, listing) {
+      var idx = state.cartItems.findIndex(c => c.title == listing.title)
+      console.log(idx)
+      console.log(listing.title)
+      state.cartItems.splice(idx,1);
+      console.log(state.cartItems)
+    },
+    incrementQty(state, listing) {
+      var index = state.cartItems.findIndex(c => c.title == listing.title)
+      let oldqty = state.cartItems[index].qty;
+      state.cartItems[index].qty = oldqty + 1;
+      console.log(state.cartItems[index].qty);
+    },
+    decrementQty(state, listing) {
+      var index = state.cartItems.findIndex(c => c.title == listing.title)
+      let oldqty = state.cartItems[index].qty;
+      state.cartItems[index].qty = oldqty - 1;
+      console.log(state.cartItems[index].qty + state.cartItems[index].title);
     },
   },
   actions: {
