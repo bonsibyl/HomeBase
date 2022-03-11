@@ -23,29 +23,7 @@ const store = createStore(Vuex.Store,{
     number: null,
     address: null,
     authenticated: false,
-    cartItems: [
-    {
-      title: "Cake",
-      price: 27.80,
-      qty: 2,
-      store: "nuttybutterybakery",
-      desc: "10' Strawberry Cake",
-    },
-    {
-      title: "Almond Financiers",
-      price: 15.50,
-      qty: 1,
-      store: "susanbakes",
-      desc: "Box of 8 Bite-Sized Financiers",
-    },
-    {
-      title: "Berry Financiers",
-      price: 15.50,
-      qty: 1,
-      store: "susanbakes",
-      desc: "Box of 8 Bite-Sized Financiers",
-    },
-  ],
+    cartItems: [],
   },
   mutations: {
     toggleEditPost(state, payload) {
@@ -92,7 +70,9 @@ const store = createStore(Vuex.Store,{
     },
     changeAddress(state, payload) {
       state.address = payload;
-
+    },
+    setCart(state, cart) {
+      state.cartItems = cart;
     },
     addCartItem(state, listing) {
       state.cartItems = state.cartItems.push(listing);
@@ -137,6 +117,30 @@ const store = createStore(Vuex.Store,{
       });
       commit("setProfileInitials");
     },
+    async getCart({commit}) { //love u weiyang get cart from firebase here
+      let initCart =   [{
+        title: "Cake",
+        price: 27.80,
+        qty: 2,
+        store: "nuttybutterybakery",
+        desc: "10' Strawberry Cake",
+      },
+      {
+        title: "Almond Financiers",
+        price: 15.50,
+        qty: 1,
+        store: "susanbakes",
+        desc: "Box of 8 Bite-Sized Financiers",
+      },
+      {
+        title: "Berry Financiers",
+        price: 15.50,
+        qty: 1,
+        store: "susanbakes",
+        desc: "Box of 8 Bite-Sized Financiers",
+      }]
+      commit("setCart", initCart);
+    }
   },
   modules: {},
 });

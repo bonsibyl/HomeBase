@@ -23,9 +23,6 @@
             <v-col cols="auto">
               <h4 class="text--secondary">Results</h4>
             </v-col>
-            <v-col cols="auto">
-              <h4 class="text--secondary">Stores</h4>
-            </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
               <v-menu open-on-hover offset-y transition="slide-y-transition">
