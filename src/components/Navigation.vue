@@ -144,7 +144,11 @@
                       <v-icon>mdi-plus</v-icon>
                     </v-btn>
                     <h5>{{ listing.qty }}</h5>
-                    <v-btn icon @click="decrementQty(listing)" :disabled="listing.qty === 0">
+                    <v-btn
+                      icon
+                      @click="decrementQty(listing)"
+                      :disabled="listing.qty === 0"
+                    >
                       <v-icon>mdi-minus</v-icon>
                     </v-btn>
                   </v-col>
@@ -154,7 +158,7 @@
                     <h5>({{ listing.desc }})</h5>
                     <h5>${{ listing.price }}</h5>
                   </v-col>
-                  <v-col id="total"  cols="2" align="center">
+                  <v-col id="total" cols="2" align="center">
                     <h4>${{ listing.price * listing.qty }}</h4>
                     <v-btn
                       small
@@ -173,7 +177,7 @@
           <v-spacer></v-spacer>
           <v-list class="py-2">
             <v-list-item>
-              <v-btn block tile dark large height="48px">
+              <v-btn block tile dark large height="48px" to="/checkout">
                 Checkout
               </v-btn>
             </v-list-item>
@@ -193,22 +197,6 @@ export default {
   data() {
     return {
       drawer: false,
-      listings: [
-        {
-          title: "Cake",
-          price: "27.80",
-          qty: "2",
-          store: "nuttybutterybakery",
-          desc: "10' Strawberry Cake",
-        },
-        {
-          title: "Almond Financiers",
-          price: "15.50",
-          qty: "1",
-          store: "susanbakes",
-          desc: "Box of 8 Bite-Sized Financiers",
-        },
-      ],
     };
   },
   components: {},
@@ -223,24 +211,19 @@ export default {
       this.$router.push({ name: "Home" });
     },
     deleteCartItem(listing) {
-      this.$store.commit("removeCartItem",listing);
+      this.$store.commit("removeCartItem", listing);
     },
     incrementQty(listing) {
-      this.$store.commit("incrementQty",listing);
+      this.$store.commit("incrementQty", listing);
     },
     decrementQty(listing) {
-      this.$store.commit("decrementQty",listing);
+      this.$store.commit("decrementQty", listing);
     },
   },
 
   computed: {
-    user() {
-      return this.$store.state.user; //returns value of true or false
-    },
-    cart: {
-      get() {
-        return this.$store.state.cartItems;
-      },
+    cart() {
+      return this.$store.state.cartItems;
     },
   },
 };
