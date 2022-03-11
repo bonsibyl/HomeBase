@@ -160,7 +160,7 @@
                     </v-img>
                     <v-fade-transition>
                       <v-overlay v-if="hover" absolute color="#fff">
-                        <v-btn color="#f5e4d0">View Listing</v-btn>
+                        <v-btn color="#f5e4d0" class="black--text">View Listing</v-btn>
                       </v-overlay>
                     </v-fade-transition>
                   </v-card>

@@ -103,20 +103,43 @@
           </v-row>
         </ul>
       </div>
-      <v-navigation-drawer  v-model="drawer" fixed temporary right>
-        <template v-slot:prepend>
-          <v-list-item >
-            <v-list-item-icon >
-              <v-icon  color="#A76E2A">mdi-cart</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title class="font-weight-bold">Shopping Cart</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-        <v-divider id="sidedivider"></v-divider>
-        <v-icon x-large color="#A76E2A">mdi-cart</v-icon>
-        <h3 class="font-weight-bold">Your shopping cart is looking a little empty!</h3>
+      <v-navigation-drawer v-model="drawer" fixed temporary right class="py-0">
+        <v-layout column fill-height>
+          <v-list>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon color="#A76E2A">mdi-cart</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="font-weight-bold"
+                  >Shopping Cart</v-list-item-title
+                >
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider id="sidedivider"></v-divider>
+            <v-list-item
+              v-if="listings.length === 0"
+              class="px-0 py-0 align-center justify-center fill-height"
+            >
+              <v-icon size="108" color="#A76E2A">mdi-emoticon-sad</v-icon>
+            </v-list-item>
+            <v-list-item v-if="listings.length === 0">
+              <v-list-item-content class="font-weight-bold">
+                Your shopping cart is looking a little empty!
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item v-for="listing in listings" :key="listing.title">
+            </v-list-item>
+          </v-list>
+          <v-spacer></v-spacer>
+          <v-list class="py-2">
+            <v-list-item>
+              <v-btn block tile dark large height="48px">
+                Checkout
+              </v-btn>
+            </v-list-item>
+          </v-list>
+        </v-layout>
       </v-navigation-drawer>
     </nav>
   </header>
@@ -131,6 +154,7 @@ export default {
   data() {
     return {
       drawer: false,
+      listings: [],
     };
   },
   components: {},
