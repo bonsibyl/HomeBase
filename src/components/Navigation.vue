@@ -147,7 +147,7 @@
                     <v-btn
                       icon
                       @click="decrementQty(listing)"
-                      :disabled="listing.qty === 0"
+                      :disabled="listing.qty === 1"
                     >
                       <v-icon>mdi-minus</v-icon>
                     </v-btn>

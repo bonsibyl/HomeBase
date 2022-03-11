@@ -37,6 +37,7 @@ export default {
       this.$store.commit("updateUser", user); //update user whenever there is new auth
       if (user) {
         this.$store.dispatch("getCurrentUser");
+        this.$store.dispatch("getCart");
       }
     });
     //this.checkRoute(); //initialise in lifecycle
