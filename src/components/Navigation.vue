@@ -31,10 +31,10 @@
             </v-col>
             <v-col>
               <v-btn
-                v-show="!this.$store.state.seller"
+                v-if="!this.$store.state.seller"
                 icon
                 color="black"
-                to="/cart"
+                @click="drawer = !drawer"
                 exact-active-class="activebtn"
               >
                 <v-icon>mdi-cart</v-icon>
@@ -62,7 +62,13 @@
                     <template v-slot:activator>
                       <v-list-item-title>Profile</v-list-item-title>
                     </template>
-                    <v-list-item link :to="{ name: 'Profile', params: { id: this.$store.state.profileId }}">
+                    <v-list-item
+                      link
+                      :to="{
+                        name: 'Profile',
+                        params: { id: this.$store.state.profileId },
+                      }"
+                    >
                       <v-list-item-icon>
                         <v-icon>mdi-account-box</v-icon>
                       </v-list-item-icon>
@@ -74,7 +80,11 @@
                       </v-list-item-icon>
                       <v-list-item-title>Settings</v-list-item-title>
                     </v-list-item>
-                    <v-list-item link to="/dashboard" v-show=this.$store.state.seller>
+                    <v-list-item
+                      link
+                      to="/dashboard"
+                      v-show="this.$store.state.seller"
+                    >
                       <v-list-item-icon>
                         <v-icon>mdi-chart-pie</v-icon>
                       </v-list-item-icon>
@@ -90,14 +100,86 @@
                 </v-list>
               </v-menu>
             </v-col>
-            <!-- <v-col>
-              <v-btn icon color="black" @click="signOut">
-                <v-icon>mdi-logout</v-icon>
-              </v-btn>
-            </v-col> -->
           </v-row>
         </ul>
       </div>
+      <v-navigation-drawer
+        v-model="drawer"
+        width="350"
+        fixed
+        temporary
+        right
+        class="py-0"
+      >
+        <v-layout column fill-height>
+          <v-list>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon color="#A76E2A">mdi-cart</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="font-weight-bold"
+                  >Shopping Cart</v-list-item-title
+                >
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider id="sidedivider"></v-divider>
+            <v-list-item
+              v-if="listings.length === 0"
+              class="px-0 py-0 align-center justify-center "
+            >
+              <v-icon size="108" color="#A76E2A">mdi-emoticon-sad</v-icon>
+            </v-list-item>
+            <v-list-item v-if="listings.length === 0" class="ml-4">
+              <v-list-item-content class="font-weight-bold">
+                Your shopping cart is looking a little empty!
+              </v-list-item-content>
+            </v-list-item>
+            <template v-for="(listing, index) in listings">
+              <v-divider v-show="index !== 0" :key="`${index}-divider`" />
+              <v-list-item :key="index" class="pl-0 pr-8">
+                <v-row no-gutters>
+                  <v-col id="btns" cols="2" align="center">
+                    <v-btn icon @click="listing.qty++">
+                      <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                    <h5>{{ listing.qty }}</h5>
+                    <v-btn icon @click="listing.qty--" :disabled="listing.qty === 0">
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col id="desc" cols="8">
+                    <h5 class="green--text">@{{ listing.store }}</h5>
+                    <h5>{{ listing.title }}</h5>
+                    <h5>({{ listing.desc }})</h5>
+                    <h5>${{ listing.price }}</h5>
+                  </v-col>
+                  <v-col id="total"  cols="2" align="center">
+                    <h4>${{ listing.price * listing.qty }}</h4>
+                    <v-btn
+                      small
+                      tile
+                      color="#FF5A5F"
+                      class="white--text mt-5"
+                      @click="deleteCartItem(index)"
+                      >Remove</v-btn
+                    >
+                  </v-col>
+                </v-row>
+              </v-list-item>
+            </template>
+          </v-list>
+
+          <v-spacer></v-spacer>
+          <v-list class="py-2">
+            <v-list-item>
+              <v-btn block tile dark large height="48px">
+                Checkout
+              </v-btn>
+            </v-list-item>
+          </v-list>
+        </v-layout>
+      </v-navigation-drawer>
     </nav>
   </header>
 </template>
@@ -108,16 +190,41 @@ import "firebase/auth";
 
 export default {
   name: "navigation",
+  data() {
+    return {
+      drawer: false,
+      listings: [
+        {
+          title: "Cake",
+          price: "27.80",
+          qty: "2",
+          store: "nuttybutterybakery",
+          desc: "10' Strawberry Cake",
+        },
+        {
+          title: "Almond Financiers",
+          price: "15.50",
+          qty: "1",
+          store: "susanbakes",
+          desc: "Box of 8 Bite-Sized Financiers",
+        },
+      ],
+    };
+  },
   components: {},
   methods: {
     signOut() {
       firebase.auth().signOut();
       let newState = {};
-      Object.keys(this.$store.state).forEach(key => {
+      Object.keys(this.$store.state).forEach((key) => {
         newState[key] = null;
       });
-      this.$store.replaceState(newState)
+      this.$store.replaceState(newState);
       this.$router.push({ name: "Home" });
+    },
+    deleteCartItem(index) {
+      this.listings.splice(index, 1);
+      console.log("delete");
     },
   },
 
@@ -150,6 +257,10 @@ header {
 
 .activebtn {
   background-color: #fff;
+}
+
+#sidedivider {
+  margin-top: 0;
 }
 
 nav {

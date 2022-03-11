@@ -10,9 +10,9 @@ import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import EditAccount from "../views/EditAccount.vue";
 import Admin from "../views/Admin.vue";
-import Vuetifytest from "../views/Vuetifytest.vue";
 import Listing from "../views/Listing.vue";
 import EditListing from "../views/EditListing.vue";
+import EditShop from "../views/EditShop.vue";
 import UserProfile from "../views/UserProfile.vue";
 import Search from "../views/Search.vue";
 import Profile from "../views/Profile.vue";
@@ -125,14 +125,6 @@ const routes = [
     },
   },
   {
-    path: "/vuetify",
-    name: "Vuetifytest",
-    component: Vuetifytest,
-    meta: {
-      title: "Vuetifytest",
-    },
-  },
-  {
     path: "/search",
     name: "Search",
     component: Search,
@@ -195,7 +187,15 @@ const routes = [
     meta: {
       title: 'Screenshot Upload',
     },
-  }
+  },
+  {
+    path: "/editshop",
+    name: "EditShop",
+    component: EditShop,
+    meta: {
+      title: "EditShop",
+    },
+  },
 ];
 
 const router = new VueRouter({

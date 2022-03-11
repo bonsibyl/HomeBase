@@ -28,11 +28,7 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
-              <v-menu
-                open-on-hover
-                offset-y
-                transition="slide-y-transition"
-              >
+              <v-menu open-on-hover offset-y transition="slide-y-transition">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn outlined v-bind="attrs" v-on="on">
                     Sort By
@@ -144,23 +140,32 @@
           <v-divider id="divider1"></v-divider>
           <v-row>
             <v-col v-for="result in results" :key="result" cols="4">
-              <v-card
-                class="rounded-lg"
-                min-width="150"
-                min-height="100"
-                height="400"
-                :to="'/'"
-                hover
-              >
-                <v-img
-                  gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
-                  class="white--text align-end bottom-gradient"
-                  height="100%"
-                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
-                >
-                  <v-card-title>{{ result }}</v-card-title>
-                </v-img></v-card
-              >
+              <v-hover>
+                <template v-slot:default="{ hover }">
+                  <v-card
+                    class="rounded-lg"
+                    min-width="150"
+                    min-height="100"
+                    height="400"
+                    :to="'/'"
+                    hover
+                  >
+                    <v-img
+                      gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
+                      class="white--text align-end bottom-gradient"
+                      height="100%"
+                      src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
+                    >
+                      <v-card-title>{{ result }}</v-card-title>
+                    </v-img>
+                    <v-fade-transition>
+                      <v-overlay v-if="hover" absolute color="#fff">
+                        <v-btn color="#f5e4d0" class="black--text">View Listing</v-btn>
+                      </v-overlay>
+                    </v-fade-transition>
+                  </v-card>
+                </template>
+              </v-hover>
             </v-col>
           </v-row>
         </div>
@@ -208,9 +213,11 @@ export default {
   padding-top: 5vh;
 }
 
-.v-divider {
+#divider1 {
   margin: 2vh 0 2vh 0;
 }
+
+
 
 #searchbar {
   display: flex;
