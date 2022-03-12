@@ -100,20 +100,20 @@
           </v-row>
           <v-divider id="divider1"></v-divider>
           <v-row>
-            <v-col v-for="result in results" :key="result" cols="4">
+            <v-col v-for="result in ListingResults" :key="result.name" cols="4">
               <v-card
                 class="rounded-lg test"
                 min-width="150"
                 min-height="100"
                 height="400"
-                :to="'/'"
+                :to="listingRoute + result.docID"
                 hover
               >
                 <v-img
                   gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
                   class="white--text align-end bottom-gradient test"
                   height="100%"
-                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
+                  :src="result.imageURL"
                 >
                   <v-btn
                     v-if="editMode"
@@ -128,7 +128,7 @@
                   </v-btn>
                   <v-btn
                     v-if="editMode"
-                    :to="'/editlisting/1'"
+                    :to="editRoute + 'Ba9xA09iA0TQWxne3YBU'"
                     class="edit-listing-buttons"
                     text
                     plain
@@ -136,7 +136,7 @@
                   >
                     <v-icon dark>mdi-pencil</v-icon>
                   </v-btn>
-                  <v-card-title>{{ result }}</v-card-title>
+                  <v-card-title>{{ result.name }}</v-card-title>
                 </v-img></v-card
               >
             </v-col>
@@ -153,6 +153,7 @@
 <script>
 import UserProfile from "../views/UserProfile.vue";
 import db from "../firebase/firebaseInit";
+import firebase from "firebase/app";
 import DeleteListingModal from "../components/DeleteListingModal.vue";
 
 export default {
@@ -162,6 +163,8 @@ export default {
     DeleteListingModal,
   },
   data: () => ({
+    ListingResults: [],
+    ListingURLS: [],
     results: [
       "Blueberry",
       "Strawberry",
@@ -184,6 +187,15 @@ export default {
   async mounted() {
     const information = await this.retrieveUserType(this.$route.params.id);
     this.seller = information;
+    const listings = await this.retrieveListings(this.$route.params.id);
+    for (let i = 0; i < listings.length; i++) {
+      var ref = listings[i];
+      var imageURL = await this.retrieveImage(ref.name);
+      listings[i]["imageURL"] = imageURL;
+      listings[i]["docID"] = this.ListingURLS[i];
+    }
+    this.ListingResults = listings;
+    console.log(this.ListingResults);
   },
   methods: {
     async retrieveUserType(id) {
@@ -193,6 +205,38 @@ export default {
         sellerType = doc.data().seller;
       });
       return sellerType;
+    },
+    async retrieveListings(id) {
+      const docRef = db.collection("listings").where("storeName", "==", id);
+      var listings = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          listings.push(doc.data());
+          this.ListingURLS.push(doc.id);
+        });
+      });
+      return listings;
+    },
+    async retrieveImage(productName) {
+      const storageRef = firebase.storage().ref();
+      var imageURL = "";
+      await storageRef
+        .child("listings/" + productName + this.$route.params.id)
+        .getDownloadURL()
+        .then((url) => {
+          if (url) {
+            imageURL = url;
+          } else {
+            imageURL =
+              "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          imageURL =
+            "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+        });
+      return imageURL;
     },
     toggleEditMode() {
       this.editMode = !this.editMode;
@@ -207,6 +251,12 @@ export default {
     },
     createListing() {
       return "/CreateListing/" + this.$route.params.id;
+    },
+    editRoute() {
+      return "/EditListing/" + this.$route.params.id + "/";
+    },
+    listingRoute() {
+      return "/listing/" + this.$route.params.id + "/";
     },
   },
 };

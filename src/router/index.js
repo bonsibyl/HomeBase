@@ -45,7 +45,7 @@ const routes = [
     },
   },
   {
-    path: "/listing/:id",
+    path: "/listing/:user/:id",
     name: "Listing",
     component: Listing,
     meta: {
@@ -53,7 +53,7 @@ const routes = [
     },
   },
   {
-    path: "/EditListing/:id",
+    path: "/EditListing/:user/:id",
     name: "EditListing",
     component: EditListing,
     meta: {
