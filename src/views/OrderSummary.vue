@@ -248,6 +248,7 @@ td {
 .status {
   border-radius: 10px;
   padding: 7px;
+  margin-top: 5px;
   background-color: green;
   font-weight: bold;
   color: white;
