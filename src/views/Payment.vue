@@ -11,7 +11,7 @@
         <img class="paylahQR" src="../assets/blogPhotos/paylah.jpeg" alt="">
 
         <h3 class="totalAmount">
-          Grand Total: $43.50
+          Grand Total: ${{totalCost}}
         </h3>
         
         <div class="btns">
@@ -43,6 +43,18 @@ export default {
   methods: {
     closeModal() {
       this.modalActive = !this.modalActive;
+    },
+  },
+  computed: {
+    cart() {
+      return this.$store.state.cartItems;
+    },
+    totalCost: function() {
+      let sum = 0;
+      for (let i=0; i < this.$store.state.cartItems.length; i++) {
+        sum += this.$store.state.cartItems[i].price * this.$store.state.cartItems[i].qty
+      }
+      return sum;
     },
   },
 };

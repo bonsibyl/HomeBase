@@ -7,98 +7,53 @@
       <form class="summary">
         <h2>Order Summary</h2>
         <hr>
+            <template v-for="(listing, index) in cart">
+              <v-divider v-show="index !== 0" :key="`${index}-divider`" />
+              <v-list-item :key="index" class="pl-0 pr-10">
+                <v-row>
+                  <v-col id="btns" cols="1" align="center">
+                    <v-btn icon @click="incrementQty(listing)">
+                      <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                    <h5>{{ listing.qty }}</h5>
+                    <v-btn
+                      icon
+                      @click="decrementQty(listing)"
+                      :disabled="listing.qty === 1"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col>
+                    <img class="listingImg" src="../assets/blogPhotos/financiers.jpeg" alt="">
+                  </v-col>
+                  <v-col id="desc" cols="7">
+                    <h4 class="grey--text">@{{ listing.store }}</h4>
+                    <h3>{{ listing.title }}</h3>
+                    <h3>({{ listing.desc }})</h3>
+                    <h3>${{ listing.price }}</h3>
+                  </v-col>
+                  <v-col id="total" align="left">
+                    <h3>${{ listing.price * listing.qty }}</h3>
+                  </v-col>
+                  <v-col align="left">
+                    <v-btn
+                      width="130px"
+                      medium
+                      depressed
+                      color="#800000"
+                      class="white--text"
+                      @click="deleteCartItem(listing)"
+                      >Delete
+                      </v-btn>
+                  </v-col>
+                </v-row>
+              </v-list-item>
+            </template>
 
-        <table class="listings">
-            <tr>
-                <th>
-                  <img class="listingImg" src="../assets/blogPhotos/financiers.jpeg" alt="">
-                </th>
-                <td>
-                  <p class="listingName">Almond Financiers</p>
-                  <p class="listingShop">@nuttybutterybakery</p>
-                  <p class="listingQuantity">Box of 8 Financiers</p>
-                  </td>
-                <td>
-                  <p class="listingPrice">
-                    $13.90
-                  </p>
-                </td>
-                <td>
-                  <p class="buyQuantity">
-                    1
-                  </p>
-                </td>
-                <td>
-                  <p class="totalPrice">
-                    $13.90
-                  </p>
-                </td>
-                <td>
-                  <button @click.prevent="removeItem" class="removeItem">Remove</button>
-                </td>
-            </tr>
-
-            <tr>
-                <th>
-                  <img class="listingImg" src="../assets/blogPhotos/financiers.jpeg" alt="">
-                </th>
-                <td>
-                  <p class="listingName">Almond Financiers</p>
-                  <p class="listingShop">@nuttybutterybakery</p>
-                  <p class="listingQuantity">Box of 8 Financiers</p>
-                  </td>
-                <td>
-                  <p class="listingPrice">
-                    $13.90
-                  </p>
-                </td>
-                <td>
-                  <p class="buyQuantity">
-                    1
-                  </p>
-                </td>
-                <td>
-                  <p class="totalPrice">
-                    $13.90
-                  </p>
-                </td>
-                <td>
-                  <button @click.prevent="removeItem" class="removeItem">Remove</button>
-                </td>
-            </tr>
-
-            <tr>
-                <th>
-                  <img class="listingImg" src="../assets/blogPhotos/financiers.jpeg" alt="">
-                </th>
-                <td>
-                  <p class="listingName">Almond Financiers</p>
-                  <p class="listingShop">@nuttybutterybakery</p>
-                  <p class="listingQuantity">Box of 8 Financiers</p>
-                  </td>
-                <td>
-                  <p class="listingPrice">
-                    $13.90
-                  </p>
-                </td>
-                <td>
-                  <p class="buyQuantity">
-                    1
-                  </p>
-                </td>
-                <td>
-                  <p class="totalPrice">
-                    $13.90
-                  </p>
-                </td>
-                <td>
-                  <button @click.prevent="removeItem" class="removeItem">Remove</button>
-                </td>
-            </tr>
-        </table>
-
+        <hr>
         <h3 class="totalAmount">
-          Grand Total: $43.50
+          Grand Total: ${{totalCost}}
         </h3>
         
         <div class="btns">
@@ -129,6 +84,27 @@ export default {
   methods: {
     closeModal() {
       this.modalActive = !this.modalActive;
+    },
+    deleteCartItem(listing) {
+      this.$store.commit("removeCartItem", listing);
+    },
+    incrementQty(listing) {
+      this.$store.commit("incrementQty", listing);
+    },
+    decrementQty(listing) {
+      this.$store.commit("decrementQty", listing);
+    },
+  },
+  computed: {
+    cart() {
+      return this.$store.state.cartItems;
+    },
+    totalCost: function() {
+      let sum = 0;
+      for (let i=0; i < this.$store.state.cartItems.length; i++) {
+        sum += this.$store.state.cartItems[i].price * this.$store.state.cartItems[i].qty
+      }
+      return sum;
     },
   },
 };
@@ -192,50 +168,23 @@ button:hover {
     background-color: rgb(153, 153, 153);
 }
 
-table {
-  position: relative;
-}
-
-td {
-  width: 100%;
-  padding: 0px 30px;
-}
-
 .listingImg {
-  width: 100px;
-}
-
-.listingName {
-  font-weight: bold;
-  font-size: 20px;
-  margin-bottom: -4%;
-}
-
-.listingShop {
-  margin-bottom: -3%;
-  font-weight: bold;
-  color: grey;
-}
-
-.listingQuantity {
-  margin-bottom: 5%;
-  font-weight: bold;
-  color: grey;
-}
-
-.removeItem {
-  width: 100% !important;
-  background-color: darkred;
-}
-
-.removeItem:hover {
-    background-color: rgb(173, 61, 61);
+  width: 110px;
 }
 
 .totalAmount {
-  padding: 2% 0.6% 0 0;
+  padding: 0 0.6% 0 0;
   font-size: 25px;
   text-align: right;
+  margin-top: -2%;
+}
+
+#btns {
+  margin-top: -25px;
+}
+
+#total {
+  margin-top: 20px;
 }
 
 </style>
