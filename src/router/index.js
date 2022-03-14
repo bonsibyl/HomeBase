@@ -21,7 +21,7 @@ import Payment from "../views/Payment.vue";
 import Dashboard from "../views/Dashboard.vue";
 import SellerOrderOverview from "../views/SellerOrderOverview.vue"
 import SellerOrderManagement from "../views/SellerOrderManagement.vue"
-import ScreenshotUpload from "../views/ScreenshotUpload.vue";
+import OrderSummary from "../views/OrderSummary.vue";
 
 //import store from "../store/index.js"
 
@@ -181,11 +181,11 @@ const routes = [
     },
   },
   {
-    path: "/screenshotupload",
-    name: "Screenshot Upload",
-    component: ScreenshotUpload,
+    path: "/ordersummary",
+    name: "Order Summary",
+    component: OrderSummary,
     meta: {
-      title: 'Screenshot Upload',
+      title: 'Order Summary',
     },
   },
   {
