@@ -181,6 +181,9 @@ button:hover {
 
 #btns {
   margin-top: -25px;
+  button {
+    background-color: rgb(235, 235, 235) !important;
+  }
 }
 
 #total {

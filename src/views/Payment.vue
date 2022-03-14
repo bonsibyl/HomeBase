@@ -1,8 +1,5 @@
 <template>
   <div class="order-checkout">
-    <Modal v-if="modalActive" :modalMessage="modalMessage" v-on:close-modal="closeModal" />
-    <Loading v-if="loading" />
-    
     <div class="form-wrap">
       <form class="summary">
         <h2>Payment</h2>
@@ -16,7 +13,8 @@
         
         <div class="btns">
             <button @click.prevent="$router.push({name: 'Checkout'})" class="back"><b>Go back</b></button>
-            <button @click.prevent="uploadScreenshot" class="screenshot"><b>Upload Screenshot</b></button>
+            <ScreenshotUpload/>
+            <button @click.prevent="showModal" class="screenshot"><b>Upload Screenshot</b></button>
         </div>
 
       </form>
@@ -25,24 +23,13 @@
 </template>
 
 <script>
-import Modal from "../components/Modal";
-import Loading from "../components/Loading";
+import ScreenshotUpload from "./ScreenshotUpload.vue";
 export default {
   name: "Payment",
-  data() {
-    return {
-      modalActive: false, //toggle pop-up on & off
-      modalMessage: "", //pop-up message shown
-      loading: null,
-    };
-  },
-  components: {
-    Modal,
-    Loading,
-  },
+  components: { ScreenshotUpload },
   methods: {
-    closeModal() {
-      this.modalActive = !this.modalActive;
+    showModal() {
+      this.$modal.show("screenshot");
     },
   },
   computed: {
