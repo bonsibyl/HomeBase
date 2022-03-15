@@ -52,7 +52,7 @@ export default {
         pages: [
             ["Overview", "/sellerorderoverview"],
             ["Orders", "/sellerordermanagement"],
-            ["Reviews", "/"],
+            ["Reviews", "/sellerreviews"],
             ["Analytics", "/dashboard"]
         ],
         metrics: [
