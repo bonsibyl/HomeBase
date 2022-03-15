@@ -10,9 +10,9 @@ import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import EditAccount from "../views/EditAccount.vue";
 import Admin from "../views/Admin.vue";
-import Vuetifytest from "../views/Vuetifytest.vue";
 import Listing from "../views/Listing.vue";
 import EditListing from "../views/EditListing.vue";
+import EditShop from "../views/EditShop.vue";
 import UserProfile from "../views/UserProfile.vue";
 import Search from "../views/Search.vue";
 import Profile from "../views/Profile.vue";
@@ -21,8 +21,9 @@ import Payment from "../views/Payment.vue";
 import Dashboard from "../views/Dashboard.vue";
 import SellerOrderOverview from "../views/SellerOrderOverview.vue";
 import SellerOrderManagement from "../views/SellerOrderManagement.vue";
-import ScreenshotUpload from "../views/ScreenshotUpload.vue";
 import CreateListing from "../views/CreateListing.vue";
+import OrderSummary from "../views/OrderSummary.vue";
+
 //import store from "../store/index.js"
 
 Vue.use(VueRouter);
@@ -133,14 +134,6 @@ const routes = [
     },
   },
   {
-    path: "/vuetify",
-    name: "Vuetifytest",
-    component: Vuetifytest,
-    meta: {
-      title: "Vuetifytest",
-    },
-  },
-  {
     path: "/search",
     name: "Search",
     component: Search,
@@ -197,11 +190,19 @@ const routes = [
     },
   },
   {
-    path: "/screenshotupload",
-    name: "Screenshot Upload",
-    component: ScreenshotUpload,
+    path: "/ordersummary",
+    name: "Order Summary",
+    component: OrderSummary,
     meta: {
-      title: "Screenshot Upload",
+      title: "Order Summary",
+    },
+  },
+  {
+    path: "/editshop",
+    name: "EditShop",
+    component: EditShop,
+    meta: {
+      title: "EditShop",
     },
   },
 ];
