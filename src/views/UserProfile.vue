@@ -38,7 +38,7 @@
                 </h4>
               </v-col>
               <v-col cols="12" class="col-btn">
-                <v-btn v-if="userMatch">
+                <v-btn v-if="userMatch" to="/editaccount">
                   Edit Details
                   <v-icon right>mdi-pencil</v-icon>
                 </v-btn>

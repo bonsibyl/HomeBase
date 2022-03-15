@@ -182,8 +182,8 @@ export default {
   async mounted() {
     const user = firebase.auth().currentUser.uid;
     this.userMatch = this.$route.params.id === user;
-    // const information = await this.retrieveUserType(this.$route.params.id);
-    // this.seller = information;
+    const information = await this.retrieveUserType(this.$route.params.id);
+    this.seller = information;
     if (this.seller) {
       const listings = await this.retrieveSellerListings(this.$route.params.id);
       for (let i = 0; i < listings.length; i++) {
