@@ -38,11 +38,11 @@
                 </h4>
               </v-col>
               <v-col cols="12" class="col-btn">
-                <v-btn>
+                <v-btn v-if="userMatch">
                   Edit Details
                   <v-icon right>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn class="ml-3">
+                <v-btn class="ml-3" v-if="userMatch">
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </v-col>
@@ -139,22 +139,22 @@
           </v-row>
           <v-divider id="divider1"></v-divider>
           <v-row v-if="!isOrder">
-            <v-col v-for="result in results" :key="result" cols="4">
+            <v-col v-for="result in ListingResults" :key="result.name" cols="4">
               <v-card
-                class="rounded-lg"
+                class="rounded-lg test"
                 min-width="150"
                 min-height="100"
                 height="400"
-                :to="'/'"
+                :to="listingRoute + result.docID"
                 hover
               >
                 <v-img
                   gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
-                  class="white--text align-end bottom-gradient"
+                  class="white--text align-end bottom-gradient test"
                   height="100%"
-                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
+                  :src="result.imageURL"
                 >
-                  <v-card-title>{{ result }}</v-card-title>
+                  <v-card-title>{{ result.name }}</v-card-title>
                 </v-img></v-card
               >
             </v-col>
@@ -225,20 +225,16 @@
 
 <script>
 import ReviewForm from "./ReviewForm.vue";
+import db from "../firebase/firebaseInit";
+import firebase from "firebase/app";
+
 export default {
   components: { ReviewForm },
   name: "UserProfile",
   data: () => ({
     isOrder: false,
-    results: [
-      "Blueberry",
-      "Strawberry",
-      "Macarons",
-      "Cupcake",
-      "Brownie",
-      "Cookie",
-      "Tart",
-    ],
+    ListingResults: [],
+    ListingURLS: [],
     Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
     ActiveSort: "",
     PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
@@ -304,14 +300,82 @@ export default {
         total: "$34.80",
       },
     ],
+    userMatch: false,
   }),
+  async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    this.userMatch = this.$route.params.id === user;
+    if (!this.seller) {
+      const information = await this.retrieveUserType(this.$route.params.id);
+      this.seller = information;
+      if (this.seller) {
+        const listings = await this.retrieveRecListings();
+        for (let i = 0; i < listings.length; i++) {
+          var ref = listings[i];
+          var imageURL = await this.retrieveImage(ref.name);
+          listings[i]["imageURL"] = imageURL;
+          listings[i]["docID"] = this.ListingURLS[i];
+        }
+        this.ListingResults = listings;
+        console.log(this.ListingResults);
+      } else {
+        console.log("testuser");
+      }
+    }
+  },
   methods: {
     toggleOrder() {
       this.isOrder = !this.isOrder;
       this.ActiveFilters = [];
     },
+    async retrieveUserType(id) {
+      const docRef = db.collection("users").doc(id);
+      var sellerType = null;
+      await docRef.get().then((doc) => {
+        sellerType = doc.data().seller;
+      });
+      return sellerType;
+    },
+    async retrieveRecListings() {
+      const docRef = db.collection("listings");
+      var listings = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          listings.push(doc.data());
+          this.ListingURLS.push(doc.id);
+        });
+      });
+      console.log(listings);
+      return listings;
+    },
+    async retrieveImage(productName) {
+      const storageRef = firebase.storage().ref();
+      var imageURL = "";
+      await storageRef
+        .child("listings/" + productName + this.$route.params.id)
+        .getDownloadURL()
+        .then((url) => {
+          if (url) {
+            imageURL = url;
+          } else {
+            imageURL =
+              "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          imageURL =
+            "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+        });
+      return imageURL;
+    },
     showModal() {
       this.$modal.show("review");
+    },
+  },
+  computed: {
+    listingRoute() {
+      return "/listing/" + this.$route.params.id + "/";
     },
   },
 };

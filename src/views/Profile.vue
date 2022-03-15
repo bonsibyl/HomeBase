@@ -122,7 +122,6 @@
                     v-if="editMode"
                     class="edit-listing-buttons"
                     @click="triggerDeletePopup(result.docID)"
-                    :to="checkRoute"
                     text
                     plain
                     small
@@ -169,15 +168,6 @@ export default {
     deleteRef: "",
     ListingResults: [],
     ListingURLS: [],
-    results: [
-      "Blueberry",
-      "Strawberry",
-      "Macarons",
-      "Cupcake",
-      "Brownie",
-      "Cookie",
-      "Tart",
-    ],
     Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
     ActiveSort: "",
     PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
@@ -192,8 +182,8 @@ export default {
   async mounted() {
     const user = firebase.auth().currentUser.uid;
     this.userMatch = this.$route.params.id === user;
-    const information = await this.retrieveUserType(this.$route.params.id);
-    this.seller = information;
+    // const information = await this.retrieveUserType(this.$route.params.id);
+    // this.seller = information;
     if (this.seller) {
       const listings = await this.retrieveSellerListings(this.$route.params.id);
       for (let i = 0; i < listings.length; i++) {
