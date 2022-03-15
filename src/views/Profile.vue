@@ -41,7 +41,7 @@
                 </h4>
               </v-col>
               <v-col cols="auto" class="col-btn">
-                <v-btn @click="toggleEditMode">
+                <v-btn @click="toggleEditMode" v-if="userMatch">
                   Edit Details
                   <v-icon right>mdi-pencil</v-icon>
                 </v-btn>
@@ -186,20 +186,27 @@ export default {
     ActiveFilters: [],
     seller: null,
     editMode: false,
+    userMatch: false,
   }),
 
   async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    this.userMatch = this.$route.params.id === user;
     const information = await this.retrieveUserType(this.$route.params.id);
     this.seller = information;
-    const listings = await this.retrieveListings(this.$route.params.id);
-    for (let i = 0; i < listings.length; i++) {
-      var ref = listings[i];
-      var imageURL = await this.retrieveImage(ref.name);
-      listings[i]["imageURL"] = imageURL;
-      listings[i]["docID"] = this.ListingURLS[i];
+    if (this.seller) {
+      const listings = await this.retrieveSellerListings(this.$route.params.id);
+      for (let i = 0; i < listings.length; i++) {
+        var ref = listings[i];
+        var imageURL = await this.retrieveImage(ref.name);
+        listings[i]["imageURL"] = imageURL;
+        listings[i]["docID"] = this.ListingURLS[i];
+      }
+      this.ListingResults = listings;
+      console.log(this.ListingResults);
+    } else {
+      console.log("test");
     }
-    this.ListingResults = listings;
-    console.log(this.ListingResults);
   },
   methods: {
     async retrieveUserType(id) {
@@ -210,7 +217,7 @@ export default {
       });
       return sellerType;
     },
-    async retrieveListings(id) {
+    async retrieveSellerListings(id) {
       const docRef = db.collection("listings").where("storeName", "==", id);
       var listings = [];
       await docRef.get().then((querySnapshot) => {
