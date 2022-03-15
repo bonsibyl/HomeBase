@@ -317,7 +317,6 @@ export default {
           listings[i]["docID"] = this.ListingURLS[i];
         }
         this.ListingResults = listings;
-        console.log(this.ListingResults);
       } else {
         console.log("testuser");
       }
@@ -345,7 +344,6 @@ export default {
           this.ListingURLS.push(doc.id);
         });
       });
-      console.log(listings);
       return listings;
     },
     async retrieveImage(productName) {

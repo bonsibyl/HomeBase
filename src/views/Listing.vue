@@ -3,7 +3,13 @@
     <v-row>
       <!-- add route return to listing -->
       <v-col :cols="2">
-        <v-btn block color="#B4B4B4" class="mr-4 black--text" text>
+        <v-btn
+          @click="goBack"
+          block
+          color="#B4B4B4"
+          class="mr-4 black--text"
+          text
+        >
           <v-icon dark left> mdi-arrow-left </v-icon>
           Return to Listings
         </v-btn>
@@ -200,15 +206,14 @@ export default {
     return {
       image: image,
       imageURL: "",
-      shopName: "@nuttybutterybakery",
-      productName: "Almond Financiers",
-      productDetails: "Box of 8 Bite-Sized Financiers",
+      shopName: "",
+      productName: "",
+      productDetails: "",
       rating: 3,
       numReviews: 5,
       price: 10.0,
-      productDescription:
-        "These delicate almond financiers are made fresh to-order, using premium ingredients imported from Brittany, France. They are buttery and fluffy, pairing exceptionally well with a warm cup of earl grey tea.",
-      tags: ["NorthEast", "Serangoon", "Dessert", "Cake"],
+      productDescription: "",
+      tags: [],
       openingHours: [
         "10:00am - 6:30pm",
         "10:00am - 6:30pm",
@@ -220,33 +225,15 @@ export default {
       ],
       makerDetails:
         "Nutty Buttery Bakery is a small home-based bakery established in 2019. We specialise in French desserts, such as financiers, macarons and eclairs. We also bake whole cakes to-order.",
-      storeDetails: "14 Serangoon Drive, Singapore 340214",
-      reviewDetails: [
-        {
-          name: "XY",
-          rating: 3,
-          title: "Rich and Nutty Goodness",
-          description:
-            "Their shop name reflects their bakes accurately - they are nutty and buttery in all the right ratios. The box is also extremely value for money!",
-        },
-        {
-          name: "XY",
-          rating: 3,
-          title: "Rich and Nutty Goodness",
-          description:
-            "Their shop name reflects their bakes accurately - they are nutty and buttery in all the right ratios. The box is also extremely value for money!",
-        },
-        {
-          name: "XY",
-          rating: 3,
-          title: "Rich and Nutty Goodness",
-          description:
-            "Their shop name reflects their bakes accurately - they are nutty and buttery in all the right ratios. The box is also extremely value for money!",
-        },
-      ],
+      storeDetails: "",
+      reviewDetails: [],
     };
   },
-  props: {},
+  methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
+  },
   components: {
     RatingStars,
   },
