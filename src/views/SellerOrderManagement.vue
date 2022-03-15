@@ -1,9 +1,7 @@
 <template>
-    <v-app id="appcontainer">
-        <v-navigation-drawer app>
+    <v-app>
+        <v-navigation-drawer app absolute>
             <v-list>
-                <v-list-item></v-list-item>
-                <v-list-item></v-list-item>
                 <v-list-item v-for="[page, route] in pages" :key="page" link :to="route">
                     <v-list-item-content>
                         {{ page }}
@@ -12,8 +10,8 @@
             </v-list>
         </v-navigation-drawer>
         <v-main>
-            <v-container>
-                <h1>Order Management</h1>
+            <v-container class="dashboardContainer">
+                <h1 style="text-align: left">Order Management</h1><hr>
                 <v-data-table :headers="headers" :items="orders">
 
                     <template v-slot:item.orderid="{ item }">
@@ -90,15 +88,26 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #appcontainer {
     background: url("../assets/SellerBackground.png");
     background-size: cover;
 }
 
-h1 {
-    text-align: center;
-    background-color: rgb(255,255,255, 0.75);
-    margin-bottom: 10px;
+hr {
+    margin-top: 1%;
 }
+
+.dashboardContainer {
+    width: 93%;
+    margin-top: 2%;
+}
+
+.v-data-table::v-deep th {
+  font-size: 17px !important;
+}
+.v-data-table::v-deep td {
+  font-size: 17px !important;
+}
+
 </style>
