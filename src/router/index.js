@@ -19,8 +19,9 @@ import Profile from "../views/Profile.vue";
 import Checkout from "../views/Checkout.vue";
 import Payment from "../views/Payment.vue";
 import Dashboard from "../views/Dashboard.vue";
-import SellerOrderOverview from "../views/SellerOrderOverview.vue"
-import SellerOrderManagement from "../views/SellerOrderManagement.vue"
+import SellerOrderOverview from "../views/SellerOrderOverview.vue";
+import SellerOrderManagement from "../views/SellerOrderManagement.vue";
+import CreateListing from "../views/CreateListing.vue";
 import OrderSummary from "../views/OrderSummary.vue";
 
 //import store from "../store/index.js"
@@ -45,7 +46,7 @@ const routes = [
     },
   },
   {
-    path: "/listing/:id",
+    path: "/listing/:user/:id",
     name: "Listing",
     component: Listing,
     meta: {
@@ -53,11 +54,19 @@ const routes = [
     },
   },
   {
-    path: "/EditListing/:id",
+    path: "/EditListing/:user/:id",
     name: "EditListing",
     component: EditListing,
     meta: {
       title: "EditListing",
+    },
+  },
+  {
+    path: "/CreateListing/:id",
+    name: "CreateListing",
+    component: CreateListing,
+    meta: {
+      title: "CreateListing",
     },
   },
   {
@@ -169,7 +178,7 @@ const routes = [
     name: "Seller Order Overview",
     component: SellerOrderOverview,
     meta: {
-      title: 'Seller Order Overview',
+      title: "Seller Order Overview",
     },
   },
   {
@@ -177,7 +186,7 @@ const routes = [
     name: "Seller Order Management",
     component: SellerOrderManagement,
     meta: {
-      title: 'Seller Order Management',
+      title: "Seller Order Management",
     },
   },
   {
@@ -185,7 +194,7 @@ const routes = [
     name: "Order Summary",
     component: OrderSummary,
     meta: {
-      title: 'Order Summary',
+      title: "Order Summary",
     },
   },
   {

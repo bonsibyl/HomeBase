@@ -138,7 +138,7 @@
             </v-col>
           </v-row>
           <v-divider id="divider1"></v-divider>
-          <v-row v-if="isOrder">
+          <v-row v-if="!isOrder">
             <v-col v-for="result in results" :key="result" cols="4">
               <v-card
                 class="rounded-lg"

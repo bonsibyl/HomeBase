@@ -111,7 +111,7 @@
     <br />
 
     <v-row align="center">
-      <v-col :cols="12" class="review-header"
+      <v-col :cols="12" class="review-header" v-if="reviewDetails"
         ><strong>Customer Reviews</strong></v-col
       >
       <v-col
@@ -144,12 +144,62 @@
 <script>
 import RatingStars from "../components/RatingStars.vue";
 import image from "../assets/background.png";
+import firebase from "firebase/app";
+import db from "../firebase/firebaseInit";
 
 export default {
   name: "Listing",
+  mounted() {
+    db.collection("listings")
+      .doc(this.$route.params.id)
+      .get()
+      .then((doc) => {
+        const allData = doc.data();
+        this.shopName = allData.storeName;
+        this.productName = allData.name;
+        this.productDetails = allData.qtyDesc;
+        this.rating = allData.ReviewScoreCount
+          ? Math.round(allData.ReviewScoreTotal / allData.ReviewScoreCount)
+          : 0;
+        this.numReviews = allData.ReviewScoreCount;
+        this.price = allData.price;
+        this.productDescription = allData.desc;
+        this.tags = allData.tags;
+        this.reviewDetails = allData.reviewDetails;
+        this.imageURL = allData.imageRef;
+      })
+      .then(
+        db
+          .collection("users")
+          .doc(this.$route.params.user)
+          .get()
+          .then((doc) => {
+            const data = doc.data();
+            this.shopName = data.shopName;
+            this.makerDetails = data.makerDetails;
+            this.storeDetails = data.address;
+            this.openingHours = data.openingHours;
+          })
+      )
+      .then(() => {
+        const storageRef = firebase.storage().ref();
+        console.log(this.imageURL);
+        storageRef
+          .child(this.imageURL)
+          .getDownloadURL()
+          .then((url) => {
+            console.log(url);
+            this.image = url;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+  },
   data() {
     return {
       image: image,
+      imageURL: "",
       shopName: "@nuttybutterybakery",
       productName: "Almond Financiers",
       productDetails: "Box of 8 Bite-Sized Financiers",
@@ -171,7 +221,6 @@ export default {
       makerDetails:
         "Nutty Buttery Bakery is a small home-based bakery established in 2019. We specialise in French desserts, such as financiers, macarons and eclairs. We also bake whole cakes to-order.",
       storeDetails: "14 Serangoon Drive, Singapore 340214",
-      test: this.$route.params.id,
       reviewDetails: [
         {
           name: "XY",

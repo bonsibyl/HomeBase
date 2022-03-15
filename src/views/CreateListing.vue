@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-form">
+  <div class="create-form">
     <v-container>
       <v-row>
         <v-col :cols="5">
@@ -9,9 +9,10 @@
             class="hide-input"
             accept="image/png, image/jpeg, image/bmp"
             v-model="uploaded"
+            :rules="imageRules"
             @change="onUpload"
           ></v-file-input>
-          <v-img height="570" :src="image" @click="changePicture"></v-img>
+          <v-img height="570" :src="baseImage" @click="changePicture"></v-img>
         </v-col>
 
         <v-col :cols="7">
@@ -108,9 +109,9 @@
                     block
                     color="#6B7855"
                     class="mr-4 white--text"
-                    @click="validate"
+                    @click="validate()"
                   >
-                    Save Changes
+                    Create Listing
                   </v-btn>
                 </v-col>
                 <v-col :cols="4" class="d-flex justify-center mb-6">
@@ -134,22 +135,20 @@
 
 <script>
 import ListingImage from "../assets/background.png";
-import firebase from "firebase/app";
 import db from "../firebase/firebaseInit";
+import firebase from "firebase/app";
 
 export default {
-  name: "EditListing",
+  name: "CreateListing",
   data() {
     return {
-      image: ListingImage,
-      imageURL: "",
-      uploaded: null,
-      productName: "Almond Financiers",
-      quantityDesc: "Box of 8 Bite-Sized Financiers",
-      price: "13.90",
-      tags: ["North-East", "Serangoon", "Almonds", "Home Baked"],
-      productDesc:
-        "These delicate almond financiers are made fresh to-order, using premium ingredients imported from Brittany, France. They are buttery and fluffy, pairing exceptionally well with a warm cup of earl grey tea.",
+      baseImage: ListingImage,
+      uploaded: [],
+      productName: "",
+      quantityDesc: "",
+      price: "",
+      tags: null,
+      productDesc: "",
       nameRules: [
         (v) => !!v || "Name is required",
         (v) => (v && v.length <= 30) || "Name must be less than 30 characters",
@@ -177,34 +176,6 @@ export default {
       ],
     };
   },
-  mounted() {
-    db.collection("listings")
-      .doc(this.$route.params.id)
-      .get()
-      .then((doc) => {
-        const allData = doc.data();
-        this.productName = allData.name;
-        this.quantityDesc = allData.qtyDesc;
-        this.price = allData.price;
-        this.productDesc = allData.desc;
-        this.tags = allData.tags;
-        this.imageURL = allData.imageRef;
-      })
-      .then(() => {
-        const storageRef = firebase.storage().ref();
-        console.log(this.imageURL);
-        storageRef
-          .child(this.imageURL)
-          .getDownloadURL()
-          .then((url) => {
-            console.log(url);
-            this.image = url;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      });
-  },
   methods: {
     changePicture() {
       document.getElementById("pic-input").click();
@@ -212,7 +183,7 @@ export default {
     createImage(file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.image = e.target.result;
+        this.baseImage = e.target.result;
       };
       reader.readAsDataURL(file);
     },
@@ -227,40 +198,68 @@ export default {
         return;
       }
       var storageRef = firebase.storage().ref();
-      var imageUpload = this.uploaded;
-      var listingName = this.$route.params.user;
-      if (this.uploaded) {
-        storageRef
-          .child(this.imageURL)
-          .delete()
-          .then(() => {
-            storageRef
-              .child("listings/" + this.productName + listingName)
-              .put(imageUpload);
-          })
-          .catch(() => {
-            storageRef
-              .child("listings/" + this.productName + listingName)
-              .put(imageUpload);
+      console.log("test");
+      var imageUpload = this.uploaded ? this.uploaded : this.baseImage;
+      var upload = storageRef
+        .child("listings/" + this.productName + this.$route.params.id)
+        .put(imageUpload);
+      // Listen for state changes, errors, and completion of the upload.
+      upload.on(
+        firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+        (snapshot) => {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          var progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED: // or 'paused'
+              console.log("Upload is paused");
+              break;
+            case firebase.storage.TaskState.RUNNING: // or 'running'
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => {
+          switch (error.code) {
+            case "storage/unauthorized":
+              break;
+            case "storage/canceled":
+              break;
+            case "storage/unknown":
+              break;
+          }
+        },
+        () => {
+          // Upload completed successfully, now we can get the download URL
+          upload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            console.log("File available at", downloadURL);
           });
-      }
+        }
+      );
 
       db.collection("listings")
-        .doc(this.$route.params.id)
-        .update({
-          name: this.productName,
-          qtyDesc: this.quantityDesc,
-          desc: this.productDesc,
-          price: parseInt(this.price),
-          tags: this.tags,
-          imageRef: this.uploaded
-            ? "listings/" + this.productName + this.$route.params.user
-            : this.imageURL,
-        })
+        .add(
+          {
+            name: this.productName,
+            qtyDesc: this.quantityDesc,
+            desc: this.productDesc,
+            price: parseInt(this.price),
+            tags: this.tags,
+            storeName: this.$route.params.id,
+            dateCreated: new Date(),
+            ReviewScoreTotal: 0,
+            ReviewScoreCount: 0,
+            viewCount: 0,
+            imageRef: "listings/" + this.productName + this.$route.params.id,
+            Reviews: [],
+          },
+          { merge: true }
+        )
         .then(
           this.$router.push({
             name: "Profile",
-            params: { id: this.$route.params.user },
+            params: { id: this.$route.params.id },
           })
         )
         .catch((error) => {
@@ -271,7 +270,7 @@ export default {
   },
   computed: {
     cancelButton() {
-      return "/Profile/" + this.$route.params.user;
+      return "/Profile/" + this.$route.params.id;
     },
   },
 };
