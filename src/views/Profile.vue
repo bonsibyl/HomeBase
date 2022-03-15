@@ -1,6 +1,9 @@
 <template>
   <v-app>
-    <delete-listing-modal />
+    <delete-listing-modal
+      :listingID="this.deleteRef"
+      @deleteInfo="removeListing"
+    />
     <div v-if="seller" id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
@@ -118,7 +121,7 @@
                   <v-btn
                     v-if="editMode"
                     class="edit-listing-buttons"
-                    @click="triggerDeletePopup()"
+                    @click="triggerDeletePopup(result.docID)"
                     :to="checkRoute"
                     text
                     plain
@@ -163,6 +166,7 @@ export default {
     DeleteListingModal,
   },
   data: () => ({
+    deleteRef: "",
     ListingResults: [],
     ListingURLS: [],
     results: [
@@ -241,8 +245,21 @@ export default {
     toggleEditMode() {
       this.editMode = !this.editMode;
     },
-    triggerDeletePopup() {
+    triggerDeletePopup(docID) {
+      this.deleteRef = docID;
       this.$modal.show("delete-listing");
+    },
+    removeListing(deletedListing) {
+      this.ListingResults = this.ListingResults.filter((listing) => {
+        if (listing["docID"] === deletedListing) {
+          this.removeListingImage(listing);
+        }
+        return listing["docID"] !== deletedListing;
+      });
+    },
+    removeListingImage(listing) {
+      var storageRef = firebase.storage().ref();
+      storageRef.child(listing.imageRef).delete();
     },
   },
   computed: {

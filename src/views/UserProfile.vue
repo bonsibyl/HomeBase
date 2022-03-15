@@ -96,8 +96,8 @@
             <v-spacer></v-spacer>
             <v-col cols="auto">
               <v-menu
-                close-on-click="false"
-                close-on-content-click="false"
+                :close-on-click="false"
+                :close-on-content-click="false"
                 open-on-hover
                 offset-y
                 transition="slide-y-transition"
