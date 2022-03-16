@@ -118,7 +118,7 @@
                     block
                     color="#B4B4B4"
                     class="white--text"
-                    :to="cancelButton"
+                    @click="cancelButton()"
                   >
                     Cancel
                   </v-btn>
@@ -271,7 +271,7 @@ export default {
   },
   computed: {
     cancelButton() {
-      return "/Profile/" + this.$route.params.user;
+      return this.$router.go(-1);
     },
   },
 };

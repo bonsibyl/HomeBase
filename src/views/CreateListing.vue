@@ -247,6 +247,7 @@ export default {
             price: parseInt(this.price),
             tags: this.tags,
             storeName: this.$route.params.id,
+            shopName: this.shopName,
             dateCreated: new Date(),
             ReviewScoreTotal: 0,
             ReviewScoreCount: 0,
@@ -271,6 +272,9 @@ export default {
   computed: {
     cancelButton() {
       return "/Profile/" + this.$route.params.id;
+    },
+    shopName() {
+      return this.$store.profileUsername;
     },
   },
 };

@@ -109,7 +109,7 @@
                 min-width="150"
                 min-height="100"
                 height="400"
-                :to="listingRoute + result.docID"
+                :to="'/listing/' + result.storeName + '/' + result.docID"
                 hover
               >
                 <v-img
@@ -188,7 +188,7 @@ export default {
       const listings = await this.retrieveSellerListings(this.$route.params.id);
       for (let i = 0; i < listings.length; i++) {
         var ref = listings[i];
-        var imageURL = await this.retrieveImage(ref.name);
+        var imageURL = await this.retrieveImage(ref.name, ref.storeName);
         listings[i]["imageURL"] = imageURL;
         listings[i]["docID"] = this.ListingURLS[i];
       }
@@ -218,11 +218,11 @@ export default {
       });
       return listings;
     },
-    async retrieveImage(productName) {
+    async retrieveImage(productName, storeName) {
       const storageRef = firebase.storage().ref();
       var imageURL = "";
       await storageRef
-        .child("listings/" + productName + this.$route.params.id)
+        .child("listings/" + productName + storeName)
         .getDownloadURL()
         .then((url) => {
           if (url) {
@@ -268,9 +268,6 @@ export default {
     },
     editRoute() {
       return "/EditListing/" + this.$route.params.id + "/";
-    },
-    listingRoute() {
-      return "/listing/" + this.$route.params.id + "/";
     },
   },
 };

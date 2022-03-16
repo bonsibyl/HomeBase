@@ -20,6 +20,7 @@
           color="#6B7855"
           class="white--text"
           :to="{ name: 'EditListing', params: { id: this.$route.params.id } }"
+          v-if="userMatch"
         >
           Edit Listing
         </v-btn>
@@ -49,7 +50,13 @@
         >
         <v-row class="add-to-cart-btn">
           <v-col :cols="7">
-            <v-btn block color="#A76E2A" class="mr-4 white--text">
+            <v-btn
+              block
+              color="#A76E2A"
+              class="mr-4 white--text"
+              @click="addListingToCart"
+              v-if="!seller"
+            >
               <v-icon dark left> mdi-cart </v-icon>
               Add to Cart
             </v-btn>
@@ -155,12 +162,17 @@ import db from "../firebase/firebaseInit";
 
 export default {
   name: "Listing",
-  mounted() {
+  async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    this.userMatch = this.$route.params.user === user;
+    const information = await this.retrieveUserType(user);
+    this.seller = information;
     db.collection("listings")
       .doc(this.$route.params.id)
       .get()
       .then((doc) => {
         const allData = doc.data();
+        this.fullListing = allData;
         this.shopName = allData.storeName;
         this.productName = allData.name;
         this.productDetails = allData.qtyDesc;
@@ -204,6 +216,7 @@ export default {
   },
   data() {
     return {
+      fullListing: null,
       image: image,
       imageURL: "",
       shopName: "",
@@ -227,11 +240,50 @@ export default {
         "Nutty Buttery Bakery is a small home-based bakery established in 2019. We specialise in French desserts, such as financiers, macarons and eclairs. We also bake whole cakes to-order.",
       storeDetails: "",
       reviewDetails: [],
+      userMatch: false,
+      seller: false,
     };
   },
   methods: {
+    async retrieveUserType(id) {
+      const docRef = db.collection("users").doc(id);
+      var sellerType = null;
+      await docRef.get().then((doc) => {
+        sellerType = doc.data().seller;
+      });
+      return sellerType;
+    },
     goBack() {
       this.$router.go(-1);
+    },
+    addListingToCart() {
+      const addListing = { ...this.fullListing, qty: 1 };
+      const cartRef = JSON.parse(localStorage.getItem("cart"));
+      this.$store.commit("checkCartUpdateFunc");
+      if (cartRef) {
+        const duplicateCheck = cartRef.filter((x) => {
+          return (
+            x.productName + x.storeName ===
+            addListing.productName + addListing.storeName
+          );
+        });
+        const diffStoreCheck = cartRef.filter((x) => {
+          return x.storeName !== addListing.storeName;
+        });
+        if (duplicateCheck.length > 0) {
+          console.log(cartRef);
+          alert("You have already added this item to your cart!");
+          return;
+        }
+        if (diffStoreCheck.length > 0) {
+          alert("You can only add items from the same store to your cart!");
+          return;
+        }
+        cartRef.push(addListing);
+        localStorage.setItem("cart", JSON.stringify(cartRef));
+      } else {
+        localStorage.setItem("cart", JSON.stringify([addListing]));
+      }
     },
   },
   components: {

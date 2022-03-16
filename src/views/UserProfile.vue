@@ -145,7 +145,7 @@
                 min-width="150"
                 min-height="100"
                 height="400"
-                :to="listingRoute + result.docID"
+                :to="'/listing/' + result.storeName + '/' + result.docID"
                 hover
               >
                 <v-img
@@ -305,21 +305,17 @@ export default {
   async mounted() {
     const user = firebase.auth().currentUser.uid;
     this.userMatch = this.$route.params.id === user;
+    const information = await this.retrieveUserType(this.$route.params.id);
+    this.seller = information;
     if (!this.seller) {
-      const information = await this.retrieveUserType(this.$route.params.id);
-      this.seller = information;
-      if (this.seller) {
-        const listings = await this.retrieveRecListings();
-        for (let i = 0; i < listings.length; i++) {
-          var ref = listings[i];
-          var imageURL = await this.retrieveImage(ref.name);
-          listings[i]["imageURL"] = imageURL;
-          listings[i]["docID"] = this.ListingURLS[i];
-        }
-        this.ListingResults = listings;
-      } else {
-        console.log("testuser");
+      const listings = await this.retrieveRecListings();
+      for (let i = 0; i < listings.length; i++) {
+        var ref = listings[i];
+        var imageURL = await this.retrieveImage(ref.name, ref.storeName);
+        listings[i]["imageURL"] = imageURL;
+        listings[i]["docID"] = this.ListingURLS[i];
       }
+      this.ListingResults = listings;
     }
   },
   methods: {
@@ -346,13 +342,14 @@ export default {
       });
       return listings;
     },
-    async retrieveImage(productName) {
+    async retrieveImage(productName, storeId) {
       const storageRef = firebase.storage().ref();
       var imageURL = "";
       await storageRef
-        .child("listings/" + productName + this.$route.params.id)
+        .child("listings/" + productName + storeId)
         .getDownloadURL()
         .then((url) => {
+          console.log(url);
           if (url) {
             imageURL = url;
           } else {
@@ -369,11 +366,6 @@ export default {
     },
     showModal() {
       this.$modal.show("review");
-    },
-  },
-  computed: {
-    listingRoute() {
-      return "/listing/" + this.$route.params.id + "/";
     },
   },
 };
