@@ -115,10 +115,10 @@
           <v-list>
             <v-list-item>
               <v-list-item-icon>
-                <v-icon color="#A76E2A">mdi-cart</v-icon>
+                <v-icon large color="#A76E2A">mdi-cart</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="font-weight-bold"
+                <v-list-item-title class="font-weight-bold text-h5"
                   >Shopping Cart</v-list-item-title
                 >
               </v-list-item-content>
@@ -131,7 +131,7 @@
               <v-icon size="108" color="#A76E2A">mdi-emoticon-sad</v-icon>
             </v-list-item>
             <v-list-item v-if="cart.length === 0" class="ml-4">
-              <v-list-item-content class="font-weight-bold">
+              <v-list-item-content class="font-weight-medium text-h6">
                 Your shopping cart is looking a little empty!
               </v-list-item-content>
             </v-list-item>
@@ -155,8 +155,8 @@
                   <v-col id="desc" cols="8">
                     <h5 class="green--text">@{{ listing.store }}</h5>
                     <h5>{{ listing.title }}</h5>
-                    <h5>({{ listing.desc }})</h5>
-                    <h5>${{ listing.price }}</h5>
+                    <h5 class="font-weight-medium">({{ listing.desc }})</h5>
+                    <h5 class="font-weight-medium">${{ listing.price }}</h5>
                   </v-col>
                   <v-col id="total" cols="2" align="center">
                     <h4>${{ listing.price * listing.qty }}</h4>

@@ -4,11 +4,11 @@
       <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
           <v-row id="searchrow">
-            <v-col>
+            <v-col class="mt-2">
               <h1 class="font-weight-bold">What are you craving today?</h1>
             </v-col>
-            <v-col id="searchbar">
-              <v-responsive max-width="650">
+            <v-col id="searchbar" >
+              <v-responsive max-width="650" class="pt-1">
                 <v-text-field
                   prepend-inner-icon="mdi-magnify"
                   outlined
@@ -21,7 +21,7 @@
           </v-row>
           <v-row id="filterrow" align="end">
             <v-col cols="auto">
-              <h4 class="text--secondary">Results</h4>
+              <h3 class="text--secondary">Results</h3>
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
