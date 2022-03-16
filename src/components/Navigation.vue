@@ -202,7 +202,9 @@ export default {
     };
   },
   mounted() {
-    this.cartDetails = JSON.parse(localStorage.getItem("cart"));
+    this.cartDetails = JSON.parse(localStorage.getItem("cart"))
+      ? JSON.parse(localStorage.getItem("cart"))
+      : [];
   },
   methods: {
     signOut() {
