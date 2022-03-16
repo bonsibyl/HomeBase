@@ -198,45 +198,46 @@ export default {
         return;
       }
       var storageRef = firebase.storage().ref();
-      console.log("test");
-      var imageUpload = this.uploaded ? this.uploaded : this.baseImage;
-      var upload = storageRef
-        .child("listings/" + this.productName + this.$route.params.id)
-        .put(imageUpload);
-      // Listen for state changes, errors, and completion of the upload.
-      upload.on(
-        firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
-        (snapshot) => {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          var progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case firebase.storage.TaskState.PAUSED: // or 'paused'
-              console.log("Upload is paused");
-              break;
-            case firebase.storage.TaskState.RUNNING: // or 'running'
-              console.log("Upload is running");
-              break;
+      if (this.uploaded.size > 0) {
+        var imageUpload = this.uploaded;
+        var upload = storageRef
+          .child("listings/" + this.productName + this.$route.params.id)
+          .put(imageUpload);
+        // Listen for state changes, errors, and completion of the upload.
+        upload.on(
+          firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+          (snapshot) => {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            var progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case firebase.storage.TaskState.PAUSED: // or 'paused'
+                console.log("Upload is paused");
+                break;
+              case firebase.storage.TaskState.RUNNING: // or 'running'
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            switch (error.code) {
+              case "storage/unauthorized":
+                break;
+              case "storage/canceled":
+                break;
+              case "storage/unknown":
+                break;
+            }
+          },
+          () => {
+            // Upload completed successfully, now we can get the download URL
+            upload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              console.log("File available at", downloadURL);
+            });
           }
-        },
-        (error) => {
-          switch (error.code) {
-            case "storage/unauthorized":
-              break;
-            case "storage/canceled":
-              break;
-            case "storage/unknown":
-              break;
-          }
-        },
-        () => {
-          // Upload completed successfully, now we can get the download URL
-          upload.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            console.log("File available at", downloadURL);
-          });
-        }
-      );
+        );
+      }
 
       db.collection("listings")
         .add(
@@ -247,6 +248,7 @@ export default {
             price: parseInt(this.price),
             tags: this.tags,
             storeName: this.$route.params.id,
+            shopName: this.shopName,
             dateCreated: new Date(),
             ReviewScoreTotal: 0,
             ReviewScoreCount: 0,
@@ -271,6 +273,9 @@ export default {
   computed: {
     cancelButton() {
       return "/Profile/" + this.$route.params.id;
+    },
+    shopName() {
+      return this.$store.state.profileUsername;
     },
   },
 };

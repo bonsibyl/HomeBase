@@ -125,17 +125,17 @@
             </v-list-item>
             <v-divider id="sidedivider"></v-divider>
             <v-list-item
-              v-if="cart.length === 0"
-              class="px-0 py-0 align-center justify-center "
+              v-if="cartDetails.length === 0"
+              class="px-0 py-0 align-center justify-center"
             >
               <v-icon size="108" color="#A76E2A">mdi-emoticon-sad</v-icon>
             </v-list-item>
-            <v-list-item v-if="cart.length === 0" class="ml-4">
+            <v-list-item v-if="cartDetails.length === 0" class="ml-4">
               <v-list-item-content class="font-weight-bold">
                 Your shopping cart is looking a little empty!
               </v-list-item-content>
             </v-list-item>
-            <template v-for="(listing, index) in cart">
+            <template v-for="(listing, index) in cartDetails">
               <v-divider v-show="index !== 0" :key="`${index}-divider`" />
               <v-list-item :key="index" class="pl-0 pr-8">
                 <v-row no-gutters>
@@ -153,13 +153,15 @@
                     </v-btn>
                   </v-col>
                   <v-col id="desc" cols="8">
-                    <h5 class="green--text">@{{ listing.store }}</h5>
-                    <h5>{{ listing.title }}</h5>
-                    <h5>({{ listing.desc }})</h5>
+                    <h5 class="green--text">@{{ listing.shopName }}</h5>
+                    <h5>{{ listing.name }}</h5>
+                    <h5>({{ listing.qtyDesc }})</h5>
                     <h5>${{ listing.price }}</h5>
                   </v-col>
                   <v-col id="total" cols="2" align="center">
-                    <h4>${{ listing.price * listing.qty }}</h4>
+                    <h4>
+                      ${{ parseFloat(listing.price) * parseInt(listing.qty) }}
+                    </h4>
                     <v-btn
                       small
                       tile
@@ -173,7 +175,6 @@
               </v-list-item>
             </template>
           </v-list>
-
           <v-spacer></v-spacer>
           <v-list class="py-2">
             <v-list-item>
@@ -197,9 +198,12 @@ export default {
   data() {
     return {
       drawer: false,
+      cartDetails: [],
     };
   },
-  components: {},
+  mounted() {
+    this.cartDetails = JSON.parse(localStorage.getItem("cart"));
+  },
   methods: {
     signOut() {
       firebase.auth().signOut();
@@ -211,19 +215,46 @@ export default {
       this.$router.push({ name: "Home" });
     },
     deleteCartItem(listing) {
-      this.$store.commit("removeCartItem", listing);
+      var index = this.cartDetails.indexOf(listing);
+      const arrRef = this.cartDetails;
+      if (index > -1) {
+        arrRef.splice(index, 1);
+        this.cartDetails = arrRef;
+        localStorage.setItem("cart", JSON.stringify(arrRef));
+      }
     },
     incrementQty(listing) {
-      this.$store.commit("incrementQty", listing);
+      var index = this.cartDetails.indexOf(listing);
+      const arrRef = this.cartDetails;
+      if (index > -1) {
+        listing.qty = listing.qty + 1;
+        arrRef.splice(index, 1);
+        arrRef.push(listing);
+        this.cartDetails = arrRef;
+        localStorage.setItem("cart", JSON.stringify(arrRef));
+      }
     },
     decrementQty(listing) {
-      this.$store.commit("decrementQty", listing);
+      var index = this.cartDetails.indexOf(listing);
+      const arrRef = this.cartDetails;
+      if (index > -1) {
+        listing.qty = listing.qty - 1;
+        arrRef.splice(index, 1);
+        arrRef.push(listing);
+        this.cartDetails = arrRef;
+        localStorage.setItem("cart", JSON.stringify(arrRef));
+      }
     },
   },
-
   computed: {
-    cart() {
-      return this.$store.state.cartItems;
+    checkCartUpdate() {
+      return this.$store.state.checkCartUpdate;
+    },
+  },
+  watch: {
+    checkCartUpdate(oldCount, newCount) {
+      console.log(oldCount + " " + newCount);
+      this.cartDetails = JSON.parse(localStorage.getItem("cart"));
     },
   },
 };

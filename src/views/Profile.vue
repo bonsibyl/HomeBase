@@ -1,44 +1,23 @@
 <template>
   <v-app>
-    <delete-listing-modal />
+    <delete-listing-modal
+      :listingID="this.deleteRef"
+      @deleteInfo="removeListing"
+    />
     <div v-if="seller" id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
           <v-row id="searchrow">
             <v-col>
-              <h1 class="font-weight-bold">
-                @{{ this.$store.state.profileUsername }}
-              </h1>
-              <v-col v-if="this.$store.state.seller" class="col-info">
-                <h4 class="text--secondary">
-                  Store Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Business Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
-              </v-col>
-              <v-col v-else class="col-info">
-                <h4 class="text--secondary">
-                  Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
+              <h1 class="font-weight-bold">@{{ shopUsername }}</h1>
+              <v-col class="col-info">
+                <h4 class="text--secondary">Store Name: {{ storeName }}</h4>
+                <h4 class="text--secondary">Business Email: {{ email }}</h4>
+                <h4 class="text--secondary">Contact Number: {{ contactNo }}</h4>
+                <h4 class="text--secondary">Address: {{ address }}</h4>
               </v-col>
               <v-col cols="auto" class="col-btn">
-                <v-btn @click="toggleEditMode">
+                <v-btn @click="toggleEditMode" v-if="userMatch">
                   Edit Details
                   <v-icon right>mdi-pencil</v-icon>
                 </v-btn>
@@ -106,7 +85,7 @@
                 min-width="150"
                 min-height="100"
                 height="400"
-                :to="listingRoute + result.docID"
+                :to="'/listing/' + result.storeName + '/' + result.docID"
                 hover
               >
                 <v-img
@@ -118,11 +97,11 @@
                   <v-btn
                     v-if="editMode"
                     class="edit-listing-buttons"
-                    @click="triggerDeletePopup()"
-                    :to="checkRoute"
+                    @click="triggerDeletePopup(result.docID)"
                     text
                     plain
                     small
+                    :to="'/Profile/' + checkRoute"
                   >
                     <v-icon dark>mdi-delete</v-icon>
                   </v-btn>
@@ -163,17 +142,8 @@ export default {
     DeleteListingModal,
   },
   data: () => ({
+    deleteRef: "",
     ListingResults: [],
-    ListingURLS: [],
-    results: [
-      "Blueberry",
-      "Strawberry",
-      "Macarons",
-      "Cupcake",
-      "Brownie",
-      "Cookie",
-      "Tart",
-    ],
     Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
     ActiveSort: "",
     PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
@@ -182,20 +152,31 @@ export default {
     ActiveFilters: [],
     seller: null,
     editMode: false,
+    userMatch: false,
+    //Populating profile fields
+    shopUsername: "",
+    storeName: "",
+    buyerName: "",
+    email: "",
+    contactNo: "",
+    address: "",
   }),
 
   async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    this.userMatch = this.$route.params.id === user;
     const information = await this.retrieveUserType(this.$route.params.id);
     this.seller = information;
-    const listings = await this.retrieveListings(this.$route.params.id);
-    for (let i = 0; i < listings.length; i++) {
-      var ref = listings[i];
-      var imageURL = await this.retrieveImage(ref.name);
-      listings[i]["imageURL"] = imageURL;
-      listings[i]["docID"] = this.ListingURLS[i];
+    if (this.seller) {
+      const listings = await this.retrieveSellerListings(this.$route.params.id);
+      for (let i = 0; i < listings.length; i++) {
+        var ref = listings[i];
+        var imageURL = await this.retrieveImage(ref.imageRef);
+        listings[i]["imageURL"] = imageURL;
+      }
+      this.ListingResults = listings;
+      console.log(this.ListingResults);
     }
-    this.ListingResults = listings;
-    console.log(this.ListingResults);
   },
   methods: {
     async retrieveUserType(id) {
@@ -203,25 +184,33 @@ export default {
       var sellerType = null;
       await docRef.get().then((doc) => {
         sellerType = doc.data().seller;
+        if (sellerType) {
+          this.storeName = doc.data().shopName;
+        } else {
+          this.buyerName = doc.data().firstName + " " + doc.data().lastName;
+        }
+        this.shopUsername = doc.data().username;
+        this.email = doc.data().email;
+        this.contactNo = doc.data().number;
+        this.address = doc.data().address;
       });
       return sellerType;
     },
-    async retrieveListings(id) {
+    async retrieveSellerListings(id) {
       const docRef = db.collection("listings").where("storeName", "==", id);
       var listings = [];
       await docRef.get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          listings.push(doc.data());
-          this.ListingURLS.push(doc.id);
+          listings.push({ ...doc.data(), docID: doc.id });
         });
       });
       return listings;
     },
-    async retrieveImage(productName) {
+    async retrieveImage(imageRef) {
       const storageRef = firebase.storage().ref();
       var imageURL = "";
       await storageRef
-        .child("listings/" + productName + this.$route.params.id)
+        .child(imageRef)
         .getDownloadURL()
         .then((url) => {
           if (url) {
@@ -241,8 +230,21 @@ export default {
     toggleEditMode() {
       this.editMode = !this.editMode;
     },
-    triggerDeletePopup() {
+    triggerDeletePopup(docID) {
+      this.deleteRef = docID;
       this.$modal.show("delete-listing");
+    },
+    removeListing(deletedListing) {
+      this.ListingResults = this.ListingResults.filter((listing) => {
+        if (listing["docID"] === deletedListing) {
+          this.removeListingImage(listing);
+        }
+        return listing["docID"] !== deletedListing;
+      });
+    },
+    removeListingImage(listing) {
+      var storageRef = firebase.storage().ref();
+      storageRef.child(listing.imageRef).delete();
     },
   },
   computed: {
@@ -254,9 +256,6 @@ export default {
     },
     editRoute() {
       return "/EditListing/" + this.$route.params.id + "/";
-    },
-    listingRoute() {
-      return "/listing/" + this.$route.params.id + "/";
     },
   },
 };

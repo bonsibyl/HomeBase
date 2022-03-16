@@ -118,7 +118,7 @@
                     block
                     color="#B4B4B4"
                     class="white--text"
-                    :to="cancelButton"
+                    @click="cancelButton()"
                   >
                     Cancel
                   </v-btn>
@@ -222,7 +222,7 @@ export default {
       }
       this.createImage(file);
     },
-    validate() {
+    async validate() {
       if (!this.$refs.form.validate()) {
         return;
       }
@@ -230,14 +230,10 @@ export default {
       var imageUpload = this.uploaded;
       var listingName = this.$route.params.user;
       if (this.uploaded) {
-        storageRef
-          .child(this.imageURL)
-          .delete()
-          .then(() => {
-            storageRef
-              .child("listings/" + this.productName + listingName)
-              .put(imageUpload);
-          })
+        await storageRef.child(this.imageURL).delete();
+        await storageRef
+          .child("listings/" + this.productName + listingName)
+          .put(imageUpload)
           .catch(() => {
             storageRef
               .child("listings/" + this.productName + listingName)
@@ -266,12 +262,10 @@ export default {
         .catch((error) => {
           alert(error);
         });
-      alert("Listing created");
+      alert("Listing edited");
     },
-  },
-  computed: {
     cancelButton() {
-      return "/Profile/" + this.$route.params.user;
+      return this.$router.go(-1);
     },
   },
 };

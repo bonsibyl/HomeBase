@@ -29,6 +29,7 @@
 </template>
 <script>
 const MODAL_WIDTH = 656;
+import db from "../firebase/firebaseInit";
 
 export default {
   name: "DeleteListingModal",
@@ -37,9 +38,23 @@ export default {
     this.modalWidth =
       window.innerWidth < MODAL_WIDTH ? MODAL_WIDTH / 2 : MODAL_WIDTH;
   },
+  props: {
+    listingID: String,
+  },
   methods: {
     deleteListing() {
-      alert("DELETE");
+      db.collection("listings")
+        .doc(this.listingID)
+        .delete()
+        .then(() => {
+          console.log(this.listingID + " successfully deleted!");
+          this.$modal.hide("delete-listing");
+          this.$emit("deleteInfo", this.listingID);
+        })
+        .catch((error) => {
+          alert("Error in deleting!");
+          console.error("Error removing document: ", error);
+        });
     },
     cancel() {
       this.$modal.hide("delete-listing");
