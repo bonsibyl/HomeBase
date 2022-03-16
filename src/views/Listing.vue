@@ -164,6 +164,36 @@ import db from "../firebase/firebaseInit";
 
 export default {
   name: "Listing",
+  data() {
+    return {
+      fullListing: null,
+      image: image,
+      imageURL: "",
+      shopName: "",
+      productName: "",
+      productDetails: "",
+      rating: 3,
+      numReviews: 5,
+      price: 10.0,
+      productDescription: "",
+      tags: [],
+      openingHours: [
+        "10:00am - 6:30pm",
+        "10:00am - 6:30pm",
+        "10:00am - 6:30pm",
+        "10:00am - 6:30pm",
+        "10:00am - 6:30pm",
+        "10:00am - 6:30pm",
+        "10:00am - 6:30pm",
+      ],
+      makerDetails:
+        "Nutty Buttery Bakery is a small home-based bakery established in 2019. We specialise in French desserts, such as financiers, macarons and eclairs. We also bake whole cakes to-order.",
+      storeDetails: "",
+      reviewDetails: [],
+      userMatch: false,
+      seller: false,
+    };
+  },
   async mounted() {
     const user = firebase.auth().currentUser.uid;
     this.userMatch = this.$route.params.user === user;
@@ -195,14 +225,15 @@ export default {
           .then((doc) => {
             const data = doc.data();
             this.shopName = data.shopName;
-            this.makerDetails = data.makerDetails;
+            this.makerDetails = data.makerDetails
+              ? data.makerDetails
+              : "The shop owner has yet to upload his details!";
             this.storeDetails = data.address;
-            this.openingHours = data.openingHours;
+            // this.openingHours = data.openingHours;
           })
       )
       .then(() => {
         const storageRef = firebase.storage().ref();
-        console.log(this.imageURL);
         storageRef
           .child(this.imageURL)
           .getDownloadURL()
@@ -215,36 +246,7 @@ export default {
           });
       });
   },
-  data() {
-    return {
-      fullListing: null,
-      image: image,
-      imageURL: "",
-      shopName: "",
-      productName: "",
-      productDetails: "",
-      rating: 3,
-      numReviews: 5,
-      price: 10.0,
-      productDescription: "",
-      tags: [],
-      openingHours: [
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-      ],
-      makerDetails:
-        "Nutty Buttery Bakery is a small home-based bakery established in 2019. We specialise in French desserts, such as financiers, macarons and eclairs. We also bake whole cakes to-order.",
-      storeDetails: "",
-      reviewDetails: [],
-      userMatch: false,
-      seller: false,
-    };
-  },
+
   methods: {
     async retrieveUserType(id) {
       const docRef = db.collection("users").doc(id);
@@ -272,7 +274,6 @@ export default {
           return x.storeName !== addListing.storeName;
         });
         if (duplicateCheck.length > 0) {
-          console.log(cartRef);
           alert("You have already added this item to your cart!");
           return;
         }

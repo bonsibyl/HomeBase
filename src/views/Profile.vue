@@ -101,6 +101,7 @@
                     text
                     plain
                     small
+                    :to="'/Profile/' + checkRoute"
                   >
                     <v-icon dark>mdi-delete</v-icon>
                   </v-btn>
