@@ -1,45 +1,101 @@
 <template>
+    <div class="background">
     <v-app>
-        <div id="sheet">
-            <v-sheet width="95vw">
+        <v-navigation-drawer app absolute color="#f5f5f5">
+            <v-list>
+                <v-list-item v-for="[page, route] in pages" :key="page" link :to="route" height="400">
+                    <v-list-item-content>
+                        {{ page }}
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+        </v-navigation-drawer>
+        <v-main>
+            <v-container class="dashboardContainer">
                 <v-row id="headerrow">
                     <v-col>
-                        <h1>Analytics</h1>
+                        <h1 style="text-align:left">Analytics</h1> <hr>
                     </v-col>
                 </v-row>
-                <v-row id="summaryrow">
-                    <v-col>
-                        <h2>Number of Visits</h2>
-                        <p class="stats">100</p>
-                    </v-col>
-                    <v-col>
-                        <h2>Revenue</h2>
-                        <p class="stats">$1000</p>
-                    </v-col>
-                    <v-col>
-                        <h2>Average Review Score</h2>
-                        <p class="stats">4.3</p>
-                    </v-col>
-                    <v-col>
-                        <h2>Reviews</h2>
-                        <p class="stats">42</p>
+                <v-row id="summrow">
+                    <v-col v-for="[metric, number, icon] in metrics" :key="metric">
+                        <v-card color=#ffff>
+                            <v-card-title class="metricTitle">
+                                {{ metric }}
+                                <v-icon right>{{icon}}</v-icon>
+                            </v-card-title>
+                            <v-card-text class="metricNumber">{{ number }}</v-card-text>
+                        </v-card>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col>
-                        <h1 id="graphheader">Graph</h1>
+                        <v-card width="1980" height="500px" id="graphcard" color=#ffff>
+                            <v-card-title id="graphcardtitle" class="text-h5 justify-center"> Monthly Sales Trends </v-card-title>
+                            <v-card-text>
+                                <line-chart :data="chartData" :colors="['#m02']" :legend="false"></line-chart>
+                                <p id="graphlabel">Month</p>
+                            </v-card-text>
+                        </v-card>
                     </v-col>
                 </v-row>
-                <v-row>
-                    <v-img src="https://i.stack.imgur.com/mHu9f.jpg" contain height="500px"></v-img>
-                </v-row>
-            </v-sheet>
-        </div>
+                         
+            </v-container>
+        </v-main>
     </v-app>
+    </div>
 </template>
 
 <script>
 export default {
+    data: () => ({
+        pages: [
+            ["Overview", "/sellerorderoverview"],
+            ["Orders", "/sellerordermanagement"],
+            ["Reviews", "/sellerreviews"],
+            ["Analytics", "/dashboard"]
+        ],
+        metrics: [
+            ["Number of Visits", 100, "mdi-chart-line", "red"],
+            ["Revenue", "$2000", "mdi-currency-usd", "green"],
+            ["Average Review Score", 3, "mdi-thumb-up", "blue"],
+            ["Reviews", 50, "mdi-message-draw", "orange"],
+        ],
+        value: [
+            423,
+            446,
+            675,
+            510,
+            590,
+            750,
+            850,
+            905,
+        ],
+        labels: [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+        ],
+        chartData: [
+            {
+            name: "Sales ($)",
+            data: {
+            1: 423,
+            2: 446,
+            3: 675,
+            4: 510,
+            5: 590,
+            6: 750,
+            7: 850,
+            8: 905,
+            }
+        }],
+    })
 
 }
 </script>
@@ -58,6 +114,7 @@ export default {
 
 h1 {
     text-align: center;
+    background-color: rgb(255,255,255, 0.75)
 }
 
 h2 {
@@ -66,5 +123,39 @@ h2 {
 
 #graphheader {
     text-align: center;
+}
+
+#graphcardtitle {
+    text-align: center;
+}
+
+#graphcardtext {
+    margin: 10px;
+}
+
+#graphlabel {
+    text-align: center;
+    font-weight: bold;
+}
+
+.dashboardContainer {
+    width: 93%;
+    margin-top: 2%;
+}
+
+.metricNumber {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: -2%;
+}
+
+.metricTitle {
+    font-size: 17px;
+    color: rgb(92, 92, 92);
+    font-weight: bold;
+}
+
+hr {
+    margin-top: 1%;
 }
 </style>

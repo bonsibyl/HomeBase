@@ -3,7 +3,13 @@
     <v-row>
       <!-- add route return to listing -->
       <v-col :cols="2">
-        <v-btn block color="#B4B4B4" class="mr-4 black--text" text>
+        <v-btn
+          @click="goBack"
+          block
+          color="#B4B4B4"
+          class="mr-4 black--text"
+          text
+        >
           <v-icon dark left> mdi-arrow-left </v-icon>
           Return to Listings
         </v-btn>
@@ -14,6 +20,7 @@
           color="#6B7855"
           class="white--text"
           :to="{ name: 'EditListing', params: { id: this.$route.params.id } }"
+          v-if="userMatch"
         >
           Edit Listing
         </v-btn>
@@ -25,7 +32,9 @@
       </v-col>
       <v-col :cols="6" class="offset-md-1">
         <v-row
-          ><h3>{{ shopName }}</h3></v-row
+          ><v-btn :to="shopRoute" text plain dense class="pa-0"
+            ><h3>@{{ shopName }}</h3></v-btn
+          ></v-row
         >
         <v-row
           ><h1>{{ productName }}</h1></v-row
@@ -43,7 +52,13 @@
         >
         <v-row class="add-to-cart-btn">
           <v-col :cols="7">
-            <v-btn block color="#A76E2A" class="mr-4 white--text">
+            <v-btn
+              block
+              color="#A76E2A"
+              class="mr-4 white--text"
+              @click="addListingToCart"
+              v-if="!seller"
+            >
               <v-icon dark left> mdi-cart </v-icon>
               Add to Cart
             </v-btn>
@@ -111,7 +126,7 @@
     <br />
 
     <v-row align="center">
-      <v-col :cols="12" class="review-header"
+      <v-col :cols="12" class="review-header" v-if="reviewDetails"
         ><strong>Customer Reviews</strong></v-col
       >
       <v-col
@@ -144,21 +159,24 @@
 <script>
 import RatingStars from "../components/RatingStars.vue";
 import image from "../assets/background.png";
+import firebase from "firebase/app";
+import db from "../firebase/firebaseInit";
 
 export default {
   name: "Listing",
   data() {
     return {
+      fullListing: null,
       image: image,
-      shopName: "@nuttybutterybakery",
-      productName: "Almond Financiers",
-      productDetails: "Box of 8 Bite-Sized Financiers",
+      imageURL: "",
+      shopName: "",
+      productName: "",
+      productDetails: "",
       rating: 3,
       numReviews: 5,
       price: 10.0,
-      productDescription:
-        "These delicate almond financiers are made fresh to-order, using premium ingredients imported from Brittany, France. They are buttery and fluffy, pairing exceptionally well with a warm cup of earl grey tea.",
-      tags: ["NorthEast", "Serangoon", "Dessert", "Cake"],
+      productDescription: "",
+      tags: [],
       openingHours: [
         "10:00am - 6:30pm",
         "10:00am - 6:30pm",
@@ -170,40 +188,115 @@ export default {
       ],
       makerDetails:
         "Nutty Buttery Bakery is a small home-based bakery established in 2019. We specialise in French desserts, such as financiers, macarons and eclairs. We also bake whole cakes to-order.",
-      storeDetails: "14 Serangoon Drive, Singapore 340214",
-      test: this.$route.params.id,
-      reviewDetails: [
-        {
-          name: "XY",
-          rating: 3,
-          title: "Rich and Nutty Goodness",
-          description:
-            "Their shop name reflects their bakes accurately - they are nutty and buttery in all the right ratios. The box is also extremely value for money!",
-        },
-        {
-          name: "XY",
-          rating: 3,
-          title: "Rich and Nutty Goodness",
-          description:
-            "Their shop name reflects their bakes accurately - they are nutty and buttery in all the right ratios. The box is also extremely value for money!",
-        },
-        {
-          name: "XY",
-          rating: 3,
-          title: "Rich and Nutty Goodness",
-          description:
-            "Their shop name reflects their bakes accurately - they are nutty and buttery in all the right ratios. The box is also extremely value for money!",
-        },
-      ],
+      storeDetails: "",
+      reviewDetails: [],
+      userMatch: false,
+      seller: false,
     };
   },
-  props: {},
+  async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    this.userMatch = this.$route.params.user === user;
+    const information = await this.retrieveUserType(user);
+    this.seller = information;
+    db.collection("listings")
+      .doc(this.$route.params.id)
+      .get()
+      .then((doc) => {
+        const allData = doc.data();
+        this.fullListing = allData;
+        this.productName = allData.name;
+        this.productDetails = allData.qtyDesc;
+        this.rating = allData.ReviewScoreCount
+          ? Math.round(allData.ReviewScoreTotal / allData.ReviewScoreCount)
+          : 0;
+        this.numReviews = allData.ReviewScoreCount;
+        this.price = allData.price;
+        this.productDescription = allData.desc;
+        this.tags = allData.tags;
+        this.reviewDetails = allData.reviewDetails;
+        this.imageURL = allData.imageRef;
+      })
+      .then(
+        db
+          .collection("users")
+          .doc(this.$route.params.user)
+          .get()
+          .then((doc) => {
+            const data = doc.data();
+            this.shopName = data.shopName;
+            this.makerDetails = data.makerDetails
+              ? data.makerDetails
+              : "The shop owner has yet to upload his details!";
+            this.storeDetails = data.address;
+            // this.openingHours = data.openingHours;
+          })
+      )
+      .then(() => {
+        const storageRef = firebase.storage().ref();
+        storageRef
+          .child(this.imageURL)
+          .getDownloadURL()
+          .then((url) => {
+            console.log(url);
+            this.image = url;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+  },
+
+  methods: {
+    async retrieveUserType(id) {
+      const docRef = db.collection("users").doc(id);
+      var sellerType = null;
+      await docRef.get().then((doc) => {
+        sellerType = doc.data().seller;
+      });
+      return sellerType;
+    },
+    goBack() {
+      this.$router.go(-1);
+    },
+    addListingToCart() {
+      const addListing = { ...this.fullListing, qty: 1 };
+      const cartRef = JSON.parse(localStorage.getItem("cart"));
+      this.$store.commit("checkCartUpdateFunc");
+      if (cartRef) {
+        const duplicateCheck = cartRef.filter((x) => {
+          return (
+            x.productName + x.storeName ===
+            addListing.productName + addListing.storeName
+          );
+        });
+        const diffStoreCheck = cartRef.filter((x) => {
+          return x.storeName !== addListing.storeName;
+        });
+        if (duplicateCheck.length > 0) {
+          alert("You have already added this item to your cart!");
+          return;
+        }
+        if (diffStoreCheck.length > 0) {
+          alert("You can only add items from the same store to your cart!");
+          return;
+        }
+        cartRef.push(addListing);
+        localStorage.setItem("cart", JSON.stringify(cartRef));
+      } else {
+        localStorage.setItem("cart", JSON.stringify([addListing]));
+      }
+    },
+  },
   components: {
     RatingStars,
   },
   computed: {
     isSeller() {
       return this.$store.state.isSeller;
+    },
+    shopRoute() {
+      return "/Profile/" + this.$route.params.user;
     },
   },
 };

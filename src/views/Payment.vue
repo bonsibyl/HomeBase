@@ -1,8 +1,5 @@
 <template>
   <div class="order-checkout">
-    <Modal v-if="modalActive" :modalMessage="modalMessage" v-on:close-modal="closeModal" />
-    <Loading v-if="loading" />
-    
     <div class="form-wrap">
       <form class="summary">
         <h2>Payment</h2>
@@ -11,12 +8,13 @@
         <img class="paylahQR" src="../assets/blogPhotos/paylah.jpeg" alt="">
 
         <h3 class="totalAmount">
-          Grand Total: $43.50
+          Grand Total: ${{totalCost}}
         </h3>
         
         <div class="btns">
-            <button @click.prevent="addItems" class="back"><b>Go back</b></button>
-            <button @click.prevent="makePayment" class="screenshot"><b>Upload Screenshot</b></button>
+            <button @click.prevent="$router.push({name: 'Checkout'})" class="back"><b>Go back</b></button>
+            <ScreenshotUpload/>
+            <button @click.prevent="showModal" class="screenshot"><b>Upload Screenshot</b></button>
         </div>
 
       </form>
@@ -25,24 +23,25 @@
 </template>
 
 <script>
-import Modal from "../components/Modal";
-import Loading from "../components/Loading";
+import ScreenshotUpload from "./ScreenshotUpload.vue";
 export default {
   name: "Payment",
-  data() {
-    return {
-      modalActive: false, //toggle pop-up on & off
-      modalMessage: "", //pop-up message shown
-      loading: null,
-    };
-  },
-  components: {
-    Modal,
-    Loading,
-  },
+  components: { ScreenshotUpload },
   methods: {
-    closeModal() {
-      this.modalActive = !this.modalActive;
+    showModal() {
+      this.$modal.show("screenshot");
+    },
+  },
+  computed: {
+    cart() {
+      return this.$store.state.cartItems;
+    },
+    totalCost: function() {
+      let sum = 0;
+      for (let i=0; i < this.$store.state.cartItems.length; i++) {
+        sum += this.$store.state.cartItems[i].price * this.$store.state.cartItems[i].qty
+      }
+      return sum;
     },
   },
 };

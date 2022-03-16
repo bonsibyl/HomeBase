@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 //import Home from "../views/Home.vue";
 import Landing from "../views/Landing.vue";
+import AuthHome from "../views/AuthHome.vue";
 import Blogs from "../views/Blogs.vue";
 import Login from "../views/Login.vue";
 import BuyerRegister from "../views/BuyerRegister.vue";
@@ -18,8 +19,12 @@ import Profile from "../views/Profile.vue";
 import Checkout from "../views/Checkout.vue";
 import Payment from "../views/Payment.vue";
 import Dashboard from "../views/Dashboard.vue";
-import BuyerProfile from "../views/BuyerProfile.vue";
-import SellerProfile from "../views/SellerProfile.vue";
+import SellerOrderOverview from "../views/SellerOrderOverview.vue";
+import SellerOrderManagement from "../views/SellerOrderManagement.vue";
+import CreateListing from "../views/CreateListing.vue";
+import OrderSummary from "../views/OrderSummary.vue";
+import SellerReviews from "../views/SellerReviews.vue"
+
 //import store from "../store/index.js"
 
 Vue.use(VueRouter);
@@ -34,7 +39,15 @@ const routes = [
     },
   },
   {
-    path: "/listing/:id",
+    path: "/authhome",
+    name: "AuthHome",
+    component: AuthHome,
+    meta: {
+      title: "AuthHome",
+    },
+  },
+  {
+    path: "/listing/:user/:id",
     name: "Listing",
     component: Listing,
     meta: {
@@ -42,11 +55,19 @@ const routes = [
     },
   },
   {
-    path: "/EditListing/:id",
+    path: "/EditListing/:user/:id",
     name: "EditListing",
     component: EditListing,
     meta: {
       title: "EditListing",
+    },
+  },
+  {
+    path: "/CreateListing/:id",
+    name: "CreateListing",
+    component: CreateListing,
+    meta: {
+      title: "CreateListing",
     },
   },
   {
@@ -146,22 +167,6 @@ const routes = [
     },
   },
   {
-    path: "/buyer-profile",
-    name: "BuyerProfile",
-    component: BuyerProfile,
-    meta: {
-      title: "BuyerProfile",
-    },
-  },
-  {
-    path: "/seller-profile",
-    name: "SellerProfile",
-    component: SellerProfile,
-    meta: {
-      title: "SellerProfile",
-    },
-  },
-  {
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
@@ -170,11 +175,43 @@ const routes = [
     },
   },
   {
+    path: "/sellerorderoverview",
+    name: "Seller Order Overview",
+    component: SellerOrderOverview,
+    meta: {
+      title: "Seller Order Overview",
+    },
+  },
+  {
+    path: "/sellerordermanagement",
+    name: "Seller Order Management",
+    component: SellerOrderManagement,
+    meta: {
+      title: "Seller Order Management",
+    },
+  },
+  {
+    path: "/ordersummary",
+    name: "Order Summary",
+    component: OrderSummary,
+    meta: {
+      title: "Order Summary",
+    },
+  },
+  {
     path: "/editshop",
     name: "EditShop",
     component: EditShop,
     meta: {
       title: "EditShop",
+    },
+  },
+  {
+    path: "/sellerreviews",
+    name: "Reviews",
+    component: SellerReviews,
+    meta: {
+      title: "Reviews",
     },
   },
 ];
