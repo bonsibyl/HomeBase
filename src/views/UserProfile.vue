@@ -2,7 +2,7 @@
   <v-app>
     <review-form />
     <div id="sheet">
-      <v-sheet rounded="sm" width="95vw" elevation="1">
+      <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
         <div id="content">
           <v-row id="searchrow">
             <v-col :cols="4">
@@ -116,23 +116,34 @@
           <v-divider id="divider1"></v-divider>
           <v-row v-if="!isOrder">
             <v-col v-for="result in ListingResults" :key="result.name" cols="4">
-              <v-card
-                class="rounded-lg test"
-                min-width="150"
-                min-height="100"
-                height="400"
-                :to="'/listing/' + result.storeName + '/' + result.docID"
-                hover
-              >
-                <v-img
-                  gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
-                  class="white--text align-end bottom-gradient test"
-                  height="100%"
-                  :src="result.imageURL"
-                >
-                  <v-card-title>{{ result.name }}</v-card-title>
-                </v-img></v-card
-              >
+              <v-hover>
+                <template v-slot:default="{ hover }">
+                  <v-card
+                    class="rounded-lg test"
+                    min-width="150"
+                    min-height="100"
+                    height="400"
+                    :to="'/listing/' + result.storeName + '/' + result.docID"
+                    hover
+                  >
+                    <v-img
+                      gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
+                      class="white--text align-end bottom-gradient test"
+                      height="100%"
+                      :src="result.imageURL"
+                    >
+                      <v-card-title>{{ result.name }}</v-card-title>
+                    </v-img>
+                    <v-fade-transition>
+                      <v-overlay v-if="hover" absolute color="#fff">
+                        <v-btn color="#f5e4d0" class="black--text"
+                          >View Listing</v-btn
+                        >
+                      </v-overlay>
+                    </v-fade-transition>
+                  </v-card>
+                </template>
+              </v-hover>
             </v-col>
           </v-row>
           <v-row v-else>

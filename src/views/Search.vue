@@ -1,13 +1,13 @@
 <template>
   <v-app>
     <div id="sheet">
-      <v-sheet rounded="sm" width="95vw" elevation="1">
+      <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
         <div id="content">
           <v-row id="searchrow">
             <v-col class="mt-2">
               <h1 class="font-weight-bold">What are you craving today?</h1>
             </v-col>
-            <v-col id="searchbar" >
+            <v-col id="searchbar">
               <v-responsive max-width="650" class="pt-1">
                 <v-text-field
                   prepend-inner-icon="mdi-magnify"
@@ -15,6 +15,7 @@
                   clearable
                   label="Search for..."
                   color="#DD905F"
+                  v-model="searchQuery"
                 ></v-text-field>
               </v-responsive>
             </v-col>
@@ -58,13 +59,7 @@
               </v-menu>
             </v-col>
             <v-col cols="auto">
-              <v-menu
-                close-on-click="false"
-                close-on-content-click="false"
-                open-on-hover
-                offset-y
-                transition="slide-y-transition"
-              >
+              <v-menu open-on-hover offset-y transition="slide-y-transition">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn outlined v-bind="attrs" v-on="on">
                     Price
@@ -85,7 +80,7 @@
                           </v-list-item-action>
                           <v-list-item-content>
                             <v-list-item-title
-                              v-text="Range"
+                              v-text="`$` + Range.lower + `-` + Range.upper"
                             ></v-list-item-title>
                           </v-list-item-content>
                         </template>
@@ -136,7 +131,11 @@
           </v-row>
           <v-divider id="divider1"></v-divider>
           <v-row>
-            <v-col v-for="result in results" :key="result" cols="4">
+            <v-col
+              v-for="result in filteredListings"
+              :key="result.name"
+              cols="4"
+            >
               <v-hover>
                 <template v-slot:default="{ hover }">
                   <v-card
@@ -144,20 +143,22 @@
                     min-width="150"
                     min-height="100"
                     height="400"
-                    :to="'/'"
+                    :to="'/listing/' + result.storeName + '/' + result.docID"
                     hover
                   >
                     <v-img
                       gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
                       class="white--text align-end bottom-gradient"
                       height="100%"
-                      src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
+                      :src="result.imageURL"
                     >
-                      <v-card-title>{{ result }}</v-card-title>
+                      <v-card-title>{{ result.name }}</v-card-title>
                     </v-img>
                     <v-fade-transition>
                       <v-overlay v-if="hover" absolute color="#fff">
-                        <v-btn color="#f5e4d0" class="black--text">View Listing</v-btn>
+                        <v-btn color="#f5e4d0" class="black--text"
+                          >View Listing</v-btn
+                        >
                       </v-overlay>
                     </v-fade-transition>
                   </v-card>
@@ -172,26 +173,124 @@
 </template>
 
 <script>
+import db from "../firebase/firebaseInit";
+import firebase from "firebase/app";
 export default {
   name: "Search",
 
   data: () => ({
-    results: [
-      "Blueberry",
-      "Strawberry",
-      "Macarons",
-      "Cupcake",
-      "Brownie",
-      "Cookie",
-      "Tart",
-    ],
-    Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
+    ListingResults: [],
+    Sorts: ["Oldest", "Newest", "Price Asc", "Price Desc"],
     ActiveSort: "",
-    PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
+    PriceRanges: [
+      {
+        lower: 1,
+        upper: 10,
+      },
+      {
+        lower: 11,
+        upper: 20,
+      },
+      {
+        lower: 21,
+        upper: 30,
+      },
+      {
+        lower: 31,
+        upper: 40,
+      },
+    ],
     ActiveRanges: [],
     Filters: ["Vegan", "Halal", "Gluten-Free"],
     ActiveFilters: [],
+    searchQuery: null,
   }),
+
+  async mounted() {
+    const listings = await this.retrieveListings();
+    for (let i = 0; i < listings.length; i++) {
+      var ref = listings[i];
+      var imageURL = await this.retrieveImage(ref.imageRef);
+      listings[i]["imageURL"] = imageURL;
+    }
+    this.ListingResults = listings;
+  },
+  computed: {
+    filteredListings() {
+      if (
+        //default
+        this.searchQuery === null &&
+        this.ActiveSort === "" &&
+        this.ActiveRanges.length === 0 &&
+        this.ActiveFilters.length === 0
+      ) {
+        return this.ListingResults;
+      }
+      var filteredResults = this.ListingResults;
+      if (this.searchQuery != null) {
+        //filter by search query
+        filteredResults = this.filterBySearch(filteredResults);
+      }
+      //filter by tags
+      filteredResults = this.filterByTags(filteredResults);
+
+      return filteredResults;
+    },
+  },
+  watch: {
+    filteredListings() {},
+  },
+  methods: {
+    async retrieveListings() {
+      const docRef = db.collection("listings");
+      var listings = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          listings.push({ ...doc.data(), docID: doc.id });
+        });
+      });
+      return listings;
+    },
+    async retrieveImage(imageRef) {
+      const storageRef = firebase.storage().ref();
+      var imageURL = "";
+      await storageRef
+        .child(imageRef)
+        .getDownloadURL()
+        .then((url) => {
+          console.log(url);
+          if (url) {
+            imageURL = url;
+          } else {
+            imageURL =
+              "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          imageURL =
+            "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+        });
+      return imageURL;
+    },
+    filterBySearch(results) {
+      return results.filter((listing) => {
+        return listing.name
+          .toLowerCase()
+          .includes(this.searchQuery.toLowerCase());
+      });
+    },
+    filterByTags(results) {
+      return results.filter((listing) =>
+        this.ActiveFilters.every((x) => listing.tags.indexOf(x) > -1)
+      );
+    },
+    filterByPrice(results) {
+      return results.filter((listing) =>
+        this.ActiveFilters.every((x) => listing.tags.indexOf(x) > -1)
+      );
+    },
+  },
 };
 </script>
 
@@ -213,8 +312,6 @@ export default {
 #divider1 {
   margin: 2vh 0 2vh 0;
 }
-
-
 
 #searchbar {
   display: flex;
