@@ -9,36 +9,12 @@
         <div id="content">
           <v-row id="searchrow">
             <v-col>
-              <h1 class="font-weight-bold">
-                @{{ this.$store.state.profileUsername }}
-              </h1>
-              <v-col v-if="this.$store.state.seller" class="col-info">
-                <h4 class="text--secondary">
-                  Store Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Business Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
-              </v-col>
-              <v-col v-else class="col-info">
-                <h4 class="text--secondary">
-                  Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
+              <h1 class="font-weight-bold">@{{ shopUsername }}</h1>
+              <v-col class="col-info">
+                <h4 class="text--secondary">Store Name: {{ storeName }}</h4>
+                <h4 class="text--secondary">Business Email: {{ email }}</h4>
+                <h4 class="text--secondary">Contact Number: {{ contactNo }}</h4>
+                <h4 class="text--secondary">Address: {{ address }}</h4>
               </v-col>
               <v-col cols="auto" class="col-btn">
                 <v-btn @click="toggleEditMode" v-if="userMatch">
@@ -167,7 +143,6 @@ export default {
   data: () => ({
     deleteRef: "",
     ListingResults: [],
-    ListingURLS: [],
     Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
     ActiveSort: "",
     PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
@@ -177,6 +152,13 @@ export default {
     seller: null,
     editMode: false,
     userMatch: false,
+    //Populating profile fields
+    shopUsername: "",
+    storeName: "",
+    buyerName: "",
+    email: "",
+    contactNo: "",
+    address: "",
   }),
 
   async mounted() {
@@ -188,14 +170,11 @@ export default {
       const listings = await this.retrieveSellerListings(this.$route.params.id);
       for (let i = 0; i < listings.length; i++) {
         var ref = listings[i];
-        var imageURL = await this.retrieveImage(ref.name, ref.storeName);
+        var imageURL = await this.retrieveImage(ref.imageRef);
         listings[i]["imageURL"] = imageURL;
-        listings[i]["docID"] = this.ListingURLS[i];
       }
       this.ListingResults = listings;
       console.log(this.ListingResults);
-    } else {
-      console.log("test");
     }
   },
   methods: {
@@ -204,6 +183,15 @@ export default {
       var sellerType = null;
       await docRef.get().then((doc) => {
         sellerType = doc.data().seller;
+        if (sellerType) {
+          this.storeName = doc.data().shopName;
+        } else {
+          this.buyerName = doc.data().firstName + " " + doc.data().lastName;
+        }
+        this.shopUsername = doc.data().username;
+        this.email = doc.data().email;
+        this.contactNo = doc.data().number;
+        this.address = doc.data().address;
       });
       return sellerType;
     },
@@ -212,17 +200,16 @@ export default {
       var listings = [];
       await docRef.get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          listings.push(doc.data());
-          this.ListingURLS.push(doc.id);
+          listings.push({ ...doc.data(), docID: doc.id });
         });
       });
       return listings;
     },
-    async retrieveImage(productName, storeName) {
+    async retrieveImage(imageRef) {
       const storageRef = firebase.storage().ref();
       var imageURL = "";
       await storageRef
-        .child("listings/" + productName + storeName)
+        .child(imageRef)
         .getDownloadURL()
         .then((url) => {
           if (url) {

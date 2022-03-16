@@ -266,7 +266,7 @@ export default {
         .catch((error) => {
           alert(error);
         });
-      alert("Listing created");
+      alert("Listing edited");
     },
   },
   computed: {
