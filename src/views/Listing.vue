@@ -32,7 +32,9 @@
       </v-col>
       <v-col :cols="6" class="offset-md-1">
         <v-row
-          ><h3>{{ shopName }}</h3></v-row
+          ><v-btn :to="shopRoute" text plain dense class="pa-0"
+            ><h3>@{{ shopName }}</h3></v-btn
+          ></v-row
         >
         <v-row
           ><h1>{{ productName }}</h1></v-row
@@ -173,7 +175,6 @@ export default {
       .then((doc) => {
         const allData = doc.data();
         this.fullListing = allData;
-        this.shopName = allData.storeName;
         this.productName = allData.name;
         this.productDetails = allData.qtyDesc;
         this.rating = allData.ReviewScoreCount
@@ -292,6 +293,9 @@ export default {
   computed: {
     isSeller() {
       return this.$store.state.isSeller;
+    },
+    shopRoute() {
+      return "/Profile/" + this.$route.params.user;
     },
   },
 };
