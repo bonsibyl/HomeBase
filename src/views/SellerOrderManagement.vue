@@ -9,7 +9,6 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-        <v-main>
             <v-container class="dashboardContainer">
                 <h1 style="text-align: left">Order Management</h1><hr>
                 <v-data-table :headers="headers" :items="orders">
@@ -28,7 +27,6 @@
                     
                 </v-data-table>
             </v-container>
-        </v-main>
     </v-app>
 </template>
 
@@ -99,8 +97,9 @@ hr {
 }
 
 .dashboardContainer {
-    width: 93%;
+    width: 80%;
     margin-top: 2%;
+    margin-left: 300px;
 }
 
 .v-data-table::v-deep th {

@@ -55,14 +55,14 @@ export default {
   text-align: center;
 
   .landing-rectangle {
-    padding: 50px;
+    padding: 3%;
     background-color: rgba(255, 255, 255, 0.7);
     position: relative;
     display: flex;
     flex-direction: column;
     left: 10%;
     top: 10%;
-    width: 25%;
+    width: 32%;
     .supporting-header {
       font-size: 25px;
       text-align: center;
