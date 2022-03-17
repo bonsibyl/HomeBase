@@ -91,13 +91,7 @@
               </v-menu>
             </v-col>
             <v-col cols="auto">
-              <v-menu
-                close-on-click="false"
-                close-on-content-click="false"
-                open-on-hover
-                offset-y
-                transition="slide-y-transition"
-              >
+              <v-menu open-on-hover offset-y transition="slide-y-transition">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn outlined v-bind="attrs" v-on="on">
                     More Filters
@@ -131,6 +125,9 @@
           </v-row>
           <v-divider id="divider1"></v-divider>
           <v-row>
+            <v-col v-show="filteredListings.length === 0">
+              <h2 class="font-weight-bold">No results found :(</h2>
+            </v-col>
             <v-col
               v-for="result in filteredListings"
               :key="result.name"
@@ -152,7 +149,21 @@
                       height="100%"
                       :src="result.imageURL"
                     >
-                      <v-card-title>{{ result.name }}</v-card-title>
+                      <v-card-title class="font-weight-medium">{{
+                        result.name
+                      }}</v-card-title>
+                      <v-card-subtitle class="py-0">{{
+                        result.qtyDesc
+                      }}</v-card-subtitle>
+                      <v-card-subtitle class="pt-0">{{
+                        "$" + result.price
+                      }}</v-card-subtitle>
+                      <v-card-subtitle class="pt-0">{{
+                        result.tags
+                      }}</v-card-subtitle>
+                      <v-card-subtitle class="pt-0">{{
+                        result.dateCreated.toDate()
+                      }}</v-card-subtitle>
                     </v-img>
                     <v-fade-transition>
                       <v-overlay v-if="hover" absolute color="#fff">
@@ -181,7 +192,7 @@ export default {
   data: () => ({
     ListingResults: [],
     Sorts: ["Oldest", "Newest", "Price Asc", "Price Desc"],
-    ActiveSort: "",
+    ActiveSort: null,
     PriceRanges: [
       {
         lower: 1,
@@ -232,13 +243,19 @@ export default {
         filteredResults = this.filterBySearch(filteredResults);
       }
       //filter by tags
-      filteredResults = this.filterByTags(filteredResults);
-
+      if (this.ActiveFilters.length > 0) {
+        filteredResults = this.filterByTags(filteredResults);
+      }
+      //filter by price
+      if (this.ActiveRanges.length > 0) {
+        filteredResults = this.filterByPrice(filteredResults);
+      }
+      //apply sort
+      if (this.ActiveSort) {
+        filteredResults = this.applySort(filteredResults);
+      }
       return filteredResults;
     },
-  },
-  watch: {
-    filteredListings() {},
   },
   methods: {
     async retrieveListings() {
@@ -286,9 +303,34 @@ export default {
       );
     },
     filterByPrice(results) {
-      return results.filter((listing) =>
-        this.ActiveFilters.every((x) => listing.tags.indexOf(x) > -1)
-      );
+      let ranges = this.ActiveRanges;
+      function checkWithinRanges(listing) {
+        for (var i = 0; i < ranges.length; i++) {
+          if (
+            listing.price >= ranges[i].lower &&
+            listing.price <= ranges[i].upper
+          ) {
+            return true;
+          }
+        }
+      }
+      return results.filter(checkWithinRanges);
+    },
+    applySort(results) {
+      switch (this.ActiveSort) {
+        case "Oldest":
+          return results.sort(
+            (a, b) => a.dateCreated.toDate() - b.dateCreated.toDate()
+          );
+        case "Newest":
+          return results.sort(
+            (a, b) => b.dateCreated.toDate() - a.dateCreated.toDate()
+          );
+        case "Price Asc":
+          return results.sort((a, b) => a.price - b.price);
+        case "Price Desc":
+          return results.sort((a, b) => b.price - a.price);
+      }
     },
   },
 };
