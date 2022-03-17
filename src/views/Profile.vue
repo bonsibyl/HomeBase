@@ -107,7 +107,7 @@
                   </v-btn>
                   <v-btn
                     v-if="editMode"
-                    :to="editRoute + 'Ba9xA09iA0TQWxne3YBU'"
+                    :to="editRoute + result.docID"
                     class="edit-listing-buttons"
                     text
                     plain
