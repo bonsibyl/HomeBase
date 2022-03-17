@@ -10,7 +10,6 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-        <v-main>
             <v-container class="dashboardContainer">
                 <v-row id="headerrow">
                     <v-col>
@@ -38,10 +37,8 @@
                             </v-card-text>
                         </v-card>
                     </v-col>
-                </v-row>
-                         
+                </v-row>         
             </v-container>
-        </v-main>
     </v-app>
     </div>
 </template>
@@ -139,8 +136,9 @@ h2 {
 }
 
 .dashboardContainer {
-    width: 93%;
+    width: 80%;
     margin-top: 2%;
+    margin-left: 300px;
 }
 
 .metricNumber {
