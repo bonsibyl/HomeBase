@@ -14,35 +14,32 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-main>
-      <v-container class="dashboardContainer">
-        <h1 style="text-align: left">Shop Reviews</h1>
-        <hr />
+    <v-container class="dashboardContainer">
+      <h1 style="text-align: left">Shop Reviews</h1>
+      <hr />
 
-        <v-row align="center">
-          <v-col
-            :cols="12"
-            v-for="review in reviewDetails"
-            :key="review"
-            class="review-spacing"
-          >
-            <v-row class="grey lighten-3 rounded-lg">
-              <v-col :cols="0" class="mr-0 reduce-space-circle">
-                <div class="circle">{{ review.name }}</div>
-              </v-col>
-              <v-col :cols="11" class="pt-md-6 ml-0">
-                <RatingStars :rating="review.rating" :isReview="true" />
-              </v-col>
-              <v-col :cols="12"
-                ><strong>{{ review.title }}</strong></v-col
-              >
-              <v-col :cols="12">{{ review.description }}</v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-
-      </v-container>
-    </v-main>
+      <v-row align="center">
+        <v-col
+          :cols="12"
+          v-for="review in reviewDetails"
+          :key="review"
+          class="review-spacing"
+        >
+          <v-row class="grey lighten-3 rounded-lg">
+            <v-col :cols="0" class="mr-0 reduce-space-circle">
+              <div class="circle">{{ review.name }}</div>
+            </v-col>
+            <v-col :cols="11" class="pt-md-6 ml-0">
+              <RatingStars :rating="review.rating" :isReview="true" />
+            </v-col>
+            <v-col :cols="12"
+              ><strong>{{ review.title }}</strong></v-col
+            >
+            <v-col :cols="12">{{ review.description }}</v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-app>
 </template>
 
@@ -129,8 +126,9 @@ hr {
 }
 
 .dashboardContainer {
-  width: 93%;
+  width: 80%;
   margin-top: 2%;
+  margin-left: 300px;
 }
 
 .v-data-table::v-deep th {
