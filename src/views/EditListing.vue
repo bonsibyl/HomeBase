@@ -230,7 +230,10 @@ export default {
       var imageUpload = this.uploaded;
       var listingName = this.$route.params.user;
       if (this.uploaded) {
-        await storageRef.child(this.imageURL).delete();
+        if (this.imageURL) {
+          console.log(this.imageURL);
+          await storageRef.child(this.imageURL).delete();
+        }
         await storageRef
           .child("listings/" + this.productName + listingName)
           .put(imageUpload)
