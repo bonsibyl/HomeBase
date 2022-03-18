@@ -37,36 +37,18 @@
           <v-row id="filterrow" align="end">
             <v-col cols="auto">
               <v-btn
-                v-if="!isOrder"
-                class="green--text text--darken-4"
+                :color="PastOrder === false ? 'primary' : 'grey'"
                 text
-                disabled
+                @click="toggleCurrentOrder"
               >
-                <strong>Your Recommendations</strong>
+                <strong>Current Orders</strong>
               </v-btn>
               <v-btn
-                v-else
-                class="grey--text text--darken-4"
+                :color="PastOrder === true ? 'primary' : 'grey'"
                 text
-                @click="toggleOrder"
+                @click="togglePastOrder"
               >
-                <strong>Your Recommendations</strong>
-              </v-btn>
-              <v-btn
-                v-if="isOrder"
-                class="green--text text--darken-4"
-                text
-                disabled
-              >
-                <strong>Your Orders</strong>
-              </v-btn>
-              <v-btn
-                v-else
-                class="grey--text text--darken-4"
-                text
-                @click="toggleOrder"
-              >
-                <strong>Your Orders</strong>
+                <strong>Past Orders</strong>
               </v-btn>
             </v-col>
             <v-spacer></v-spacer>
@@ -80,20 +62,16 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn outlined v-bind="attrs" v-on="on">
-                    Filter By
+                    Sort By
                     <v-icon right>mdi-tune</v-icon>
                   </v-btn>
                 </template>
                 <v-card>
-                  <v-list-item-group v-model="ActiveFilters" multiple>
-                    <template
-                      v-for="(Filter, i) in !isOrder
-                        ? RecFilters
-                        : OrderFilters"
-                    >
+                  <v-list-item-group v-model="ActiveSort">
+                    <template v-for="(Sort, i) in Sorts">
                       <v-list-item
-                        :key="`Filter-${i}`"
-                        :value="Filter"
+                        :key="`Sort-${i}`"
+                        :value="Sort"
                         @click.stop.prevent
                       >
                         <template v-slot:default="{ active }">
@@ -102,7 +80,7 @@
                           </v-list-item-action>
                           <v-list-item-content>
                             <v-list-item-title
-                              v-text="Filter"
+                              v-text="Sort"
                             ></v-list-item-title>
                           </v-list-item-content>
                         </template>
@@ -114,39 +92,7 @@
             </v-col>
           </v-row>
           <v-divider id="divider1"></v-divider>
-          <v-row v-if="!isOrder">
-            <v-col v-for="result in ListingResults" :key="result.name" cols="4">
-              <v-hover>
-                <template v-slot:default="{ hover }">
-                  <v-card
-                    class="rounded-lg test"
-                    min-width="150"
-                    min-height="100"
-                    height="400"
-                    :to="'/listing/' + result.storeName + '/' + result.docID"
-                    hover
-                  >
-                    <v-img
-                      gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
-                      class="white--text align-end bottom-gradient test"
-                      height="100%"
-                      :src="result.imageURL"
-                    >
-                      <v-card-title>{{ result.name }}</v-card-title>
-                    </v-img>
-                    <v-fade-transition>
-                      <v-overlay v-if="hover" absolute color="#fff">
-                        <v-btn color="#f5e4d0" class="black--text"
-                          >View Listing</v-btn
-                        >
-                      </v-overlay>
-                    </v-fade-transition>
-                  </v-card>
-                </template>
-              </v-hover>
-            </v-col>
-          </v-row>
-          <v-row v-else>
+          <v-row>
             <v-col :cols="12">
               <v-row class="order-headers ml-4 mt-4">
                 <v-col>Date</v-col>
@@ -160,18 +106,18 @@
             <v-col
               class="pl-5"
               :cols="12"
-              v-for="order in OrderInformation"
-              :key="order"
+              v-for="order in filteredOrders"
+              :key="order.docID"
             >
               <v-row>
-                <v-col>{{ order.date }}</v-col>
+                <v-col>{{ order.date.toDate().toDateString() }}</v-col>
                 <v-col
                   ><u
                     ><strong>{{ order.bakery }}</strong></u
                   ></v-col
                 >
                 <v-col>
-                  <v-row dense v-for="each in order.details" :key="each">
+                  <v-row dense v-for="each in order.details" :key="each.id">
                     <v-col :cols="12">
                       <u>{{ each.name }}</u>
                     </v-col>
@@ -185,20 +131,21 @@
                 </v-col>
                 <v-col>
                   <v-row>
-                    <v-btn
-                      v-if="order.status == 'fulfilled'"
-                      color="green lighten-1"
-                      >Fulfilled
+                    <v-btn :color="btnColor(order.status)"
+                      >{{ order.status }}
                     </v-btn>
-                    <v-btn v-else color="orange lighten-1">Processing</v-btn>
                   </v-row>
-                  <v-row class="pt-4" v-if="order.status == 'fulfilled'">
-                    <v-btn color="yellow darken-2" @click="showModal"
+                  <v-row class="pt-4">
+                    <v-btn
+                      v-if="order.status == 'Fulfilled'"
+                      color="yellow darken-2"
+                      @click="showModal"
                       >Leave a review!</v-btn
                     >
+                    <v-btn v-if="order.status == 'Payment Pending'" color="yellow darken-2"> Click to Pay! </v-btn>
                   </v-row>
                 </v-col>
-                <v-col>{{ order.total }}</v-col>
+                <v-col>{{ `$` + order.total }}</v-col>
               </v-row>
               <br />
               <v-divider></v-divider>
@@ -219,73 +166,10 @@ export default {
   components: { ReviewForm },
   name: "UserProfile",
   data: () => ({
-    isOrder: false,
-    ListingResults: [],
-    Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
-    ActiveSort: "",
-    PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
-    ActiveRanges: [],
-    RecFilters: ["Vegan", "Halal", "Gluten-Free"],
-    OrderFilters: ["Price", "Date", "Completed"],
-    ActiveFilters: [],
-    OrderInformation: [
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-        status: "fulfilled",
-        total: "$34.80",
-      },
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-        status: "processing",
-        total: "$34.80",
-      },
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-        status: "processing",
-        total: "$34.80",
-      },
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-        status: "fulfilled",
-        total: "$34.80",
-      },
-    ],
+    PastOrder: false,
+    Sorts: ["Newest", "Oldest"],
+    ActiveSort: "Newest",
+    Orders: [],
     userMatch: false,
     //Populating profile fields
     shopUsername: "",
@@ -301,19 +185,44 @@ export default {
     const information = await this.retrieveUserType(this.$route.params.id);
     this.seller = information;
     if (!this.seller) {
-      const listings = await this.retrieveRecListings();
-      for (let i = 0; i < listings.length; i++) {
-        var ref = listings[i];
-        var imageURL = await this.retrieveImage(ref.imageRef);
-        listings[i]["imageURL"] = imageURL;
-      }
-      this.ListingResults = listings;
+      const orders = await this.retrieveOrders();
+      this.Orders = orders;
     }
   },
+  computed: {
+    filteredOrders() {
+      var filteredOrders = this.Orders;
+      //console.log(filteredOrders)
+      if (this.PastOrder) {
+        filteredOrders = this.filterByPast(filteredOrders);
+      } else {
+        filteredOrders = this.filterByCurrent(filteredOrders);
+        //console.log(filteredOrders)
+      }
+      filteredOrders = this.applySort(filteredOrders);
+      return filteredOrders;
+    },
+  },
   methods: {
-    toggleOrder() {
-      this.isOrder = !this.isOrder;
-      this.ActiveFilters = [];
+    btnColor(status) {
+      switch (status) {
+        case "Fulfilled":
+          return "green lighten-2";
+        case "Payment Pending":
+          return "#FC642D";
+        case "Processing":
+          return "#4285F4";
+        case "Cancelled":
+          return "#FF5A5F";
+      }
+    },
+    togglePastOrder() {
+      this.PastOrder = true;
+      this.ActiveSort = "Newest";
+    },
+    toggleCurrentOrder() {
+      this.PastOrder = false;
+      this.ActiveSort = "Newest";
     },
     async retrieveUserType(id) {
       const docRef = db.collection("users").doc(id);
@@ -332,15 +241,17 @@ export default {
       });
       return sellerType;
     },
-    async retrieveRecListings() {
-      const docRef = db.collection("listings");
-      var listings = [];
+    async retrieveOrders() {
+      const docRef = db
+        .collection("orders")
+        .where("buyerID", "==", this.$route.params.id);
+      var orders = [];
       await docRef.get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          listings.push({ ...doc.data(), docID: doc.id });
+          orders.push({ ...doc.data(), docID: doc.id });
         });
       });
-      return listings;
+      return orders;
     },
     async retrieveImage(imageRef) {
       const storageRef = firebase.storage().ref();
@@ -366,6 +277,28 @@ export default {
     },
     showModal() {
       this.$modal.show("review");
+    },
+    applySort(results) {
+      switch (this.ActiveSort) {
+        case "Oldest":
+          return results.sort((a, b) => a.date.toDate() - b.date.toDate());
+        case "Newest":
+          return results.sort((a, b) => b.date.toDate() - a.date.toDate());
+      }
+    },
+    filterByCurrent(orders) {
+      return orders.filter((order) => {
+        if (order.status == "Payment Pending" || order.status == "Processing") {
+          return true;
+        }
+      });
+    },
+    filterByPast(orders) {
+      return orders.filter((order) => {
+        if (order.status === "Fulfilled" || order.status === "Cancelled") {
+          return true;
+        }
+      });
     },
   },
 };
