@@ -9,6 +9,7 @@
     <div class="box">
       <div class="partition" id="partition-register">
         <div class="partition-title">
+          <img class="paylahQR" src="../assets/blogPhotos/paylah.jpeg" alt="">
           <br />
           We have received your order with thanks! <br /><br />
           To proceed, please upload a screenshot of your PayLah! payment to
@@ -94,5 +95,11 @@ button {
         margin: 0px !important;
         min-width: 0px !important;
     }
+}
+.paylahQR {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
 }
 </style>

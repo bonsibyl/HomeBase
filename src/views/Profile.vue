@@ -79,7 +79,14 @@
           </v-row>
           <v-divider id="divider1"></v-divider>
           <v-row>
-            <v-col v-for="result in ListingResults" :key="result.name" cols="4">
+            <v-col v-show="filteredListings.length === 0">
+              <h2 class="font-weight-bold">No results found :(</h2>
+            </v-col>
+            <v-col
+              v-for="result in filteredListings"
+              :key="result.name"
+              cols="4"
+            >
               <v-card
                 class="rounded-lg test"
                 min-width="150"
@@ -115,7 +122,15 @@
                   >
                     <v-icon dark>mdi-pencil</v-icon>
                   </v-btn>
-                  <v-card-title>{{ result.name }}</v-card-title>
+                  <v-card-title class="font-weight-medium">{{
+                    result.name
+                  }}</v-card-title>
+                  <v-card-subtitle class="py-0">{{
+                    result.qtyDesc
+                  }}</v-card-subtitle>
+                  <v-card-subtitle class="pt-0">{{
+                    "$" + result.price
+                  }}</v-card-subtitle>
                 </v-img></v-card
               >
             </v-col>
@@ -144,10 +159,6 @@ export default {
   data: () => ({
     deleteRef: "",
     ListingResults: [],
-    Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
-    ActiveSort: "",
-    PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
-    ActiveRanges: [],
     Filters: ["Vegan", "Halal", "Gluten-Free"],
     ActiveFilters: [],
     seller: null,
@@ -246,6 +257,11 @@ export default {
       var storageRef = firebase.storage().ref();
       storageRef.child(listing.imageRef).delete();
     },
+    filterByTags(results) {
+      return results.filter((listing) =>
+        this.ActiveFilters.every((x) => listing.tags.indexOf(x) > -1)
+      );
+    },
   },
   computed: {
     checkRoute() {
@@ -256,6 +272,14 @@ export default {
     },
     editRoute() {
       return "/EditListing/" + this.$route.params.id + "/";
+    },
+    filteredListings() {
+      if (this.ActiveFilters.length === 0) {
+        return this.ListingResults;
+      }
+      var filteredResults = this.ListingResults;
+      filteredResults = this.filterByTags(filteredResults);
+      return filteredResults;
     },
   },
 };

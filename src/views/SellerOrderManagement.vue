@@ -14,25 +14,23 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-main>
-      <v-container class="dashboardContainer">
-        <h1 style="text-align: left">Order Management</h1>
-        <hr />
-        <v-data-table :headers="headers" :items="orders">
-          <template v-slot:item.orderid="{ item }">
-            <v-chip :to="getLink(item.orderid)">
-              {{ item.orderid }}
-            </v-chip>
-          </template>
+    <v-container class="dashboardContainer">
+      <h1 style="text-align: left">Order Management</h1>
+      <hr />
+      <v-data-table :headers="headers" :items="orders">
+        <template v-slot:item.orderid="{ item }">
+          <v-chip :to="getLink(item.orderid)">
+            {{ item.orderid }}
+          </v-chip>
+        </template>
 
-          <template v-slot:item.orderstatus="{ item }">
-            <v-chip :color="getColor(item.orderstatus)" dark>
-              {{ item.orderstatus }}
-            </v-chip>
-          </template>
-        </v-data-table>
-      </v-container>
-    </v-main>
+        <template v-slot:item.orderstatus="{ item }">
+          <v-chip :color="getColor(item.orderstatus)" dark>
+            {{ item.orderstatus }}
+          </v-chip>
+        </template>
+      </v-data-table>
+    </v-container>
   </v-app>
 </template>
 
@@ -111,8 +109,14 @@ hr {
 }
 
 .dashboardContainer {
+<<<<<<< HEAD
   width: 93%;
   margin-top: 2%;
+=======
+    width: 80%;
+    margin-top: 2%;
+    margin-left: 300px;
+>>>>>>> main
 }
 
 .v-data-table::v-deep th {

@@ -48,13 +48,13 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item>
-                    <v-list-item-title
+                  <v-list-item >
+                    <v-list-item-title class="text-center"
                       >Welcome,
                       {{ this.$store.state.profileUsername }}</v-list-item-title
                     >
                   </v-list-item>
-                  <v-divider></v-divider>
+                  <v-divider class="mt-0"></v-divider>
                   <v-list-group
                     prepend-icon="mdi-account-circle"
                     @click.stop.prevent
@@ -115,10 +115,10 @@
           <v-list>
             <v-list-item>
               <v-list-item-icon>
-                <v-icon color="#A76E2A">mdi-cart</v-icon>
+                <v-icon large color="#A76E2A">mdi-cart</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title class="font-weight-bold"
+                <v-list-item-title class="font-weight-bold text-h5"
                   >Shopping Cart</v-list-item-title
                 >
               </v-list-item-content>
