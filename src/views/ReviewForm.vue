@@ -13,14 +13,14 @@
           to tell us how we fared.
         </div>
         <div class="partition-form">
-          <form autocomplete="false">
+          <v-form ref="form" lazy-validation>
             <v-col
               class="pl-2"
               :cols="12"
-              v-for="order in OrderInformation"
-              :key="order"
+              v-for="(order, index) in OrderInformation"
+              :key="index"
             >
-              <v-row dense v-for="each in order.details" :key="each">
+              <v-row dense v-for="(each, index) in order.details" :key="index">
                 <v-col :cols="1">
                   <v-card height="60" width="60" class="order-img">
                     <v-img
@@ -36,25 +36,46 @@
                   <br />
                   Qty: {{ each.quantity }}
                 </v-col>
-                <v-col>
-                  <v-container></v-container> <star-rating star-size="20" />
+                <v-col :cols="8">
+                  <v-container></v-container>
+                  <star-rating :star-size="20" v-model="ratingStar[index]" />
                 </v-col>
-                <input
-                  id="n-title"
-                  type="text"
-                  placeholder="Summary of Your Review"
-                />
-                <input id="n-review" type="text" placeholder="Write a review" />
+                <v-col :cols="12">
+                  <v-text-field
+                    id="n-title"
+                    type="text"
+                    placeholder="Summary of Your Review"
+                    required
+                    :rules="titleRules"
+                    counter="30"
+                  />
+                </v-col>
+                <v-col :cols="12">
+                  <v-textarea
+                    id="n-review"
+                    type="text"
+                    placeholder="Write a review"
+                    required
+                    :rules="contentRules"
+                    counter="250"
+                  />
+                </v-col>
                 <v-container></v-container>
               </v-row>
             </v-col>
-          </form>
-
-          <div class="button-set">
-            <button id="submit-btn" @click="submit">Submit Review</button>
-            <button id="cancel-btn" @click="cancel">Cancel</button>
-            <div style="margin-bottom: 20px"></div>
-          </div>
+            <div class="button-set">
+              <v-btn id="submit-btn" @click="submit"> Submit Review </v-btn>
+              <v-btn id="cancel-btn" @click="cancel">Cancel</v-btn>
+              <div style="margin-bottom: 20px"></div>
+            </div>
+            <v-snackbar
+              v-model="notRatedAlert"
+              centered
+              :timeout="2000"
+              color="red"
+              >Please provide a rating to all items!</v-snackbar
+            >
+          </v-form>
         </div>
       </div>
     </div>
@@ -63,31 +84,78 @@
 <script>
 const MODAL_WIDTH = 656;
 import StarRating from "vue-star-rating";
+import firebase from "firebase/app";
 export default {
   components: { StarRating },
   name: "ReviewModal",
-  data: () => ({
-    OrderInformation: [
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-      },
-    ],
-  }),
+  data() {
+    return {
+      OrderInfo: [
+        {
+          bakery: "nuttybutterybakery",
+          date: "01/02/2022",
+          orders: [
+            {
+              name: "Almond Financiers",
+              quantityDesc: "Box of 8",
+              quantity: 1,
+            },
+            {
+              name: "Chocolate Macarons",
+              quantityDesc: "Box of 12",
+              quantity: 1,
+            },
+          ],
+        },
+      ],
+      OrderInformation: [
+        {
+          date: "01/02/2022",
+          bakery: "nuttybutterybakery",
+          details: [
+            {
+              name: "Almond Financiers",
+              quantityDesc: "Box of 8",
+              quantity: 1,
+            },
+            {
+              name: "Chocolate Macarons",
+              quantityDesc: "Box of 12",
+              quantity: 1,
+            },
+          ],
+        },
+      ],
+      titleRules: [
+        (v) => !!v || "Title is required",
+        (v) => (v && v.length <= 30) || "Title must be less than 30 characters",
+      ],
+      contentRules: [
+        (v) => !!v || "Review is required",
+        (v) =>
+          (v && v.length <= 250) || "Review must be less than 250 characters",
+      ],
+      ratingStar: [],
+      notRatedAlert: false,
+    };
+  },
+  props: {
+    reviewRef: Object,
+  },
   created() {
     this.modalWidth =
       window.innerWidth < MODAL_WIDTH ? MODAL_WIDTH / 2 : MODAL_WIDTH;
   },
   methods: {
     submit() {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
+      if (this.ratingStar.length < this.reviewRef.details.length) {
+        this.notRatedAlert = true;
+        return;
+      }
+      console.log(firebase.auth().currentUser.email);
       alert("Submit Review");
     },
     cancel() {

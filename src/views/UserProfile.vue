@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <review-form />
+    <review-form :reviewRef="this.reviewRef" />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
@@ -115,7 +115,11 @@
           </v-row>
           <v-divider id="divider1"></v-divider>
           <v-row v-if="!isOrder">
-            <v-col v-for="result in ListingResults" :key="result.name" cols="4">
+            <v-col
+              v-for="(result, index) in ListingResults"
+              :key="index"
+              cols="4"
+            >
               <v-card
                 class="rounded-lg test"
                 min-width="150"
@@ -149,8 +153,8 @@
             <v-col
               class="pl-5"
               :cols="12"
-              v-for="order in OrderInformation"
-              :key="order"
+              v-for="(order, index) in OrderInformation"
+              :key="index"
             >
               <v-row>
                 <v-col>{{ order.date }}</v-col>
@@ -160,7 +164,11 @@
                   ></v-col
                 >
                 <v-col>
-                  <v-row dense v-for="each in order.details" :key="each">
+                  <v-row
+                    dense
+                    v-for="(each, index) in order.details"
+                    :key="index"
+                  >
                     <v-col :cols="12">
                       <u>{{ each.name }}</u>
                     </v-col>
@@ -182,7 +190,7 @@
                     <v-btn v-else color="orange lighten-1">Processing</v-btn>
                   </v-row>
                   <v-row class="pt-4" v-if="order.status == 'fulfilled'">
-                    <v-btn color="yellow darken-2" @click="showModal"
+                    <v-btn color="yellow darken-2" @click="showModal(order)"
                       >Leave a review!</v-btn
                     >
                   </v-row>
@@ -283,6 +291,7 @@ export default {
     email: "",
     contactNo: "",
     address: "",
+    reviewRef: null,
   }),
   async mounted() {
     const user = firebase.auth().currentUser.uid;
@@ -353,7 +362,8 @@ export default {
         });
       return imageURL;
     },
-    showModal() {
+    showModal(details) {
+      this.reviewRef = details;
       this.$modal.show("review");
     },
   },

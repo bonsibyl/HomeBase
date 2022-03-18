@@ -30,7 +30,7 @@ export default {
     pages: [
       ["Overview", "/sellerorderoverview"],
       ["Orders", "/sellerordermanagement"],
-      ["Reviews", "/"],
+      ["Reviews", "/reviewoverview"],
       ["Analytics", "/dashboard"],
     ],
     headers: [
@@ -84,17 +84,17 @@ export default {
 
 <style scoped>
 #appcontainer {
-    background: url("../assets/SellerBackground.png");
-    background-size: cover;
+  background: url("../assets/SellerBackground.png");
+  background-size: cover;
 }
 
 hr {
-    margin-top: 1%;
+  margin-top: 1%;
 }
 
 .dashboardContainer {
-    width: 93%;
-    margin-top: 2%;
+  width: 93%;
+  margin-top: 2%;
 }
 
 .v-data-table::v-deep th {
@@ -103,5 +103,4 @@ hr {
 .v-data-table::v-deep td {
   font-size: 17px !important;
 }
-
 </style>
