@@ -48,13 +48,13 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item>
-                    <v-list-item-title
+                  <v-list-item >
+                    <v-list-item-title class="text-center"
                       >Welcome,
                       {{ this.$store.state.profileUsername }}</v-list-item-title
                     >
                   </v-list-item>
-                  <v-divider></v-divider>
+                  <v-divider class="mt-0"></v-divider>
                   <v-list-group
                     prepend-icon="mdi-account-circle"
                     @click.stop.prevent

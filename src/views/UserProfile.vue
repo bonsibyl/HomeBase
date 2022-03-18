@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <review-form />
+    <ScreenshotUpload />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
         <div id="content">
@@ -103,6 +104,9 @@
               </v-row>
               <v-divider></v-divider>
             </v-col>
+            <v-col v-show="filteredOrders.length === 0">
+              <h2 class="font-weight-bold">No orders yet :(</h2>
+            </v-col>
             <v-col
               class="pl-5"
               :cols="12"
@@ -110,7 +114,7 @@
               :key="order.docID"
             >
               <v-row>
-                <v-col>{{ order.date.toDate().toDateString() }}</v-col>
+                <v-col>{{ order.date.toDate().toLocaleDateString() }}</v-col>
                 <v-col
                   ><u
                     ><strong>{{ order.bakery }}</strong></u
@@ -142,7 +146,13 @@
                       @click="showModal"
                       >Leave a review!</v-btn
                     >
-                    <v-btn v-if="order.status == 'Payment Pending'" color="yellow darken-2"> Click to Pay! </v-btn>
+                    <v-btn
+                      v-if="order.status == 'Payment Pending'"
+                      color="teal lighten-2"
+                      @click="showPayment"
+                    >
+                      Click to Pay!
+                    </v-btn>
                   </v-row>
                 </v-col>
                 <v-col>{{ `$` + order.total }}</v-col>
@@ -159,11 +169,12 @@
 
 <script>
 import ReviewForm from "./ReviewForm.vue";
+import ScreenshotUpload from "./ScreenshotUpload.vue";
 import db from "../firebase/firebaseInit";
 import firebase from "firebase/app";
 
 export default {
-  components: { ReviewForm },
+  components: { ReviewForm, ScreenshotUpload },
   name: "UserProfile",
   data: () => ({
     PastOrder: false,
@@ -209,11 +220,11 @@ export default {
         case "Fulfilled":
           return "green lighten-2";
         case "Payment Pending":
-          return "#FC642D";
+          return "orange lighten-2";
         case "Processing":
-          return "#4285F4";
+          return "light-blue lighten-1";
         case "Cancelled":
-          return "#FF5A5F";
+          return "red lighten-1";
       }
     },
     togglePastOrder() {
@@ -277,6 +288,9 @@ export default {
     },
     showModal() {
       this.$modal.show("review");
+    },
+    showPayment() {
+      this.$modal.show("screenshot");
     },
     applySort(results) {
       switch (this.ActiveSort) {
