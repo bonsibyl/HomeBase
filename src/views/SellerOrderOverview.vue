@@ -30,7 +30,11 @@ export default {
     pages: [
       ["Overview", "/sellerorderoverview"],
       ["Orders", "/sellerordermanagement"],
+<<<<<<< HEAD
       ["Reviews", "/reviewoverview"],
+=======
+      ["Reviews", "/sellerreviews"],
+>>>>>>> main
       ["Analytics", "/dashboard"],
     ],
     headers: [

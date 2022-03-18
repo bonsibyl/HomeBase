@@ -63,6 +63,7 @@
 
 <script>
 export default {
+<<<<<<< HEAD
   data: () => ({
     pages: [
       ["Overview", "/sellerorderoverview"],
@@ -95,6 +96,58 @@ export default {
     ],
   }),
 };
+=======
+    data: () => ({
+        pages: [
+            ["Overview", "/sellerorderoverview"],
+            ["Orders", "/sellerordermanagement"],
+            ["Reviews", "/sellerreviews"],
+            ["Analytics", "/dashboard"]
+        ],
+        metrics: [
+            ["Number of Visits", 100, "mdi-chart-line", "red"],
+            ["Revenue", "$2000", "mdi-currency-usd", "green"],
+            ["Average Review Score", 3, "mdi-thumb-up", "blue"],
+            ["Reviews", 50, "mdi-message-draw", "orange"],
+        ],
+        value: [
+            423,
+            446,
+            675,
+            510,
+            590,
+            750,
+            850,
+            905,
+        ],
+        labels: [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+        ],
+        chartData: [
+            {
+            name: "Sales ($)",
+            data: {
+            1: 423,
+            2: 446,
+            3: 675,
+            4: 510,
+            5: 590,
+            6: 750,
+            7: 850,
+            8: 905,
+            }
+        }],
+    })
+
+}
+>>>>>>> main
 </script>
 
 <style scoped>

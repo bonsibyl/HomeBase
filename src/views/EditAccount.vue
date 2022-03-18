@@ -8,7 +8,7 @@
     <div class="container" v-if="$store.state.seller">
       <h2><b>Account Settings</b></h2>
       <div class="profile-info">
-        <div class="initials">{{ $store.state.profileInitials }}</div>
+        <div class="sellerDisplay">{{ username }}</div>
         <div class="admin-badge">
           <adminIcon class="icon" />
           <span>Business</span>
@@ -192,7 +192,7 @@ export default {
         height: 80px;
         font-size: 32px;
         text-transform: uppercase;
-        background-color: #818181;
+        background-color: #44703e;
         color: #fff;
         display: flex;
         align-self: center;
@@ -208,7 +208,7 @@ export default {
         font-weight: bold;
         padding: 8px 24px;
         border-radius: 8px;
-        background-color: #86560e;
+        background-color: #7b8997;
         margin: 16px 0;
         text-align: center;
         text-transform: capitalize;
@@ -240,7 +240,7 @@ export default {
       }
       button {
         align-self: center;
-        background-color: rgb(50, 126, 34);
+        background-color: rgb(185, 145, 93);
         transition: 500ms ease all;
         cursor: pointer;
         padding: 12px 24px;
@@ -248,14 +248,28 @@ export default {
         border-radius: 5px;
         color: white;
         margin-top: 15px;
-        margin-bottom: 25px; 
+        margin-bottom: 25px;
         font-weight: bold;
       }
 
       button:hover {
-        background-color: rgb(63, 158, 44);
+        background-color: rgb(105, 153, 51);
       }
     }
   }
+}
+
+.sellerDisplay {
+  position: initial;
+  width: 20%;
+  padding: 1%;
+  font-size: 30px;
+  background-color: #fffdf6;
+  color: rgb(156, 92, 18);
+  display: flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
 }
 </style>
