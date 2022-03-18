@@ -23,12 +23,9 @@ import SellerOrderOverview from "../views/SellerOrderOverview.vue";
 import SellerOrderManagement from "../views/SellerOrderManagement.vue";
 import CreateListing from "../views/CreateListing.vue";
 import OrderSummary from "../views/OrderSummary.vue";
-<<<<<<< HEAD
 import ReviewOverview from "../views/ReviewOverview.vue";
-=======
-import SellerReviews from "../views/SellerReviews.vue"
+import SellerReviews from "../views/SellerReviews.vue";
 
->>>>>>> main
 //import store from "../store/index.js"
 
 Vue.use(VueRouter);
@@ -216,7 +213,7 @@ const routes = [
     component: ReviewOverview,
     meta: {
       title: "ReviewOverview",
-    }
+    },
   },
   {
     path: "/sellerreviews",

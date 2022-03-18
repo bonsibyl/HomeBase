@@ -38,12 +38,11 @@
 
 <script>
 export default {
-<<<<<<< HEAD
   data: () => ({
     pages: [
       ["Overview", "/sellerorderoverview"],
       ["Orders", "/sellerordermanagement"],
-      ["Reviews", "/reviewoverview"],
+      ["Reviews", "/sellerreviews"],
       ["Analytics", "/dashboard"],
     ],
     headers: [
@@ -61,28 +60,6 @@ export default {
         orderstatus: "In Progress",
         earnings: "$44.00",
       },
-=======
-    data: () => ({
-        pages: [
-            ["Overview", "/sellerorderoverview"],
-            ["Orders", "/sellerordermanagement"],
-            ["Reviews", "/sellerreviews"],
-            ["Analytics", "/dashboard"]
-        ],
-        headers: [
-                {text: 'Order ID', value: 'orderid'},
-                {text: 'Date', value: 'date'},
-                {text: 'Customer', value: 'custname'},
-                {text: 'Fulfillment Status', value: 'orderstatus'},
-                {text: 'Total Earnings', value: 'earnings'}
-        ],
-        orders: [
-                {orderid: '1012',
-                 date: '01/02/2022',
-                 custname: 'Constance Tang',
-                 orderstatus: 'In Progress',
-                 earnings: '$44.00'},
->>>>>>> main
 
       {
         orderid: "1005",
