@@ -129,6 +129,9 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" transition="scale-transition">
+      {{ snackbar.msg }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -175,6 +178,11 @@ export default {
         (value) =>
           value.size < 2000000 || "Image size should be less than 2 MB!",
       ],
+      snackbar: {
+        show: false,
+        msg: null,
+        color: null,
+      },
     };
   },
   mounted() {
@@ -256,16 +264,25 @@ export default {
             ? "listings/" + this.productName + this.$route.params.user
             : this.imageURL,
         })
-        .then(
-          this.$router.push({
+        .then(() => {
+          console.log("here")
+          this.snackbar = {
+            color: "success",
+            show: true,
+            msg: "Listing Edited!",
+          };
+          setTimeout(() => this.$router.push({
             name: "Profile",
             params: { id: this.$route.params.user },
-          })
-        )
+          }),1600);
+        })
         .catch((error) => {
-          alert(error);
+          this.snackbar = {
+            color: "error",
+            show: true,
+            msg: error,
+          };
         });
-      alert("Listing edited");
     },
     cancelButton() {
       return this.$router.go(-1);

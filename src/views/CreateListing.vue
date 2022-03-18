@@ -130,6 +130,13 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      transition="scale-transition"
+    >
+      {{ snackbar.msg }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -174,6 +181,11 @@ export default {
         (value) =>
           value.size < 2000000 || "Image size should be less than 2 MB!",
       ],
+      snackbar: {
+        show: false,
+        msg: null,
+        color: null,
+      },
     };
   },
   methods: {
@@ -261,16 +273,24 @@ export default {
           },
           { merge: true }
         )
-        .then(
-          this.$router.push({
+        .then(() => {
+          this.snackbar = {
+            color: "success",
+            show: true,
+            msg: "Listing Created!",
+          };
+          setTimeout(() => this.$router.push({
             name: "Profile",
             params: { id: this.$route.params.id },
-          })
-        )
+          }),1600);
+        })
         .catch((error) => {
-          alert(error);
+          this.snackbar = {
+            color: "error",
+            show: true,
+            msg: error,
+          };
         });
-      alert("Listing created");
     },
   },
   computed: {

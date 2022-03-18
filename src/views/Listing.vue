@@ -153,6 +153,13 @@
     <br />
 
     <!-- REVIEW COMPONENT BELOW -->
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      transition="scale-transition"
+    >
+      {{ snackbar.msg }}
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -192,6 +199,11 @@ export default {
       reviewDetails: [],
       userMatch: false,
       seller: false,
+      snackbar: {
+        show: false,
+        msg: null,
+        color: null,
+      },
     };
   },
   async mounted() {
@@ -274,11 +286,19 @@ export default {
           return x.storeName !== addListing.storeName;
         });
         if (duplicateCheck.length > 0) {
-          alert("You have already added this item to your cart!");
+          this.snackbar = {
+            color: "error",
+            show: true,
+            msg: "You have already added this item to your cart!",
+          };
           return;
         }
         if (diffStoreCheck.length > 0) {
-          alert("You can only add items from the same store to your cart!");
+          this.snackbar = {
+            color: "error",
+            show: true,
+            msg: "You can only add items from the same store to your cart!",
+          };
           return;
         }
         cartRef.push(addListing);
