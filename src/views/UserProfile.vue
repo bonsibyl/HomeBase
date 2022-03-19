@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <review-form />
+    <review-form :reviewRef="this.reviewRef" />
     <ScreenshotUpload />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
@@ -110,8 +110,8 @@
             <v-col
               class="pl-5"
               :cols="12"
-              v-for="order in filteredOrders"
-              :key="order.docID"
+              v-for="(order, index) in filteredOrders"
+              :key="index"
             >
               <v-row>
                 <v-col>{{ order.date.toDate().toLocaleDateString() }}</v-col>
@@ -121,7 +121,11 @@
                   ></v-col
                 >
                 <v-col>
-                  <v-row dense v-for="each in order.details" :key="each.id">
+                  <v-row
+                    dense
+                    v-for="(each, index) in order.details"
+                    :key="index"
+                  >
                     <v-col :cols="12">
                       <u>{{ each.name }}</u>
                     </v-col>
@@ -141,9 +145,9 @@
                   </v-row>
                   <v-row class="pt-4">
                     <v-btn
-                      v-if="order.status == 'Fulfilled'"
                       color="yellow darken-2"
-                      @click="showModal"
+                      @click="showModal(order)"
+                      v-if="order.status == 'Fulfilled'"
                       >Leave a review!</v-btn
                     >
                     <v-btn
@@ -189,6 +193,7 @@ export default {
     email: "",
     contactNo: "",
     address: "",
+    reviewRef: null,
   }),
   async mounted() {
     const user = firebase.auth().currentUser.uid;
@@ -208,7 +213,6 @@ export default {
         filteredOrders = this.filterByPast(filteredOrders);
       } else {
         filteredOrders = this.filterByCurrent(filteredOrders);
-        //console.log(filteredOrders)
       }
       filteredOrders = this.applySort(filteredOrders);
       return filteredOrders;
@@ -286,7 +290,8 @@ export default {
         });
       return imageURL;
     },
-    showModal() {
+    showModal(details) {
+      this.reviewRef = details;
       this.$modal.show("review");
     },
     showPayment() {
