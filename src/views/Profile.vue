@@ -326,8 +326,8 @@ export default {
 }
 .edit-listing-buttons {
   position: relative;
-  top: -330px;
-  right: 10px;
+  top: -280px;
+  right: 5px;
   float: right;
 }
 </style>

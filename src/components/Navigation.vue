@@ -48,7 +48,7 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item >
+                  <v-list-item>
                     <v-list-item-title class="text-center"
                       >Welcome,
                       {{ this.$store.state.profileUsername }}</v-list-item-title
@@ -231,7 +231,7 @@ export default {
       if (index > -1) {
         listing.qty = listing.qty + 1;
         arrRef.splice(index, 1);
-        arrRef.push(listing);
+        arrRef.splice(index, 0, listing);
         this.cartDetails = arrRef;
         localStorage.setItem("cart", JSON.stringify(arrRef));
       }
@@ -242,7 +242,7 @@ export default {
       if (index > -1) {
         listing.qty = listing.qty - 1;
         arrRef.splice(index, 1);
-        arrRef.push(listing);
+        arrRef.splice(index, 0, listing);
         this.cartDetails = arrRef;
         localStorage.setItem("cart", JSON.stringify(arrRef));
       }
