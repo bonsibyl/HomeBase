@@ -17,26 +17,37 @@
     <v-container class="dashboardContainer">
       <h1 style="text-align: left">Shop Reviews</h1>
       <hr />
+      <br />
 
-      <v-row align="center">
-        <v-col
-          :cols="12"
-          v-for="review in reviewDetails"
-          :key="review"
-          class="review-spacing"
-        >
-          <v-row class="grey lighten-3 rounded-lg">
-            <v-col :cols="0" class="mr-0 reduce-space-circle">
-              <div class="circle">{{ review.name }}</div>
-            </v-col>
-            <v-col :cols="11" class="pt-md-6 ml-0">
-              <RatingStars :rating="review.rating" :isReview="true" />
-            </v-col>
-            <v-col :cols="12"
-              ><strong>{{ review.title }}</strong></v-col
+      <v-row>
+        <v-col v-show="ListingResults.length === 0">
+          <h2 class="font-weight-bold">No results found :(</h2>
+        </v-col>
+        <v-col v-for="result in ListingResults" :key="result.name" cols="4">
+          <v-card
+            class="rounded-lg test"
+            min-width="150"
+            min-height="100"
+            height="400"
+            hover
+          >
+            <v-img
+              gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
+              class="white--text align-end bottom-gradient test"
+              height="100%"
+              :src="result.imageURL"
             >
-            <v-col :cols="12">{{ review.description }}</v-col>
-          </v-row>
+              <v-card-title class="font-weight-medium">{{
+                result.name
+              }}</v-card-title>
+              <v-card-subtitle class="py-0">{{
+                result.qtyDesc
+              }}</v-card-subtitle>
+              <v-card-subtitle class="pt-0">{{
+                "$" + result.price
+              }}</v-card-subtitle>
+            </v-img></v-card
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -44,57 +55,19 @@
 </template>
 
 <script>
-import RatingStars from "../components/RatingStars.vue";
 import firebase from "firebase/app";
 import db from "../firebase/firebaseInit";
 
 export default {
-  mounted() {
-    db.collection("listings")
-      .doc(this.$route.params.id)
-      .get()
-      .then((doc) => {
-        const allData = doc.data();
-        this.shopName = allData.storeName;
-        this.productName = allData.name;
-        this.productDetails = allData.qtyDesc;
-        this.rating = allData.ReviewScoreCount
-          ? Math.round(allData.ReviewScoreTotal / allData.ReviewScoreCount)
-          : 0;
-        this.numReviews = allData.ReviewScoreCount;
-        this.price = allData.price;
-        this.productDescription = allData.desc;
-        this.tags = allData.tags;
-        this.reviewDetails = allData.reviewDetails;
-        this.imageURL = allData.imageRef;
-      })
-      .then(
-        db
-          .collection("users")
-          .doc(this.$route.params.user)
-          .get()
-          .then((doc) => {
-            const data = doc.data();
-            this.shopName = data.shopName;
-            this.makerDetails = data.makerDetails;
-            this.storeDetails = data.address;
-            this.openingHours = data.openingHours;
-          })
-      )
-      .then(() => {
-        const storageRef = firebase.storage().ref();
-        console.log(this.imageURL);
-        storageRef
-          .child(this.imageURL)
-          .getDownloadURL()
-          .then((url) => {
-            console.log(url);
-            this.image = url;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      });
+  async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    const listings = await this.retrieveSellerListings(user);
+    for (let i = 0; i < listings.length; i++) {
+      var ref = listings[i];
+      var imageURL = await this.retrieveImage(ref.imageRef);
+      listings[i]["imageURL"] = imageURL;
+    }
+    this.ListingResults = listings;
   },
   data: () => ({
     pages: [
@@ -103,14 +76,43 @@ export default {
       ["Reviews", "/sellerreviews"],
       ["Analytics", "/dashboard"],
     ],
+    ListingResults: [],
   }),
   methods: {
     getLink(orderid) {
       return "/order" + orderid;
     },
-  },
-  components: {
-    RatingStars,
+    async retrieveSellerListings(id) {
+      const docRef = db.collection("listings").where("storeName", "==", id);
+      var listings = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          listings.push({ ...doc.data(), docID: doc.id });
+        });
+      });
+      return listings;
+    },
+    async retrieveImage(imageRef) {
+      const storageRef = firebase.storage().ref();
+      var imageURL = "";
+      await storageRef
+        .child(imageRef)
+        .getDownloadURL()
+        .then((url) => {
+          if (url) {
+            imageURL = url;
+          } else {
+            imageURL =
+              "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          imageURL =
+            "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+        });
+      return imageURL;
+    },
   },
 };
 </script>
