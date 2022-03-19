@@ -110,7 +110,7 @@
             <v-col
               class="pl-5"
               :cols="12"
-              v-for="(order, index) in OrderInformation"
+              v-for="(order, index) in filteredOrders"
               :key="index"
             >
               <v-row>
@@ -143,8 +143,11 @@
                       >{{ order.status }}
                     </v-btn>
                   </v-row>
-                  <v-row class="pt-4" v-if="order.status == 'fulfilled'">
-                    <v-btn color="yellow darken-2" @click="showModal(order)"
+                  <v-row class="pt-4">
+                    <v-btn
+                      color="yellow darken-2"
+                      @click="showModal(order)"
+                      v-if="order.status == 'Fulfilled'"
                       >Leave a review!</v-btn
                     >
                     <v-btn
@@ -210,7 +213,6 @@ export default {
         filteredOrders = this.filterByPast(filteredOrders);
       } else {
         filteredOrders = this.filterByCurrent(filteredOrders);
-        //console.log(filteredOrders)
       }
       filteredOrders = this.applySort(filteredOrders);
       return filteredOrders;

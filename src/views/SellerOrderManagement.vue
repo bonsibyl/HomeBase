@@ -109,14 +109,9 @@ hr {
 }
 
 .dashboardContainer {
-<<<<<<< HEAD
-  width: 93%;
+  width: 80%;
   margin-top: 2%;
-=======
-    width: 80%;
-    margin-top: 2%;
-    margin-left: 300px;
->>>>>>> main
+  margin-left: 300px;
 }
 
 .v-data-table::v-deep th {
