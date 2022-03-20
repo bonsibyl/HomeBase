@@ -24,7 +24,8 @@ import SellerOrderOverview from "../views/SellerOrderOverview.vue";
 import SellerOrderManagement from "../views/SellerOrderManagement.vue";
 import CreateListing from "../views/CreateListing.vue";
 import OrderSummary from "../views/OrderSummary.vue";
-import SellerReviews from "../views/SellerReviews.vue"
+import ReviewOverview from "../views/ReviewOverview.vue";
+import SellerReviews from "../views/SellerReviews.vue";
 
 //import store from "../store/index.js"
 
@@ -213,6 +214,14 @@ const routes = [
     component: EditShop,
     meta: {
       title: "EditShop",
+    },
+  },
+  {
+    path: "/reviewoverview",
+    name: "ReviewOverview",
+    component: ReviewOverview,
+    meta: {
+      title: "ReviewOverview",
     },
   },
   {

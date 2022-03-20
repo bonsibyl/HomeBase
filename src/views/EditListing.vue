@@ -76,6 +76,7 @@
                     v-model="tags"
                     multiple
                     small-chips
+                    :items="preCreatedTags"
                   ></v-combobox>
                 </v-col>
               </v-row>
@@ -129,7 +130,11 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color" transition="scale-transition">
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      transition="scale-transition"
+    >
       {{ snackbar.msg }}
     </v-snackbar>
   </div>
@@ -147,12 +152,12 @@ export default {
       image: ListingImage,
       imageURL: "",
       uploaded: null,
-      productName: "Almond Financiers",
-      quantityDesc: "Box of 8 Bite-Sized Financiers",
-      price: "13.90",
-      tags: ["North-East", "Serangoon", "Almonds", "Home Baked"],
-      productDesc:
-        "These delicate almond financiers are made fresh to-order, using premium ingredients imported from Brittany, France. They are buttery and fluffy, pairing exceptionally well with a warm cup of earl grey tea.",
+      productName: "",
+      quantityDesc: "",
+      price: 0,
+      tags: [],
+      preCreatedTags: ["Vegan", "Halal", "Gluten-Free"],
+      productDesc: "",
       nameRules: [
         (v) => !!v || "Name is required",
         (v) => (v && v.length <= 30) || "Name must be less than 30 characters",
@@ -265,16 +270,20 @@ export default {
             : this.imageURL,
         })
         .then(() => {
-          console.log("here")
+          console.log("here");
           this.snackbar = {
             color: "success",
             show: true,
             msg: "Listing Edited!",
           };
-          setTimeout(() => this.$router.push({
-            name: "Profile",
-            params: { id: this.$route.params.user },
-          }),1600);
+          setTimeout(
+            () =>
+              this.$router.push({
+                name: "Profile",
+                params: { id: this.$route.params.user },
+              }),
+            1600
+          );
         })
         .catch((error) => {
           this.snackbar = {

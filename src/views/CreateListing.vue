@@ -77,6 +77,7 @@
                     v-model="tags"
                     multiple
                     small-chips
+                    :items="preCreatedTags"
                   ></v-combobox>
                 </v-col>
               </v-row>
@@ -156,6 +157,7 @@ export default {
       price: "",
       tags: null,
       productDesc: "",
+      preCreatedTags: ["Vegan", "Halal", "Gluten-Free"],
       nameRules: [
         (v) => !!v || "Name is required",
         (v) => (v && v.length <= 30) || "Name must be less than 30 characters",
@@ -279,10 +281,14 @@ export default {
             show: true,
             msg: "Listing Created!",
           };
-          setTimeout(() => this.$router.push({
-            name: "Profile",
-            params: { id: this.$route.params.id },
-          }),1600);
+          setTimeout(
+            () =>
+              this.$router.push({
+                name: "Profile",
+                params: { id: this.$route.params.id },
+              }),
+            1600
+          );
         })
         .catch((error) => {
           this.snackbar = {

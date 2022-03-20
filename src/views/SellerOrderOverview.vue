@@ -14,11 +14,11 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-      <v-container class="dashboardContainer">
-        <h1 style="text-align: left">Overview</h1>
-        <hr />
-        <v-data-table :headers="headers" :items="orders"> </v-data-table>
-      </v-container>
+    <v-container class="dashboardContainer">
+      <h1 style="text-align: left">Overview</h1>
+      <hr />
+      <v-data-table :headers="headers" :items="orders"> </v-data-table>
+    </v-container>
   </v-app>
 </template>
 
@@ -82,18 +82,18 @@ export default {
 
 <style scoped>
 #appcontainer {
-    background: url("../assets/SellerBackground.png");
-    background-size: cover;
+  background: url("../assets/SellerBackground.png");
+  background-size: cover;
 }
 
 hr {
-    margin-top: 1%;
+  margin-top: 1%;
 }
 
 .dashboardContainer {
-    width: 80%;
-    margin-top: 2%;
-    margin-left: 300px;
+  width: 80%;
+  margin-top: 2%;
+  margin-left: 300px;
 }
 
 .v-data-table::v-deep th {
@@ -102,5 +102,4 @@ hr {
 .v-data-table::v-deep td {
   font-size: 17px !important;
 }
-
 </style>

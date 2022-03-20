@@ -137,7 +137,7 @@
       >
         <v-row class="grey lighten-3 rounded-lg">
           <v-col :cols="0" class="mr-0 reduce-space-circle">
-            <div class="circle">{{ review.name }}</div>
+            <div class="circle">{{ review.name.toUpperCase() }}</div>
           </v-col>
           <v-col :cols="11" class="pt-md-6 ml-0">
             <RatingStars :rating="review.rating" :isReview="true" />
@@ -226,7 +226,7 @@ export default {
         this.price = allData.price;
         this.productDescription = allData.desc;
         this.tags = allData.tags;
-        this.reviewDetails = allData.reviewDetails;
+        this.reviewDetails = allData.Reviews;
         this.imageURL = allData.imageRef;
       })
       .then(
@@ -278,8 +278,7 @@ export default {
       if (cartRef) {
         const duplicateCheck = cartRef.filter((x) => {
           return (
-            x.productName + x.storeName ===
-            addListing.productName + addListing.storeName
+            x.name + x.storeName === addListing.name + addListing.storeName
           );
         });
         const diffStoreCheck = cartRef.filter((x) => {
