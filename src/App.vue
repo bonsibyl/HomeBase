@@ -2,10 +2,12 @@
   <v-app>
     <div class="app-wrapper">
       <div class="app">
+        <header>
         <Navigation v-if="this.$store.state.authenticated" />
         <UnauthNavigation v-else />
+        </header>
         <!-- only show for pages excl. login/register/pw -->
-        <router-view />
+          <router-view />
         <FooterLanding v-if="footerRendering" />
         <!-- only show for pages excl. login/register/pw -->
       </div>
@@ -17,17 +19,17 @@
 import FooterLanding from "./components/FooterLanding";
 import Navigation from "./components/Navigation";
 import UnauthNavigation from "./components/UnauthNavigation";
-
 import firebase from "firebase/app";
 import "firebase/auth";
 
 export default {
   name: "app",
-  components: { Navigation, FooterLanding, UnauthNavigation },
+  components: { Navigation, FooterLanding, UnauthNavigation,},
   data() {
     return {
       navigation: null, //for nav bar rendering, true === disabled
       footerRendering: null, //for landing page footer rendering, true === enabled
+      cartRendering: false,
     };
   },
   created() {
@@ -35,6 +37,7 @@ export default {
       this.$store.commit("updateUser", user); //update user whenever there is new auth
       if (user) {
         this.$store.dispatch("getCurrentUser");
+        this.$store.dispatch("getCart");
       }
     });
     //this.checkRoute(); //initialise in lifecycle

@@ -1,43 +1,23 @@
 <template>
   <v-app>
+    <delete-listing-modal
+      :listingID="this.deleteRef"
+      @deleteInfo="removeListing"
+    />
     <div v-if="seller" id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1">
         <div id="content">
           <v-row id="searchrow">
             <v-col>
-              <h1 class="font-weight-bold">
-                @{{ this.$store.state.profileUsername }}
-              </h1>
-              <v-col v-if="this.$store.state.seller" class="col-info">
-                <h4 class="text--secondary">
-                  Store Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Business Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
-              </v-col>
-              <v-col v-else class="col-info">
-                <h4 class="text--secondary">
-                  Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
+              <h1 class="font-weight-bold">@{{ shopUsername }}</h1>
+              <v-col class="col-info">
+                <h4 class="text--secondary">Store Name: {{ storeName }}</h4>
+                <h4 class="text--secondary">Business Email: {{ email }}</h4>
+                <h4 class="text--secondary">Contact Number: {{ contactNo }}</h4>
+                <h4 class="text--secondary">Address: {{ address }}</h4>
               </v-col>
               <v-col cols="auto" class="col-btn">
-                <v-btn>
+                <v-btn @click="toggleEditMode" v-if="userMatch">
                   Edit Details
                   <v-icon right>mdi-pencil</v-icon>
                 </v-btn>
@@ -58,13 +38,14 @@
             <v-col cols="auto">
               <h4 class="text--secondary">Listings</h4>
             </v-col>
+            <v-col class="pl-0" v-if="editMode">
+              <v-btn plain x-small :to="createListing"
+                ><v-icon>mdi-plus</v-icon></v-btn
+              ></v-col
+            >
             <v-spacer></v-spacer>
             <v-col cols="auto">
-              <v-menu
-                open-on-hover
-                offset-y
-                transition="slide-y-transition"
-              >
+              <v-menu open-on-hover offset-y transition="slide-y-transition">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn outlined v-bind="attrs" v-on="on">
                     Filter By
@@ -98,22 +79,58 @@
           </v-row>
           <v-divider id="divider1"></v-divider>
           <v-row>
-            <v-col v-for="result in results" :key="result" cols="4">
+            <v-col v-show="filteredListings.length === 0">
+              <h2 class="font-weight-bold">No results found :(</h2>
+            </v-col>
+            <v-col
+              v-for="result in filteredListings"
+              :key="result.name"
+              cols="4"
+            >
               <v-card
-                class="rounded-lg"
+                class="rounded-lg test"
                 min-width="150"
                 min-height="100"
                 height="400"
-                :to="'/'"
+                :to="'/listing/' + result.storeName + '/' + result.docID"
                 hover
               >
                 <v-img
                   gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
-                  class="white--text align-end bottom-gradient"
+                  class="white--text align-end bottom-gradient test"
                   height="100%"
-                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
+                  :src="result.imageURL"
                 >
-                  <v-card-title>{{ result }}</v-card-title>
+                  <v-btn
+                    v-if="editMode"
+                    class="edit-listing-buttons"
+                    @click="triggerDeletePopup(result.docID)"
+                    text
+                    plain
+                    small
+                    :to="'/Profile/' + checkRoute"
+                  >
+                    <v-icon dark>mdi-delete</v-icon>
+                  </v-btn>
+                  <v-btn
+                    v-if="editMode"
+                    :to="editRoute + result.docID"
+                    class="edit-listing-buttons"
+                    text
+                    plain
+                    small
+                  >
+                    <v-icon dark>mdi-pencil</v-icon>
+                  </v-btn>
+                  <v-card-title class="font-weight-medium">{{
+                    result.name
+                  }}</v-card-title>
+                  <v-card-subtitle class="py-0">{{
+                    result.qtyDesc
+                  }}</v-card-subtitle>
+                  <v-card-subtitle class="pt-0">{{
+                    "$" + result.price
+                  }}</v-card-subtitle>
                 </v-img></v-card
               >
             </v-col>
@@ -130,34 +147,47 @@
 <script>
 import UserProfile from "../views/UserProfile.vue";
 import db from "../firebase/firebaseInit";
+import firebase from "firebase/app";
+import DeleteListingModal from "../components/DeleteListingModal.vue";
 
 export default {
   name: "Profile",
   components: {
     UserProfile,
+    DeleteListingModal,
   },
   data: () => ({
-    results: [
-      "Blueberry",
-      "Strawberry",
-      "Macarons",
-      "Cupcake",
-      "Brownie",
-      "Cookie",
-      "Tart",
-    ],
-    Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
-    ActiveSort: "",
-    PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
-    ActiveRanges: [],
+    deleteRef: "",
+    ListingResults: [],
     Filters: ["Vegan", "Halal", "Gluten-Free"],
     ActiveFilters: [],
     seller: null,
+    editMode: false,
+    userMatch: false,
+    //Populating profile fields
+    shopUsername: "",
+    storeName: "",
+    buyerName: "",
+    email: "",
+    contactNo: "",
+    address: "",
   }),
 
   async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    this.userMatch = this.$route.params.id === user;
     const information = await this.retrieveUserType(this.$route.params.id);
     this.seller = information;
+    if (this.seller) {
+      const listings = await this.retrieveSellerListings(this.$route.params.id);
+      for (let i = 0; i < listings.length; i++) {
+        var ref = listings[i];
+        var imageURL = await this.retrieveImage(ref.imageRef);
+        listings[i]["imageURL"] = imageURL;
+      }
+      this.ListingResults = listings;
+      console.log(this.ListingResults);
+    }
   },
   methods: {
     async retrieveUserType(id) {
@@ -165,8 +195,91 @@ export default {
       var sellerType = null;
       await docRef.get().then((doc) => {
         sellerType = doc.data().seller;
+        if (sellerType) {
+          this.storeName = doc.data().shopName;
+        } else {
+          this.buyerName = doc.data().firstName + " " + doc.data().lastName;
+        }
+        this.shopUsername = doc.data().username;
+        this.email = doc.data().email;
+        this.contactNo = doc.data().number;
+        this.address = doc.data().address;
       });
       return sellerType;
+    },
+    async retrieveSellerListings(id) {
+      const docRef = db.collection("listings").where("storeName", "==", id);
+      var listings = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          listings.push({ ...doc.data(), docID: doc.id });
+        });
+      });
+      return listings;
+    },
+    async retrieveImage(imageRef) {
+      const storageRef = firebase.storage().ref();
+      var imageURL = "";
+      await storageRef
+        .child(imageRef)
+        .getDownloadURL()
+        .then((url) => {
+          if (url) {
+            imageURL = url;
+          } else {
+            imageURL =
+              "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          imageURL =
+            "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+        });
+      return imageURL;
+    },
+    toggleEditMode() {
+      this.editMode = !this.editMode;
+    },
+    triggerDeletePopup(docID) {
+      this.deleteRef = docID;
+      this.$modal.show("delete-listing");
+    },
+    removeListing(deletedListing) {
+      this.ListingResults = this.ListingResults.filter((listing) => {
+        if (listing["docID"] === deletedListing) {
+          this.removeListingImage(listing);
+        }
+        return listing["docID"] !== deletedListing;
+      });
+    },
+    removeListingImage(listing) {
+      var storageRef = firebase.storage().ref();
+      storageRef.child(listing.imageRef).delete();
+    },
+    filterByTags(results) {
+      return results.filter((listing) =>
+        this.ActiveFilters.every((x) => listing.tags.indexOf(x) > -1)
+      );
+    },
+  },
+  computed: {
+    checkRoute() {
+      return this.$route.params.id;
+    },
+    createListing() {
+      return "/CreateListing/" + this.$route.params.id;
+    },
+    editRoute() {
+      return "/EditListing/" + this.$route.params.id + "/";
+    },
+    filteredListings() {
+      if (this.ActiveFilters.length === 0) {
+        return this.ListingResults;
+      }
+      var filteredResults = this.ListingResults;
+      filteredResults = this.filterByTags(filteredResults);
+      return filteredResults;
     },
   },
 };
@@ -210,5 +323,11 @@ export default {
   display: flex;
   flex: 1;
   justify-content: flex-end;
+}
+.edit-listing-buttons {
+  position: relative;
+  top: -280px;
+  right: 5px;
+  float: right;
 }
 </style>

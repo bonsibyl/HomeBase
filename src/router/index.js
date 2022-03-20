@@ -10,18 +10,21 @@ import SellerRegister from "../views/SellerRegister.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import EditAccount from "../views/EditAccount.vue";
 import Admin from "../views/Admin.vue";
-import Vuetifytest from "../views/Vuetifytest.vue";
 import Listing from "../views/Listing.vue";
 import EditListing from "../views/EditListing.vue";
+import EditShop from "../views/EditShop.vue";
 import UserProfile from "../views/UserProfile.vue";
 import Search from "../views/Search.vue";
 import Profile from "../views/Profile.vue";
 import Checkout from "../views/Checkout.vue";
 import Payment from "../views/Payment.vue";
 import Dashboard from "../views/Dashboard.vue";
-import SellerOrderOverview from "../views/SellerOrderOverview.vue"
-import SellerOrderManagement from "../views/SellerOrderManagement.vue"
-import ScreenshotUpload from "../views/ScreenshotUpload.vue";
+import SellerOrderOverview from "../views/SellerOrderOverview.vue";
+import SellerOrderManagement from "../views/SellerOrderManagement.vue";
+import CreateListing from "../views/CreateListing.vue";
+import OrderSummary from "../views/OrderSummary.vue";
+import ReviewOverview from "../views/ReviewOverview.vue";
+import SellerReviews from "../views/SellerReviews.vue";
 
 //import store from "../store/index.js"
 
@@ -45,7 +48,7 @@ const routes = [
     },
   },
   {
-    path: "/listing/:id",
+    path: "/listing/:user/:id",
     name: "Listing",
     component: Listing,
     meta: {
@@ -53,11 +56,19 @@ const routes = [
     },
   },
   {
-    path: "/EditListing/:id",
+    path: "/EditListing/:user/:id",
     name: "EditListing",
     component: EditListing,
     meta: {
       title: "EditListing",
+    },
+  },
+  {
+    path: "/CreateListing/:id",
+    name: "CreateListing",
+    component: CreateListing,
+    meta: {
+      title: "CreateListing",
     },
   },
   {
@@ -125,14 +136,6 @@ const routes = [
     },
   },
   {
-    path: "/vuetify",
-    name: "Vuetifytest",
-    component: Vuetifytest,
-    meta: {
-      title: "Vuetifytest",
-    },
-  },
-  {
     path: "/search",
     name: "Search",
     component: Search,
@@ -177,7 +180,7 @@ const routes = [
     name: "Seller Order Overview",
     component: SellerOrderOverview,
     meta: {
-      title: 'Seller Order Overview',
+      title: "Seller Order Overview",
     },
   },
   {
@@ -185,17 +188,41 @@ const routes = [
     name: "Seller Order Management",
     component: SellerOrderManagement,
     meta: {
-      title: 'Seller Order Management',
+      title: "Seller Order Management",
     },
   },
   {
-    path: "/screenshotupload",
-    name: "Screenshot Upload",
-    component: ScreenshotUpload,
+    path: "/ordersummary",
+    name: "Order Summary",
+    component: OrderSummary,
     meta: {
-      title: 'Screenshot Upload',
+      title: "Order Summary",
     },
-  }
+  },
+  {
+    path: "/editshop",
+    name: "EditShop",
+    component: EditShop,
+    meta: {
+      title: "EditShop",
+    },
+  },
+  {
+    path: "/reviewoverview",
+    name: "ReviewOverview",
+    component: ReviewOverview,
+    meta: {
+      title: "ReviewOverview",
+    },
+  },
+  {
+    path: "/sellerreviews",
+    name: "Reviews",
+    component: SellerReviews,
+    meta: {
+      title: "Reviews",
+    },
+  },
 ];
 
 const router = new VueRouter({

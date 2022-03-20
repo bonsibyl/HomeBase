@@ -1,14 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import {createStore} from "vuex-extensions"
+import { createStore } from "vuex-extensions";
 import firebase from "firebase/app";
 import "firebase/auth";
 import db from "../firebase/firebaseInit";
 
-
 Vue.use(Vuex);
 
-const store = createStore(Vuex.Store,{
+const store = createStore(Vuex.Store, {
   state: {
     user: null,
     profileEmail: null,
@@ -22,6 +21,8 @@ const store = createStore(Vuex.Store,{
     number: null,
     address: null,
     authenticated: false,
+    cartItems: [],
+    checkCartUpdate: 0,
   },
   mutations: {
     toggleEditPost(state, payload) {
@@ -33,6 +34,9 @@ const store = createStore(Vuex.Store,{
     },
     updateUser(state, payload) {
       state.user = payload; //payload returns true or false
+    },
+    checkCartUpdateFunc(state) {
+      state.checkCartUpdate++;
     },
     setProfileInfo(state, doc) {
       //doc is dbResults
@@ -69,6 +73,31 @@ const store = createStore(Vuex.Store,{
     changeAddress(state, payload) {
       state.address = payload;
     },
+    setCart(state, cart) {
+      state.cartItems = cart;
+    },
+    addCartItem(state, listing) {
+      state.cartItems = state.cartItems.push(listing);
+    },
+    removeCartItem(state, listing) {
+      var idx = state.cartItems.findIndex((c) => c.title == listing.title);
+      console.log(idx);
+      console.log(listing.title);
+      state.cartItems.splice(idx, 1);
+      console.log(state.cartItems);
+    },
+    incrementQty(state, listing) {
+      var index = state.cartItems.findIndex((c) => c.title == listing.title);
+      let oldqty = state.cartItems[index].qty;
+      state.cartItems[index].qty = oldqty + 1;
+      console.log(state.cartItems[index].qty);
+    },
+    decrementQty(state, listing) {
+      var index = state.cartItems.findIndex((c) => c.title == listing.title);
+      let oldqty = state.cartItems[index].qty;
+      state.cartItems[index].qty = oldqty - 1;
+      console.log(state.cartItems[index].qty + state.cartItems[index].title);
+    },
   },
   actions: {
     async getCurrentUser({ commit }) {
@@ -89,6 +118,33 @@ const store = createStore(Vuex.Store,{
         username: state.profileUsername,
       });
       commit("setProfileInitials");
+    },
+    async getCart({ commit }) {
+      //love u weiyang get cart from firebase here
+      let initCart = [
+        {
+          title: "Cake",
+          price: 27.8,
+          qty: 2,
+          store: "nuttybutterybakery",
+          desc: "10' Strawberry Cake",
+        },
+        {
+          title: "Almond Financiers",
+          price: 15.5,
+          qty: 1,
+          store: "susanbakes",
+          desc: "Box of 8 Bite-Sized Financiers",
+        },
+        {
+          title: "Berry Financiers",
+          price: 15.5,
+          qty: 1,
+          store: "susanbakes",
+          desc: "Box of 8 Bite-Sized Financiers",
+        },
+      ];
+      commit("setCart", initCart);
     },
   },
   modules: {},

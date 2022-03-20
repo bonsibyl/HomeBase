@@ -1,48 +1,25 @@
 <template>
   <v-app>
-    <review-form />
+    <review-form :reviewRef="this.reviewRef" />
+    <ScreenshotUpload />
     <div id="sheet">
-      <v-sheet rounded="sm" width="95vw" elevation="1">
+      <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
         <div id="content">
           <v-row id="searchrow">
             <v-col :cols="4">
-              <h1 class="font-weight-bold">
-                @{{ this.$store.state.profileUsername }}
-              </h1>
-              <v-col v-if="this.$store.state.seller" class="col-info">
-                <h4 class="text--secondary">
-                  Store Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Business Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
-              </v-col>
-              <v-col v-else class="col-info">
-                <h4 class="text--secondary">
-                  Name: {{ this.$store.state.profileFirstName }}
-                </h4>
-                <h4 class="text--secondary">
-                  Email: {{ this.$store.state.profileEmail }}
-                </h4>
-                <h4 class="text--secondary">
-                  Contact Number: {{ this.$store.state.number }}
-                </h4>
-                <h4 class="text--secondary">
-                  Address: {{ this.$store.state.address }}
-                </h4>
+              <h1 class="font-weight-bold">@{{ shopUsername }}</h1>
+              <v-col class="col-info">
+                <h4 class="text--secondary">Name: {{ buyerName }}</h4>
+                <h4 class="text--secondary">Email: {{ email }}</h4>
+                <h4 class="text--secondary">Contact Number: {{ contactNo }}</h4>
+                <h4 class="text--secondary">Address: {{ address }}</h4>
               </v-col>
               <v-col cols="12" class="col-btn">
-                <v-btn>
+                <v-btn v-if="userMatch" to="/editaccount">
                   Edit Details
                   <v-icon right>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn class="ml-3">
+                <v-btn class="ml-3" v-if="userMatch">
                   <v-icon>mdi-dots-horizontal</v-icon>
                 </v-btn>
               </v-col>
@@ -61,63 +38,41 @@
           <v-row id="filterrow" align="end">
             <v-col cols="auto">
               <v-btn
-                v-if="!isOrder"
-                class="green--text text--darken-4"
+                :color="PastOrder === false ? 'primary' : 'grey'"
                 text
-                disabled
+                @click="toggleCurrentOrder"
               >
-                <strong>Your Recommendations</strong>
+                <strong>Current Orders</strong>
               </v-btn>
               <v-btn
-                v-else
-                class="grey--text text--darken-4"
+                :color="PastOrder === true ? 'primary' : 'grey'"
                 text
-                @click="toggleOrder"
+                @click="togglePastOrder"
               >
-                <strong>Your Recommendations</strong>
-              </v-btn>
-              <v-btn
-                v-if="isOrder"
-                class="green--text text--darken-4"
-                text
-                disabled
-              >
-                <strong>Your Orders</strong>
-              </v-btn>
-              <v-btn
-                v-else
-                class="grey--text text--darken-4"
-                text
-                @click="toggleOrder"
-              >
-                <strong>Your Orders</strong>
+                <strong>Past Orders</strong>
               </v-btn>
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
               <v-menu
-                close-on-click="false"
-                close-on-content-click="false"
+                :close-on-click="false"
+                :close-on-content-click="false"
                 open-on-hover
                 offset-y
                 transition="slide-y-transition"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn outlined v-bind="attrs" v-on="on">
-                    Filter By
+                    Sort By
                     <v-icon right>mdi-tune</v-icon>
                   </v-btn>
                 </template>
                 <v-card>
-                  <v-list-item-group v-model="ActiveFilters" multiple>
-                    <template
-                      v-for="(Filter, i) in !isOrder
-                        ? RecFilters
-                        : OrderFilters"
-                    >
+                  <v-list-item-group v-model="ActiveSort">
+                    <template v-for="(Sort, i) in Sorts">
                       <v-list-item
-                        :key="`Filter-${i}`"
-                        :value="Filter"
+                        :key="`Sort-${i}`"
+                        :value="Sort"
                         @click.stop.prevent
                       >
                         <template v-slot:default="{ active }">
@@ -126,7 +81,7 @@
                           </v-list-item-action>
                           <v-list-item-content>
                             <v-list-item-title
-                              v-text="Filter"
+                              v-text="Sort"
                             ></v-list-item-title>
                           </v-list-item-content>
                         </template>
@@ -138,28 +93,7 @@
             </v-col>
           </v-row>
           <v-divider id="divider1"></v-divider>
-          <v-row v-if="isOrder">
-            <v-col v-for="result in results" :key="result" cols="4">
-              <v-card
-                class="rounded-lg"
-                min-width="150"
-                min-height="100"
-                height="400"
-                :to="'/'"
-                hover
-              >
-                <v-img
-                  gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
-                  class="white--text align-end bottom-gradient"
-                  height="100%"
-                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_360x.jpg?v=1632976135"
-                >
-                  <v-card-title>{{ result }}</v-card-title>
-                </v-img></v-card
-              >
-            </v-col>
-          </v-row>
-          <v-row v-else>
+          <v-row>
             <v-col :cols="12">
               <v-row class="order-headers ml-4 mt-4">
                 <v-col>Date</v-col>
@@ -170,21 +104,28 @@
               </v-row>
               <v-divider></v-divider>
             </v-col>
+            <v-col v-show="filteredOrders.length === 0">
+              <h2 class="font-weight-bold">No orders yet :(</h2>
+            </v-col>
             <v-col
               class="pl-5"
               :cols="12"
-              v-for="order in OrderInformation"
-              :key="order"
+              v-for="(order, index) in filteredOrders"
+              :key="index"
             >
               <v-row>
-                <v-col>{{ order.date }}</v-col>
+                <v-col>{{ order.date.toDate().toLocaleDateString() }}</v-col>
                 <v-col
                   ><u
                     ><strong>{{ order.bakery }}</strong></u
                   ></v-col
                 >
                 <v-col>
-                  <v-row dense v-for="each in order.details" :key="each">
+                  <v-row
+                    dense
+                    v-for="(each, index) in order.details"
+                    :key="index"
+                  >
                     <v-col :cols="12">
                       <u>{{ each.name }}</u>
                     </v-col>
@@ -198,20 +139,27 @@
                 </v-col>
                 <v-col>
                   <v-row>
-                    <v-btn
-                      v-if="order.status == 'fulfilled'"
-                      color="green lighten-1"
-                      >Fulfilled
+                    <v-btn :color="btnColor(order.status)"
+                      >{{ order.status }}
                     </v-btn>
-                    <v-btn v-else color="orange lighten-1">Processing</v-btn>
                   </v-row>
-                  <v-row class="pt-4" v-if="order.status == 'fulfilled'">
-                    <v-btn color="yellow darken-2" @click="showModal"
+                  <v-row class="pt-4">
+                    <v-btn
+                      color="yellow darken-2"
+                      @click="showModal(order)"
+                      v-if="order.status == 'Fulfilled'"
                       >Leave a review!</v-btn
                     >
+                    <v-btn
+                      v-if="order.status == 'Payment Pending'"
+                      color="teal lighten-2"
+                      @click="showPayment"
+                    >
+                      Click to Pay!
+                    </v-btn>
                   </v-row>
                 </v-col>
-                <v-col>{{ order.total }}</v-col>
+                <v-col>{{ `$` + order.total }}</v-col>
               </v-row>
               <br />
               <v-divider></v-divider>
@@ -225,93 +173,151 @@
 
 <script>
 import ReviewForm from "./ReviewForm.vue";
+import ScreenshotUpload from "./ScreenshotUpload.vue";
+import db from "../firebase/firebaseInit";
+import firebase from "firebase/app";
+
 export default {
-  components: { ReviewForm },
+  components: { ReviewForm, ScreenshotUpload },
   name: "UserProfile",
   data: () => ({
-    isOrder: false,
-    results: [
-      "Blueberry",
-      "Strawberry",
-      "Macarons",
-      "Cupcake",
-      "Brownie",
-      "Cookie",
-      "Tart",
-    ],
-    Sorts: ["Price Asc", "Price Desc", "Newest", "Oldest"],
-    ActiveSort: "",
-    PriceRanges: ["$1-$10", "$11-$20", "$21-$30", ">$30"],
-    ActiveRanges: [],
-    RecFilters: ["Vegan", "Halal", "Gluten-Free"],
-    OrderFilters: ["Price", "Date", "Completed"],
-    ActiveFilters: [],
-    OrderInformation: [
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-        status: "fulfilled",
-        total: "$34.80",
-      },
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-        status: "processing",
-        total: "$34.80",
-      },
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-        status: "processing",
-        total: "$34.80",
-      },
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-        status: "fulfilled",
-        total: "$34.80",
-      },
-    ],
+    PastOrder: false,
+    Sorts: ["Newest", "Oldest"],
+    ActiveSort: "Newest",
+    Orders: [],
+    userMatch: false,
+    //Populating profile fields
+    shopUsername: "",
+    storeName: "",
+    buyerName: "",
+    email: "",
+    contactNo: "",
+    address: "",
+    reviewRef: null,
   }),
-  methods: {
-    toggleOrder() {
-      this.isOrder = !this.isOrder;
-      this.ActiveFilters = [];
+  async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    this.userMatch = this.$route.params.id === user;
+    const information = await this.retrieveUserType(this.$route.params.id);
+    this.seller = information;
+    if (!this.seller) {
+      const orders = await this.retrieveOrders();
+      this.Orders = orders;
+    }
+  },
+  computed: {
+    filteredOrders() {
+      var filteredOrders = this.Orders;
+      //console.log(filteredOrders)
+      if (this.PastOrder) {
+        filteredOrders = this.filterByPast(filteredOrders);
+      } else {
+        filteredOrders = this.filterByCurrent(filteredOrders);
+      }
+      filteredOrders = this.applySort(filteredOrders);
+      return filteredOrders;
     },
-    showModal() {
+  },
+  methods: {
+    btnColor(status) {
+      switch (status) {
+        case "Fulfilled":
+          return "green lighten-2";
+        case "Payment Pending":
+          return "orange lighten-2";
+        case "Processing":
+          return "light-blue lighten-1";
+        case "Cancelled":
+          return "red lighten-1";
+      }
+    },
+    togglePastOrder() {
+      this.PastOrder = true;
+      this.ActiveSort = "Newest";
+    },
+    toggleCurrentOrder() {
+      this.PastOrder = false;
+      this.ActiveSort = "Newest";
+    },
+    async retrieveUserType(id) {
+      const docRef = db.collection("users").doc(id);
+      var sellerType = null;
+      await docRef.get().then((doc) => {
+        sellerType = doc.data().seller;
+        if (sellerType) {
+          this.storeName = doc.data().shopName;
+        } else {
+          this.buyerName = doc.data().firstName + " " + doc.data().lastName;
+        }
+        this.shopUsername = doc.data().username;
+        this.email = doc.data().email;
+        this.contactNo = doc.data().number;
+        this.address = doc.data().address;
+      });
+      return sellerType;
+    },
+    async retrieveOrders() {
+      const docRef = db
+        .collection("orders")
+        .where("buyerID", "==", this.$route.params.id);
+      var orders = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          orders.push({ ...doc.data(), docID: doc.id });
+        });
+      });
+      return orders;
+    },
+    async retrieveImage(imageRef) {
+      const storageRef = firebase.storage().ref();
+      var imageURL = "";
+      await storageRef
+        .child(imageRef)
+        .getDownloadURL()
+        .then((url) => {
+          console.log(url);
+          if (url) {
+            imageURL = url;
+          } else {
+            imageURL =
+              "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          imageURL =
+            "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+        });
+      return imageURL;
+    },
+    showModal(details) {
+      this.reviewRef = details;
       this.$modal.show("review");
+    },
+    showPayment() {
+      this.$modal.show("screenshot");
+    },
+    applySort(results) {
+      switch (this.ActiveSort) {
+        case "Oldest":
+          return results.sort((a, b) => a.date.toDate() - b.date.toDate());
+        case "Newest":
+          return results.sort((a, b) => b.date.toDate() - a.date.toDate());
+      }
+    },
+    filterByCurrent(orders) {
+      return orders.filter((order) => {
+        if (order.status == "Payment Pending" || order.status == "Processing") {
+          return true;
+        }
+      });
+    },
+    filterByPast(orders) {
+      return orders.filter((order) => {
+        if (order.status === "Fulfilled" || order.status === "Cancelled") {
+          return true;
+        }
+      });
     },
   },
 };

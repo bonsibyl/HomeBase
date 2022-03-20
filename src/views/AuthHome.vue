@@ -1,6 +1,6 @@
 <template>
   <div class="landing-container">
-    <div v-if="isSeller" class="landing-rectangle">
+    <div v-if="$store.state.seller" class="landing-rectangle">
       <strong class="supporting-header">Welcome back to Homebase!</strong>
 
       <p class="supporting-text">

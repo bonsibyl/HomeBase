@@ -13,20 +13,17 @@
           to tell us how we fared.
         </div>
         <div class="partition-form">
-          <form autocomplete="false">
+          <v-form ref="form" lazy-validation>
             <v-col
               class="pl-2"
               :cols="12"
-              v-for="order in OrderInformation"
-              :key="order"
+              v-for="(order, index) in OrderInfo"
+              :key="index"
             >
-              <v-row dense v-for="each in order.details" :key="each">
+              <v-row dense v-for="(each, index) in order.details" :key="index">
                 <v-col :cols="1">
                   <v-card height="60" width="60" class="order-img">
-                    <v-img
-                      height="100%"
-                      src="../assets/listing-pic.jpg"
-                    ></v-img>
+                    <v-img height="100%" :src="each.fullRef.imageURL"></v-img>
                   </v-card>
                 </v-col>
                 <v-col :cols="3" class="caption">
@@ -36,25 +33,48 @@
                   <br />
                   Qty: {{ each.quantity }}
                 </v-col>
-                <v-col>
-                  <v-container></v-container> <star-rating star-size="20" />
+                <v-col :cols="8">
+                  <v-container></v-container>
+                  <star-rating :star-size="20" v-model="ratingStar[index]" />
                 </v-col>
-                <input
-                  id="n-title"
-                  type="text"
-                  placeholder="Summary of Your Review"
-                />
-                <input id="n-review" type="text" placeholder="Write a review" />
+                <v-col :cols="12">
+                  <v-text-field
+                    id="n-title"
+                    type="text"
+                    placeholder="Summary of Your Review"
+                    required
+                    :rules="titleRules"
+                    counter="30"
+                    v-model="reviewDetails[index * 2]"
+                  />
+                </v-col>
+                <v-col :cols="12">
+                  <v-textarea
+                    id="n-review"
+                    type="text"
+                    placeholder="Write a review"
+                    required
+                    :rules="contentRules"
+                    counter="250"
+                    v-model="reviewDetails[index * 2 + 1]"
+                  />
+                </v-col>
                 <v-container></v-container>
               </v-row>
             </v-col>
-          </form>
-
-          <div class="button-set">
-            <button id="submit-btn" @click="submit">Submit Review</button>
-            <button id="cancel-btn" @click="cancel">Cancel</button>
-            <div style="margin-bottom: 20px"></div>
-          </div>
+            <div class="button-set">
+              <v-btn id="submit-btn" @click="submit"> Submit Review </v-btn>
+              <v-btn id="cancel-btn" @click="cancel">Cancel</v-btn>
+              <div style="margin-bottom: 20px"></div>
+            </div>
+            <v-snackbar
+              v-model="notRatedAlert"
+              centered
+              :timeout="2000"
+              color="red"
+              >Please provide a rating to all items!</v-snackbar
+            >
+          </v-form>
         </div>
       </div>
     </div>
@@ -63,35 +83,100 @@
 <script>
 const MODAL_WIDTH = 656;
 import StarRating from "vue-star-rating";
+import firebase from "firebase/app";
+import db from "../firebase/firebaseInit";
 export default {
   components: { StarRating },
   name: "ReviewModal",
-  data: () => ({
-    OrderInformation: [
-      {
-        date: "01/02/2022",
-        bakery: "nuttybutterybakery",
-        details: [
-          { name: "Almond Financiers", quantityDesc: "Box of 8", quantity: 1 },
-          {
-            name: "Chocolate Macarons",
-            quantityDesc: "Box of 12",
-            quantity: 1,
-          },
-        ],
-      },
-    ],
-  }),
+  data() {
+    return {
+      OrderInfo: [],
+      titleRules: [
+        (v) => !!v || "Title is required",
+        (v) => (v && v.length <= 30) || "Title must be less than 30 characters",
+      ],
+      contentRules: [
+        (v) => !!v || "Review is required",
+        (v) =>
+          (v && v.length <= 250) || "Review must be less than 250 characters",
+      ],
+      ratingStar: [],
+      reviewDetails: [],
+      notRatedAlert: false,
+    };
+  },
+  props: {
+    reviewRef: Object,
+  },
   created() {
     this.modalWidth =
       window.innerWidth < MODAL_WIDTH ? MODAL_WIDTH / 2 : MODAL_WIDTH;
   },
   methods: {
-    submit() {
+    async submit() {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
+      if (this.ratingStar.length < this.OrderInfo[0].details.length) {
+        this.notRatedAlert = true;
+        return;
+      }
+      const user = firebase.auth().currentUser.email;
+      console.log(this.OrderInfo.details);
+      var ref = db
+        .collection("listings")
+        .where("storeName", "==", this.OrderInfo[0].sellerID);
+      for (var i = 0; i < this.OrderInfo[0].details.length; i++) {
+        var updateRef = this.OrderInfo[0].details[i];
+        await ref
+          .where("name", "==", updateRef.name)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              console.log(doc.id);
+              db.collection("listings")
+                .doc(doc.id)
+                .update({
+                  ReviewScoreCount: doc.data().ReviewScoreCount + 1,
+                  ReviewScoreTotal:
+                    doc.data().ReviewScoreTotal + this.ratingStar[i],
+                  Reviews: doc.data().Reviews
+                    ? doc.data().Reviews.concat([
+                        {
+                          name: user.slice(0, 2),
+                          rating: this.ratingStar[i],
+                          title: this.reviewDetails[i * 2],
+                          description: this.reviewDetails[i * 2 + 1],
+                        },
+                      ])
+                    : [
+                        {
+                          name: user.slice(0, 2),
+                          rating: this.ratingStar[i],
+                          title: this.reviewDetails[i * 2],
+                          description: this.reviewDetails[i * 2 + 1],
+                        },
+                      ],
+                });
+            });
+          });
+      }
       alert("Submit Review");
+      this.$modal.hide("review");
     },
     cancel() {
       this.$modal.hide("review");
+    },
+  },
+  computed: {
+    checkReviewUpdate() {
+      return this.reviewRef;
+    },
+  },
+  watch: {
+    checkReviewUpdate(newVal, oldVal) {
+      this.OrderInfo = [this.reviewRef];
+      newVal = oldVal;
     },
   },
 };
