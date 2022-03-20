@@ -1,6 +1,6 @@
 <template>
   <modal
-    name="screenshot"
+    name="review"
     transition="pop-out"
     :width="modalWidth"
     :focus-trap="true"
@@ -9,38 +9,55 @@
     <div class="box">
       <div class="partition" id="partition-register">
         <div class="partition-title">
-          <br>
-          <img class="paylahQR" src="../assets/blogPhotos/paylah.jpeg" alt="">
+          <v-row align="center">
+            <v-col :cols="12" class="review-header" v-if="reviewDetails"
+              ><strong>Customer Reviews</strong></v-col>
+              <p>{{this.listingID}}</p>
+
+          </v-row>
           <br />
-          The customer's payment screenshot is attached above for your verification!
+          <br />
         </div>
 
-        <button id="cancel-btn" @click.prevent="cancel">Exit</button>
+        <button id="cancel-btn" @click.prevent="cancel">Close</button>
       </div>
     </div>
   </modal>
 </template>
 <script>
 const MODAL_WIDTH = 656;
+import db from "../firebase/firebaseInit";
+
 export default {
+  data() {
+    return {
+      reviewDetails: [],
+    };
+  },
+
   components: {},
-  name: "ScreenshotVerification",
+  name: "ReviewPopUp",
+  props: ["listingID"],
   created() {
     this.modalWidth =
       window.innerWidth < MODAL_WIDTH ? MODAL_WIDTH / 2 : MODAL_WIDTH;
   },
+
+  mounted() {
+    const docRef = db.collection("listings").doc(this.listingID);
+    docRef.get().then((doc) => {
+      this.reviewDetails = doc.data().Reviews;
+    });
+  },
+
   methods: {
-    submit() {
-      alert("You have successfully submitted your payment screenshot");
-    },
     cancel() {
-      this.$modal.hide("screenshot");
+      this.$modal.hide("review");
     },
   },
 };
 </script>
 <style scoped lang="scss">
-
 .pop-out-enter-active,
 .pop-out-leave-active {
   transition: all 0.5s;
@@ -49,24 +66,5 @@ export default {
 .pop-out-leave-active {
   opacity: 0;
   transform: translateY(24px);
-}
-
-#cancel-btn {
-  background-color: #7a7a7a;
-  color: white;
-  font-size: 12px;
-  width: 30%;
-}
-
-.form {
-    width: 70%;
-    margin: auto;
-}
-
-.paylahQR {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 30%;
 }
 </style>

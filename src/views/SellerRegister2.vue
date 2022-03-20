@@ -5,13 +5,16 @@
       <div class="entire">
         <div class="inputs">
             <h4>Profile Picture:</h4>
-            <v-file-input class="fileInput" v-model="email" required></v-file-input>
+            <v-file-input 
+            class="fileInput" v-model="profilePic" required 
+            accept="image/png, image/jpeg, image/bmp"></v-file-input>
             <h4>Payment QR Code (PayLah! / PayNow):</h4>
-            <v-file-input class="fileInput" v-model="email" required></v-file-input>
+            <v-file-input class="fileInput" v-model="qrPic" required
+            accept="image/png, image/jpeg, image/bmp"></v-file-input>
 
             <h4>Shop Description:</h4>
             <v-textarea
-              v-model="productDesc"
+              v-model="shopDesc"
               counter
               maxlength="250"
               :rules="descRules"
@@ -23,10 +26,46 @@
 
         <div class="uploads">
           <h4>Opening Hours:</h4>
-          <div v-for="day in week" :key="day">
-            <h5>{{ day }}</h5>
-            <input full-width type="time" />
-            <input class="bottom" full-width type="time" />
+          <div>
+            <h5>Monday</h5>
+            <input full-width type="time" v-model="monOpening"/>
+            <input class="bottom" full-width type="time" v-model="monClosing"/>
+          </div>
+
+          <div>
+            <h5>Tuesday</h5>
+            <input full-width type="time" v-model="tuesOpening"/>
+            <input class="bottom" full-width type="time" v-model="tuesClosing"/>
+          </div>
+
+          <div>
+            <h5>Wednesday</h5>
+            <input full-width type="time" v-model="wedOpening"/>
+            <input class="bottom" full-width type="time" v-model="wedClosing"/>
+          </div>
+
+          <div>
+            <h5>Thursday</h5>
+            <input full-width type="time" v-model="thursOpening"/>
+            <input class="bottom" full-width type="time" v-model="thursClosing"/>
+          </div>
+
+          <div>
+            <h5>Friday</h5>
+            <input full-width type="time" v-model="friOpening"/>
+            <input class="bottom" full-width type="time" v-model="friClosing"/>
+          </div>
+
+          <div>
+            <h5>Saturday</h5>
+            <input full-width type="time" v-model="satOpening"/>
+            <input class="bottom" full-width type="time" v-model="satClosing"/>
+          </div>
+
+          <div>
+            <h5>Sunday</h5>
+            <input full-width type="time" v-model="sunOpening"/>
+            <input class="bottom" full-width type="time" v-model="sunClosing"/>
           </div>
 
           <div v-show="error" class="error">{{ this.errorMsg }}</div>
@@ -50,60 +89,72 @@ export default {
   components: {},
   data() {
     return {
+      userID: "",
       profilePic: "",
       qrPic: "",
       shopDesc: "",
-      openingHours: "",
-      monday: "",
+
+      monOpening: "",
+      monClosing: "",
+      tuesOpening: "",
+      tuesClosing: "",
+      wedOpening: "",
+      wedClosing: "",
+      thursOpening: "",
+      thursClosing: "",
+      friOpening: "",
+      friClosing: "",
+      satOpening: "",
+      satClosing: "",
+      sunOpening: "",
+      sunClosing: "",
+
       error: null,
       errorMsg: "",
-      week: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-      ],
     };
   },
+
+  async mounted() {
+    this.userID = firebase.auth().currentUser.uid;
+  },
+  
   methods: {
     async register() {
       if (
-        this.email !== "" &&
-        this.password !== "" &&
-        this.shopName !== "" &&
-        this.number !== "" &&
-        this.address !== "" &&
-        this.username !== ""
+        this.profilePic !== "" &&
+        this.qrPic !== "" &&
+        this.shopDesc !== ""
       ) {
         this.error = false;
         this.errorMsg = "";
-        const firebaseAuth = await firebase.auth();
-        const createUser = await firebaseAuth
-          .createUserWithEmailAndPassword(this.email, this.password)
-          .catch((err) => {
-            this.error = true;
-            this.errorMsg = err.message;
-          });
-        const result = await createUser;
+
         if (!this.error) {
-          const dataBase = db.collection("users").doc(result.user.uid);
+          const dataBase = db.collection("users").doc(this.userID);
           await dataBase.set({
-            shopName: this.shopName,
-            username: this.username,
-            number: this.number,
-            address: this.address,
-            email: this.email,
-            seller: true,
+            profilePic: this.profilePic,
+            qrPic: this.qrPic,
+            shopDesc: this.shopDesc,
+            monOpening: this.monOpening,
+            monClosing: this.monClosing,
+            tuesOpening: this.tuesOpening,
+            tuesClosing: this.tuesClosing,
+            wedOpening: this.wedOpening,
+            wedClosing: this.wedClosing,
+            thursOpening: this.thursOpening,
+            thursClosing: this.thursClosing,
+            friOpening: this.friOpening,
+            friClosing: this.friClosing,
+            satOpening: this.satOpening,
+            satClosing: this.satClosing,
+            sunOpening: this.sunOpening,
+            sunClosing: this.sunClosing,
           });
           this.$router.push({ name: "AuthHome" }); //push user to homepage aft auth
           return;
         }
       } else {
         this.error = true;
-        this.errorMsg = "Please fill out all the fields!";
+        this.errorMsg = "Please fill out the required fields!";
         return;
       }
     },
