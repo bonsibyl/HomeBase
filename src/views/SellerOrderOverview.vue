@@ -18,11 +18,14 @@
       <h1 style="text-align: left">Overview</h1>
       <hr />
       <v-data-table :headers="headers" :items="orders"> </v-data-table>
+      <v-data-table :headers="headers" :items="orders"> </v-data-table>
     </v-container>
   </v-app>
 </template>
 
 <script>
+import db from "../firebase/firebaseInit";
+
 export default {
   data: () => ({
     pages: [
@@ -76,7 +79,35 @@ export default {
         earnings: "$25.80",
       },
     ],
+
+    fireorders: [],
   }),
+
+  methods: {
+    async retrieveOrders() {
+      const docRef = db.collection("orders");
+      var orders = [];
+      await docRef.where("status", "==", "Fulfilled").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          orders.push({ ...doc.data(), docID: doc.id});
+        });
+      });
+
+      return orders;
+    }
+  },
+
+  async mounted() {
+    const firebaseorders = await this.retrieveOrders();
+    console.log("Orders Below");
+    console.log(firebaseorders);
+    
+    for (let i = 0; i < firebaseorders.length; i++) {
+    //   var dict = {};
+      console.log(firebaseorders[i]["details"])
+
+    }
+  }
 };
 </script>
 
