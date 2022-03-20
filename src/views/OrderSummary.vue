@@ -99,7 +99,8 @@
           <v-icon>mdi-account-circle</v-icon>
           View Profile
         </button>
-        <button class="viewProfile">
+        <button class="viewProfile" @click="showModal">
+          <ScreenshotVerification />
           View Payment
         </button>
       </div>
@@ -110,6 +111,7 @@
 <script>
 import Modal from "../components/Modal";
 import Loading from "../components/Loading";
+import ScreenshotVerification from "./ScreenshotVerification.vue";
 export default {
   name: "OrderSummary",
   data() {
@@ -122,10 +124,14 @@ export default {
   components: {
     Modal,
     Loading,
+    ScreenshotVerification,
   },
   methods: {
     closeModal() {
       this.modalActive = !this.modalActive;
+    },
+    showModal() {
+      this.$modal.show("screenshot");
     },
   },
 };

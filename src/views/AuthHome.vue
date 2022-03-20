@@ -4,7 +4,8 @@
       <strong class="supporting-header">Welcome back to Homebase!</strong>
 
       <p class="supporting-text">
-        Lorem ipsum blabla some quotes
+        How did your shop fare this week? <br>
+        Take a look at your analytics dashboard.
       </p>
       <router-link
         :to="{ name: 'Dashboard' }"
@@ -19,7 +20,8 @@
         >Welcome back to Homebase!</strong
       >
       <p class="supporting-text">
-        Lorem ipsum blabla some quotes
+        Looking for something to satisfy your cravings?<br>
+        Look no further, browse our bakes on offer today.
       </p>
       <router-link
         :to="{ name: 'Search' }"
