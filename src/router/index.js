@@ -7,6 +7,7 @@ import Blogs from "../views/Blogs.vue";
 import Login from "../views/Login.vue";
 import BuyerRegister from "../views/BuyerRegister.vue";
 import SellerRegister from "../views/SellerRegister.vue";
+import SellerRegister2 from "../views/SellerRegister2.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import EditAccount from "../views/EditAccount.vue";
 import Admin from "../views/Admin.vue";
@@ -108,6 +109,14 @@ const routes = [
     component: SellerRegister,
     meta: {
       title: "SellerRegister",
+    },
+  },
+  {
+    path: "/seller-register-2",
+    name: "SellerRegister2",
+    component: SellerRegister2,
+    meta: {
+      title: "SellerRegister2",
     },
   },
   {
