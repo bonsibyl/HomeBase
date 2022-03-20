@@ -131,6 +131,20 @@ export default {
       return orders;
     },
 
+    async retrieveName(buyerID) {
+      var docRef = db.collection("users").doc(buyerID);
+
+      var name = "";
+
+      await docRef.get().then((doc) => {
+        if (doc.exists) {
+          name = doc.data()["firstName"] + " " + doc.data()["lastName"];
+        }
+      });
+
+      return name;
+    },
+
     convertToCurrency(value) {
       const dollar = value.split(".")[0];
       var cents = value.split(".")[1];
@@ -148,8 +162,8 @@ export default {
 
   async mounted() {
     const firebaseorders = await this.retrieveOrders();
-    console.log("Orders Below");
-    console.log(firebaseorders);
+    // console.log("Orders Below");
+    // console.log(firebaseorders);
     
     for (let i = 0; i < firebaseorders.length; i++) {
       
@@ -163,6 +177,14 @@ export default {
       date = dd + '/' + mm + '/' + yyyy;
 
       var buyer = firebaseorders[i]["buyerID"];
+      var buyerDetails = await this.retrieveName(buyer);
+
+      console.log("TEST");
+      console.log(buyerDetails);
+
+
+      
+      buyer = buyerDetails;
       var status = firebaseorders[i]["status"];
       var totalearnings = "$" + this.convertToCurrency(String(firebaseorders[i]["total"]));
 
@@ -175,7 +197,7 @@ export default {
       this.fireorders.push(dict);
     }
 
-    console.log(this.fireorders);
+    //console.log(this.fireorders);
   }
 };
 </script>
