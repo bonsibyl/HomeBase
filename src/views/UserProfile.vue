@@ -139,18 +139,20 @@
                 </v-col>
                 <v-col>
                   <v-row>
-                    <v-btn :color="btnColor(order.status)"
+                    <v-btn min-width="12vw" :color="btnColor(order.status)"
                       >{{ order.status }}
                     </v-btn>
                   </v-row>
                   <v-row class="pt-4">
                     <v-btn
+                      min-width="12vw"
                       color="yellow darken-2"
                       @click="showModal(order)"
                       v-if="order.status == 'Fulfilled'"
                       >Leave a review!</v-btn
                     >
                     <v-btn
+                      min-width="12vw"
                       v-if="order.status == 'Payment Pending'"
                       color="teal lighten-2"
                       @click="showPayment"
