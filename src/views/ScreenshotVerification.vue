@@ -39,7 +39,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 
 .pop-out-enter-active,
 .pop-out-leave-active {
@@ -51,12 +51,6 @@ export default {
   transform: translateY(24px);
 }
 
-#submit-btn {
-  background-color: #336632;
-  color: white;
-  font-size: 12px;
-  width: 50%;
-}
 #cancel-btn {
   background-color: #7a7a7a;
   color: white;
@@ -64,26 +58,11 @@ export default {
   width: 30%;
 }
 
-button {
-  cursor: pointer;
-  padding: 12px 24px;
-  border: none;
-  font-weight: bold;
-}
-
 .form {
     width: 70%;
     margin: auto;
 }
 
-.fileInput {
-    button {
-        background-color: white !important;
-        padding: 0px !important;
-        margin: 0px !important;
-        min-width: 0px !important;
-    }
-}
 .paylahQR {
   display: block;
   margin-left: auto;
