@@ -11,11 +11,12 @@ const store = createStore(Vuex.Store, {
   state: {
     user: null,
     profileEmail: null,
-    profileFirstName: null,
-    profileLastName: null,
+    profileFirstName: "",
+    profileLastName: "",
     profileUsername: null,
     profileId: null,
-    profileInitials: null,
+    profileInitials: "",
+    profileShopName: "",
     isSeller: true,
     seller: null,
     number: null,
@@ -52,6 +53,10 @@ const store = createStore(Vuex.Store, {
       state.authenticated = true;
     },
     setProfileInitials(state) {
+      if (!state.profileFirstName) {
+        state.setProfileInitials = "";
+        return;
+      }
       state.setProfileInitials = //get initials of first + last name
         state.profileFirstName.slice(0) + state.profileLastName.slice(0);
     },
@@ -112,12 +117,22 @@ const store = createStore(Vuex.Store, {
 
     async updateUserSettings({ commit, state }) {
       const dataBase = await db.collection("users").doc(state.profileId);
-      await dataBase.update({
-        firstName: state.profileFirstName,
-        lastName: state.profileLastName,
-        username: state.profileUsername,
-      });
-      commit("setProfileInitials");
+      if (!state.seller) {
+        await dataBase.update({
+          firstName: state.profileFirstName,
+          lastName: state.profileLastName,
+          username: state.profileUsername,
+          number: state.number,
+          address: state.address,
+        });
+        commit("setProfileInitials");
+      } else {
+        await dataBase.update({
+          shopName: state.profileShopName,
+          number: state.number,
+          address: state.address,
+        });
+      }
     },
     async getCart({ commit }) {
       //love u weiyang get cart from firebase here

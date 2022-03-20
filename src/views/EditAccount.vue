@@ -44,7 +44,9 @@
     <div class="container" v-else>
       <h2><b>Account Settings</b></h2>
       <div class="profile-info">
-        <div class="initials">{{ firstName[0] + lastName[0] }}</div>
+        <div class="initials">
+          {{ firstName[0] + lastName[0] }}
+        </div>
         <div class="admin-badge">
           <adminIcon class="icon" />
           <span>Customer</span>
@@ -80,14 +82,20 @@
         <button @click="updateProfile">Save Changes</button>
       </div>
     </div>
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      transition="scale-transition"
+    >
+      {{ snackbar.msg }}
+    </v-snackbar>
   </div>
 </template>
-
 
 <script>
 import Modal from "../components/Modal";
 import adminIcon from "../assets/Icons/user-crown-light.svg";
-
+import firebase from "firebase/app";
 export default {
   name: "EditAccount",
   components: {
@@ -98,12 +106,41 @@ export default {
     return {
       modalMessage: "Changes were saved!",
       modalActive: null,
+      password: "",
+      snackbar: {
+        show: false,
+        msg: null,
+        color: null,
+      },
     };
   },
   methods: {
-    updateProfile() {
+    async updateProfile() {
       this.$store.dispatch("updateUserSettings");
-      this.modalActive = !this.modalActive;
+      if (this.password && this.password.length < 6) {
+        this.snackbar = {
+          show: true,
+          msg: "Your password has to be at least 6 characters!",
+          color: "error",
+        };
+        return;
+      }
+      await firebase
+        .auth()
+        .currentUser.updatePassword(this.password)
+        .catch((error) => {
+          this.snackbar = {
+            show: true,
+            msg: error,
+            color: "error",
+          };
+          return;
+        });
+      this.snackbar = {
+        show: true,
+        msg: "Changes saved!",
+        color: "success",
+      };
     },
     closeModal() {
       this.modalActive = !this.modalActive;
