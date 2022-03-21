@@ -4,30 +4,33 @@
     transition="pop-out"
     :width="modalWidth"
     :focus-trap="true"
-    :height="500"
+    :height="550"
   >
     <div class="box">
       <div class="partition" id="partition-register">
         <div class="partition-title">
-          <img class="paylahQR" src="../assets/blogPhotos/paylah.jpeg" alt="">
+          <img class="paylahQR" src="../assets/blogPhotos/paylah.jpeg" alt="" />
           <br />
           We have received your order with thanks! <br /><br />
           To proceed, please upload a screenshot of your PayLah! payment to
-          confirm your order. <br /><br />
+          confirm your order. <br />
         </div>
         <div class="form">
           <v-file-input
             class="fileInput"
-            label="File input"
+            label="Upload Screenshot"
             filled
             full-width
             prepend-icon="mdi-camera"
           ></v-file-input>
         </div>
-        <button id="submit-btn" @click.prevent="submit">
-          Upload Payment Screenshot
-        </button>
-        <button id="cancel-btn" @click.prevent="cancel">Go Back</button>
+        <div class="button-div">
+          <button id="submit-btn" @click.prevent="submit">
+            Submit
+          </button>
+          <button id="cancel-btn" @click.prevent="cancel">Go Back</button>
+          <div style="margin-bottom: 20px"></div>
+        </div>
       </div>
     </div>
   </modal>
@@ -52,7 +55,6 @@ export default {
 };
 </script>
 <style lang="scss">
-
 .pop-out-enter-active,
 .pop-out-leave-active {
   transition: all 0.5s;
@@ -63,12 +65,19 @@ export default {
   transform: translateY(24px);
 }
 
+button {
+  cursor: pointer;
+  padding: 12px 24px;
+  border: none;
+}
+
 #submit-btn {
   background-color: #336632;
   color: white;
   font-size: 12px;
-  width: 50%;
+  width: 30%;
 }
+
 #cancel-btn {
   background-color: #7a7a7a;
   color: white;
@@ -76,25 +85,22 @@ export default {
   width: 30%;
 }
 
-button {
-  cursor: pointer;
-  padding: 12px 24px;
-  border: none;
-  font-weight: bold;
+.button-div {
+  text-align: center;
 }
 
 .form {
-    width: 70%;
-    margin: auto;
+  width: 70%;
+  margin: auto;
 }
 
 .fileInput {
-    button {
-        background-color: white !important;
-        padding: 0px !important;
-        margin: 0px !important;
-        min-width: 0px !important;
-    }
+  button {
+    background-color: white !important;
+    padding: 0px !important;
+    margin: 0px !important;
+    min-width: 0px !important;
+  }
 }
 .paylahQR {
   display: block;
