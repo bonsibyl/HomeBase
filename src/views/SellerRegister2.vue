@@ -4,74 +4,88 @@
       <h2>Provide Your Business Details</h2>
       <div class="entire">
         <div class="inputs">
-            <h4>Profile Picture:</h4>
-            <v-file-input 
-            class="fileInput" v-model="profilePic" required 
-            accept="image/png, image/jpeg, image/bmp"></v-file-input>
-            <h4>Payment QR Code (PayLah! / PayNow):</h4>
-            <v-file-input class="fileInput" v-model="qrPic" required
-            accept="image/png, image/jpeg, image/bmp"></v-file-input>
+          <h4>Profile Picture:</h4>
+          <v-file-input
+            class="fileInput"
+            v-model="profileModel"
+            accept="image/png, image/jpeg, image/bmp"
+          ></v-file-input>
+          <h4>Payment QR Code (PayLah! / PayNow):</h4>
+          <v-file-input
+            class="fileInput"
+            v-model="qrModel"
+            accept="image/png, image/jpeg, image/bmp"
+          ></v-file-input>
 
-            <h4>Shop Description:</h4>
-            <v-textarea
-              v-model="shopDesc"
-              counter
-              maxlength="250"
-              :rules="descRules"
-              full-width
-              single-line
-              required
-            ></v-textarea>
+          <h4>Shop Description:</h4>
+          <v-textarea
+            v-model="shopDesc"
+            counter
+            maxlength="250"
+            full-width
+            single-line
+            required
+          ></v-textarea>
         </div>
 
         <div class="uploads">
           <h4>Opening Hours:</h4>
           <div>
             <h5>Monday</h5>
-            <input full-width type="time" v-model="monOpening"/>
-            <input class="bottom" full-width type="time" v-model="monClosing"/>
+            <input full-width type="time" v-model="monOpening" />
+            <input class="bottom" full-width type="time" v-model="monClosing" />
           </div>
 
           <div>
             <h5>Tuesday</h5>
-            <input full-width type="time" v-model="tuesOpening"/>
-            <input class="bottom" full-width type="time" v-model="tuesClosing"/>
+            <input full-width type="time" v-model="tuesOpening" />
+            <input
+              class="bottom"
+              full-width
+              type="time"
+              v-model="tuesClosing"
+            />
           </div>
 
           <div>
             <h5>Wednesday</h5>
-            <input full-width type="time" v-model="wedOpening"/>
-            <input class="bottom" full-width type="time" v-model="wedClosing"/>
+            <input full-width type="time" v-model="wedOpening" />
+            <input class="bottom" full-width type="time" v-model="wedClosing" />
           </div>
 
           <div>
             <h5>Thursday</h5>
-            <input full-width type="time" v-model="thursOpening"/>
-            <input class="bottom" full-width type="time" v-model="thursClosing"/>
+            <input full-width type="time" v-model="thursOpening" />
+            <input
+              class="bottom"
+              full-width
+              type="time"
+              v-model="thursClosing"
+            />
           </div>
 
           <div>
             <h5>Friday</h5>
-            <input full-width type="time" v-model="friOpening"/>
-            <input class="bottom" full-width type="time" v-model="friClosing"/>
+            <input full-width type="time" v-model="friOpening" />
+            <input class="bottom" full-width type="time" v-model="friClosing" />
           </div>
 
           <div>
             <h5>Saturday</h5>
-            <input full-width type="time" v-model="satOpening"/>
-            <input class="bottom" full-width type="time" v-model="satClosing"/>
+            <input full-width type="time" v-model="satOpening" />
+            <input class="bottom" full-width type="time" v-model="satClosing" />
           </div>
 
           <div>
             <h5>Sunday</h5>
-            <input full-width type="time" v-model="sunOpening"/>
-            <input class="bottom" full-width type="time" v-model="sunClosing"/>
+            <input full-width type="time" v-model="sunOpening" />
+            <input class="bottom" full-width type="time" v-model="sunClosing" />
           </div>
 
           <div v-show="error" class="error">{{ this.errorMsg }}</div>
           <!-- only show if error == true -->
         </div>
-        </div>
+      </div>
 
       <button @click.prevent="register"><b>Complete Registration!</b></button>
       <!-- click.prevent stops page from refreshing -->
@@ -90,10 +104,9 @@ export default {
   data() {
     return {
       userID: "",
-      profilePic: "",
-      qrPic: "",
       shopDesc: "",
-
+      qrModel: [],
+      profileModel: [],
       monOpening: "",
       monClosing: "",
       tuesOpening: "",
@@ -108,7 +121,7 @@ export default {
       satClosing: "",
       sunOpening: "",
       sunClosing: "",
-
+      check: false,
       error: null,
       errorMsg: "",
     };
@@ -116,42 +129,64 @@ export default {
 
   async mounted() {
     this.userID = firebase.auth().currentUser.uid;
+    await firebase
+      .storage()
+      .ref()
+      .child("/user/qr/" + firebase.auth().currentUser.uid)
+      .getDownloadURL()
+      .catch((this.check = true));
+    await db
+      .collection("users")
+      .doc(this.userID)
+      .get()
+      .then((doc) => {
+        this.shopDesc = doc.data().shopDesc ? doc.data().shopDesc : "";
+      });
   },
-  
+
   methods: {
     async register() {
+      var storageRef = firebase.storage().ref();
+      var qrURL = "/user/qr/" + firebase.auth().currentUser.uid;
+      var profileURL = "/user/profile/" + firebase.auth().currentUser.uid;
+      //check if image already exists
+      console.log(this.profileModel);
+      console.log(this.qrModel);
       if (
-        this.profilePic !== "" &&
-        this.qrPic !== "" &&
-        this.shopDesc !== ""
+        this.check &&
+        (Array.isArray(this.profileModel) || Array.isArray(this.qrModel))
       ) {
+        this.error = true;
+        this.errorMsg = "Please fill out the required fields!";
+        return;
+      }
+      if (this.shopDesc !== "") {
         this.error = false;
         this.errorMsg = "";
-
-        if (!this.error) {
-          const dataBase = db.collection("users").doc(this.userID);
-          await dataBase.set({
-            profilePic: this.profilePic,
-            qrPic: this.qrPic,
-            shopDesc: this.shopDesc,
-            monOpening: this.monOpening,
-            monClosing: this.monClosing,
-            tuesOpening: this.tuesOpening,
-            tuesClosing: this.tuesClosing,
-            wedOpening: this.wedOpening,
-            wedClosing: this.wedClosing,
-            thursOpening: this.thursOpening,
-            thursClosing: this.thursClosing,
-            friOpening: this.friOpening,
-            friClosing: this.friClosing,
-            satOpening: this.satOpening,
-            satClosing: this.satClosing,
-            sunOpening: this.sunOpening,
-            sunClosing: this.sunClosing,
-          });
-          this.$router.push({ name: "AuthHome" }); //push user to homepage aft auth
-          return;
-        }
+        //image handling
+        storageRef.child(qrURL).put(this.qrModel);
+        storageRef.child(profileURL).put(this.profileModel);
+        //image handling end
+        const dataBase = db.collection("users").doc(this.userID);
+        await dataBase.update({
+          shopDesc: this.shopDesc,
+          monOpening: this.monOpening,
+          monClosing: this.monClosing,
+          tuesOpening: this.tuesOpening,
+          tuesClosing: this.tuesClosing,
+          wedOpening: this.wedOpening,
+          wedClosing: this.wedClosing,
+          thursOpening: this.thursOpening,
+          thursClosing: this.thursClosing,
+          friOpening: this.friOpening,
+          friClosing: this.friClosing,
+          satOpening: this.satOpening,
+          satClosing: this.satClosing,
+          sunOpening: this.sunOpening,
+          sunClosing: this.sunClosing,
+        });
+        this.$router.push({ name: "AuthHome" }); //push user to homepage aft auth
+        return;
       } else {
         this.error = true;
         this.errorMsg = "Please fill out the required fields!";
@@ -178,34 +213,34 @@ export default {
   }
 }
 .entire {
-    margin: auto;
-    display: flex;
-    width: 100%;
+  margin: auto;
+  display: flex;
+  width: 100%;
 }
 
-.inputs, .uploads {
-    width: 100%;
-    padding: 3%;
-    
+.inputs,
+.uploads {
+  width: 100%;
+  padding: 3%;
 }
 
 .register {
-    padding: 3%;
+  padding: 3%;
 }
 
 h4 {
-    margin-bottom: 7px;
+  margin-bottom: 7px;
 }
 
 .bottom {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 input {
-    width: 100%;
+  width: 100%;
 }
 
 .fileInput {
-    margin-bottom: 20%;
+  margin-bottom: 20%;
 }
 </style>
