@@ -4,7 +4,7 @@
     transition="pop-out"
     :width="modalWidth"
     :focus-trap="true"
-    :height="500"
+    :height="550"
   >
     <div class="box">
       <div class="partition" id="partition-register">
@@ -63,7 +63,7 @@
               </v-row>
             </v-col>
             <div class="button-set">
-              <v-btn id="submit-btn" @click="submit"> Submit Review </v-btn>
+              <v-btn id="submit-btn" @click="submit"> Submit </v-btn>
               <v-btn id="cancel-btn" @click="cancel">Cancel</v-btn>
               <div style="margin-bottom: 20px"></div>
             </div>
@@ -187,7 +187,7 @@ $background_color: #404142;
   background: white;
   overflow-y: auto;
   width: 656px;
-  height: 500px;
+  height: 550px;
   border-radius: 2px;
   box-sizing: border-box;
   box-shadow: 0 0 40px black;
@@ -254,7 +254,7 @@ $background_color: #404142;
     margin-top: 8px;
     color: #8b8c8d;
     cursor: pointer;
-    border: 1px solid #dddedf;
+    //border: 1px solid #dddedf;
     text-transform: uppercase;
     transition: 0.1s all;
     font-size: 10px;
@@ -264,12 +264,13 @@ $background_color: #404142;
     }
   }
   .button-set {
-    //margin-bottom: 8px;
+    margin-right: 8px;
     float: right;
   }
   #submit-btn,
   #cancel-btn {
     margin-left: 8px;
+    width: 150px;
   }
   .autocomplete-fix {
     position: absolute;
