@@ -1,5 +1,12 @@
 <template>
   <v-app>
+    <Modal
+      v-if="modalActive"
+      :modalMessage="modalMessage"
+      v-on:close-modal="closeModal"
+    />
+    <Loading v-if="loading" />
+
     <v-navigation-drawer app absolute>
       <v-list>
         <v-list-item
@@ -30,6 +37,7 @@
             min-height="100"
             height="400"
             hover
+            @click="showModal"
           >
             <v-img
               gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
@@ -48,6 +56,7 @@
               }}</v-card-subtitle>
             </v-img></v-card
           >
+          <ReviewPopUp :listingID="ListingResults"/>
         </v-col>
       </v-row>
     </v-container>
@@ -57,8 +66,17 @@
 <script>
 import firebase from "firebase/app";
 import db from "../firebase/firebaseInit";
+import ReviewPopUp from "./ReviewPopUp.vue";
+import Modal from "../components/Modal";
+import Loading from "../components/Loading";
 
 export default {
+  props: ['listingID'],
+  components: {
+    ReviewPopUp,
+    Modal,
+    Loading,
+  },
   async mounted() {
     const user = firebase.auth().currentUser.uid;
     const listings = await this.retrieveSellerListings(user);
@@ -79,9 +97,13 @@ export default {
     ListingResults: [],
   }),
   methods: {
-    getLink(orderid) {
-      return "/order" + orderid;
+    async closeModal() {
+      this.modalActive = !this.modalActive;
     },
+    async showModal() {
+      this.$modal.show("review");
+    },
+
     async retrieveSellerListings(id) {
       const docRef = db.collection("listings").where("storeName", "==", id);
       var listings = [];

@@ -56,7 +56,7 @@
         <!-- only show if error == true -->
       </div>
 
-      <button @click.prevent="register"><b>Sign Up</b></button>
+      <button @click.prevent="register"><b>Register</b></button>
       <!-- click.prevent stops page from refreshing -->
 
       <p class="login-register">
@@ -133,7 +133,7 @@ export default {
           email: this.email,
           seller: true,
         });
-        this.$router.push({ name: "AuthHome" }); //push user to homepage aft auth
+        this.$router.push({ name: "SellerRegister2" }); //push user to register pg 2 aft auth
         return;
         }
       } else {
