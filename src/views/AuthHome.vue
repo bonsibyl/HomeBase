@@ -15,42 +15,37 @@
         View Shop Analytics
       </router-link>
     </div>
-    <div v-else class="landing-rectangle">
-      <strong class="supporting-header">Welcome back to Homebase!</strong>
-      <p class="supporting-text">
-        Looking for something to satisfy your cravings?<br />
-        Look no further, browse our bakes on offer today.
-      </p>
-      <router-link
-        :to="{ name: 'Search' }"
-        tag="button"
-        class="landing-register-button"
-        >View All Available Bakes!</router-link
-      >
-    </div>
-    <v-container class="separator"></v-container>
-    <div class="browse-new">
-      <div class="content-buyer">
-        <br />
-        <h1 class="div-title">See what's new</h1>
-        <br />
-        <v-row>
-          <v-col v-for="result in getListings" :key="result.name" cols="3">
-            <v-hover>
-              <template v-slot:default="{ hover }">
-                <v-card
-                  class="rounded-lg"
-                  min-width="150"
-                  min-height="100"
-                  height="350"
-                  :to="'/listing/' + result.storeName + '/' + result.docID"
-                  hover
-                >
-                  <v-img
-                    gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
-                    class="white--text align-end bottom-gradient"
-                    height="100%"
-                    :src="result.imageURL"
+    <div v-else>
+      <div class="landing-rectangle">
+        <strong class="supporting-header">Welcome back to Homebase!</strong>
+        <p class="supporting-text">
+          With over 100 reputable small local food businesses on our platform,
+          there is sure to be an option for you.
+        </p>
+        <router-link
+          :to="{ name: 'Search' }"
+          tag="button"
+          class="landing-register-button"
+          >View All Available Bakes!</router-link
+        >
+      </div>
+      <v-container class="separator"></v-container>
+      <div class="browse-new">
+        <div class="content-buyer">
+          <br />
+          <h1 class="div-title">See what's new</h1>
+          <br />
+          <v-row>
+            <v-col v-for="result in getListings" :key="result.name" cols="3">
+              <v-hover>
+                <template v-slot:default="{ hover }">
+                  <v-card
+                    class="rounded-lg"
+                    min-width="150"
+                    min-height="100"
+                    height="350"
+                    :to="'/listing/' + result.storeName + '/' + result.docID"
+                    hover
                   >
                     <v-img
                       gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
@@ -82,6 +77,7 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
