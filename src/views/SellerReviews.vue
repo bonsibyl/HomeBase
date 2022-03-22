@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import RatingStars from "../components/RatingStars.vue";
+//import RatingStars from "../components/RatingStars.vue";
 import firebase from "firebase/app";
 import db from "../firebase/firebaseInit";
 import ReviewPopUp from "./ReviewPopUp.vue";
