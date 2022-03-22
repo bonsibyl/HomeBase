@@ -244,6 +244,7 @@ export default {
         msg: "Order has been successfully created!",
       };
       localStorage.setItem("cart", JSON.stringify([]));
+      this.$store.commit("checkCartUpdateFunc");
       this.$router.push({
         name: "Profile",
         params: { id: this.$store.state.profileId },
