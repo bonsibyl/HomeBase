@@ -16,7 +16,7 @@
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-container v-if="userMatch" class="dashboardContainer">
+      <v-container class="dashboardContainer">
         <v-row id="headerrow">
           <v-col>
             <h1 style="text-align: left">Analytics</h1>
@@ -130,6 +130,7 @@ export default {
   }),
   async mounted() {
     const user = firebase.auth().currentUser.uid;
+    console.log(this.$route.params.id);
     this.userMatch = this.$route.params.id === user;
     const information = await this.retrieveUserType(this.$route.params.id);
     this.seller = information;
@@ -145,7 +146,7 @@ export default {
       this.ListingResults = listings;
       console.log(this.ListingResults);
     }
-    //this.avgRating = this.totalRating/this.numReviews;
+    this.avgRating = Math.round(this.totalRating/this.numReviews);
   },
     methods: {
     async retrieveUserType(id) {
@@ -174,6 +175,11 @@ export default {
         });
       });
       return listings;
+    },
+  },
+    computed: {
+    checkRoute() {
+      return this.$route.params.id;
     },
   }
 

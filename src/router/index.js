@@ -168,7 +168,7 @@ const routes = [
     },
   },
   {
-    path: "/dashboard",
+    path: "/dashboard/:id",
     name: "Dashboard",
     component: Dashboard,
     meta: {
