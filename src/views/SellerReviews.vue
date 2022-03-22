@@ -92,10 +92,10 @@ export default {
   },
   data: () => ({
     pages: [
-      ["Overview", "/sellerorderoverview/:id"],
-      ["Orders", "/sellerordermanagement/:id"],
-      ["Reviews", "/sellerreviews/:id"],
-      ["Analytics", "/dashboard/:id"],
+      ["Overview", "/sellerorderoverview/"],
+      ["Orders", "/sellerordermanagement/"],
+      ["Reviews", "/sellerreviews/"],
+      ["Analytics", "/dashboard/"],
     ],
     ListingResults: [],
     reviewDetails: [],
