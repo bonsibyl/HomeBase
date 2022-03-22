@@ -6,7 +6,7 @@
           v-for="[page, route] in pages"
           :key="page"
           link
-          :to="route"
+          :to="route + checkRoute"
         >
           <v-list-item-content>
             {{ page }}
@@ -58,10 +58,10 @@ export default {
 
   data: () => ({
     pages: [
-      ["Overview", "/sellerorderoverview"],
-      ["Orders", "/sellerordermanagement"],
-      ["Reviews", "/sellerreviews"],
-      ["Analytics", "/dashboard"],
+      ["Overview", "/sellerorderoverview/:id"],
+      ["Orders", "/sellerordermanagement/:id"],
+      ["Reviews", "/sellerreviews/:id"],
+      ["Analytics", "/dashboard/:id"],
     ],
     ListingResults: [],
     reviewDetails: [],
@@ -148,6 +148,11 @@ export default {
       return listings;
     },
   },
+  computed: {
+    checkRoute() {
+      return this.$route.params.id;
+    },
+  }
 };
 </script>
 

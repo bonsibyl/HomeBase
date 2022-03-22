@@ -7,7 +7,7 @@
             v-for="[page, route] in pages"
             :key="page"
             link
-            :to="route"
+            :to="route + checkRoute"
             height="400"
           >
             <v-list-item-content>
@@ -91,20 +91,18 @@ export default {
   name: "Dashboard",
   data: () => ({
     pages: [
-      ["Overview", "/sellerorderoverview"],
-      ["Orders", "/sellerordermanagement"],
-      ["Reviews", "/sellerreviews"],
-      ["Analytics", "/dashboard"],
+      ["Overview", "/sellerorderoverview/"],
+      ["Orders", "/sellerordermanagement/"],
+      ["Reviews", "/sellerreviews/"],
+      ["Analytics", "/dashboard/"],
     ],
     ListingResults: [],
     numReviews: 0,
     numVisits: 0,
     totalRev: 0,
     totalRating: 0,
-    numListing: 0,
     avgRating: 0,
     seller: null,
-    userMatch: false,
     //Populating profile fields
     shopUsername: "",
     storeName: "",
@@ -136,12 +134,17 @@ export default {
     this.seller = information;
     if (this.seller) {
       const listings = await this.retrieveSellerListings(this.$route.params.id);
+      const orders = await this.retrieveOrders(this.$route.params.id);
       for (let i = 0; i < listings.length; i++) {
         var ref = listings[i];
         this.totalRating = this.totalRating + ref.ReviewScoreTotal;
         this.numReviews = this.numReviews + ref.ReviewScoreCount;
         this.numVisits = this.numVisits + ref.ViewCount;
         console.log("retrieved");
+      }
+      for (let i = 0; i < orders.length; i++) {
+        var ref2 = orders[i];
+        this.totalRev = this.totalRev + (ref2.details.price * ref2.details.qty);
       }
       this.ListingResults = listings;
       console.log(this.ListingResults);
@@ -175,6 +178,18 @@ export default {
         });
       });
       return listings;
+    },
+    async retrieveOrders(id) {
+      const docRef = db
+        .collection("orders")
+        .where("sellerID", "==", id);
+      var orders = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          orders.push({ ...doc.data(), docID: doc.id });
+        });
+      });
+      return orders;
     },
   },
     computed: {
