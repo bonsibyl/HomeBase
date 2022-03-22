@@ -34,6 +34,14 @@
           <input disabled type="text" id="email" v-model="email" />
         </div>
         <div class="input">
+          <label for="password">Current Password:</label>
+          <input
+            type="password"
+            id="currentPassword"
+            v-model="currentPassword"
+          />
+        </div>
+        <div class="input">
           <label for="password">Password:</label>
           <input type="password" id="password" v-model="password" />
         </div>
@@ -44,7 +52,9 @@
     <div class="container" v-else>
       <h2><b>Account Settings</b></h2>
       <div class="profile-info">
-        <div class="initials">{{ firstName[0] + lastName[0] }}</div>
+        <div class="initials">
+          {{ firstName[0] + lastName[0] }}
+        </div>
         <div class="admin-badge">
           <adminIcon class="icon" />
           <span>Customer</span>
@@ -74,20 +84,34 @@
           <input disabled type="text" id="email" v-model="email" />
         </div>
         <div class="input">
+          <label for="password">Current Password:</label>
+          <input
+            type="password"
+            id="currentPassword"
+            v-model="currentPassword"
+          />
+        </div>
+        <div class="input">
           <label for="password">Password:</label>
           <input type="password" id="password" v-model="password" />
         </div>
         <button @click="updateProfile">Save Changes</button>
       </div>
     </div>
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      transition="scale-transition"
+    >
+      {{ snackbar.msg }}
+    </v-snackbar>
   </div>
 </template>
-
 
 <script>
 import Modal from "../components/Modal";
 import adminIcon from "../assets/Icons/user-crown-light.svg";
-
+import firebase from "firebase/app";
 export default {
   name: "EditAccount",
   components: {
@@ -98,12 +122,67 @@ export default {
     return {
       modalMessage: "Changes were saved!",
       modalActive: null,
+      password: "",
+      snackbar: {
+        show: false,
+        msg: null,
+        color: null,
+      },
+      currentPassword: "",
+      error: false,
     };
   },
   methods: {
-    updateProfile() {
-      this.$store.dispatch("updateUserSettings");
-      this.modalActive = !this.modalActive;
+    async updateProfile() {
+      this.error = false;
+      if (this.password) {
+        if (this.password.length < 6) {
+          this.snackbar = {
+            show: true,
+            msg: "Your password has to be at least 6 characters!",
+            color: "error",
+          };
+          return;
+        }
+        const user = firebase.auth().currentUser;
+        const credential = firebase.auth.EmailAuthProvider.credential(
+          user.email,
+          this.currentPassword
+        );
+        await user
+          .reauthenticateWithCredential(credential)
+          .then((doc) => {
+            console.log(doc);
+          })
+          .catch((error) => {
+            this.snackbar = {
+              show: true,
+              msg: error,
+              color: "error",
+            };
+            this.error = true;
+            return;
+          });
+        await user.updatePassword(this.password).catch((error) => {
+          this.snackbar = {
+            show: true,
+            msg: error,
+            color: "error",
+          };
+          this.error = true;
+          return;
+        });
+      }
+      if (!this.error) {
+        this.snackbar = {
+          show: true,
+          msg: "Changes saved!",
+          color: "success",
+        };
+        this.$store.dispatch("updateUserSettings");
+      } else {
+        console.log("wtf is going on");
+      }
     },
     closeModal() {
       this.modalActive = !this.modalActive;

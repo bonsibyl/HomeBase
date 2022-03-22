@@ -26,11 +26,7 @@
             <v-spacer></v-spacer>
             <v-col id="img">
               <v-card height="400" width="650">
-                <v-img
-                  height="100%"
-                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378"
-                >
-                </v-img>
+                <v-img height="100%" :src="profilePic"> </v-img>
               </v-card>
             </v-col>
           </v-row>
@@ -171,6 +167,7 @@ export default {
     email: "",
     contactNo: "",
     address: "",
+    profilePic: [],
   }),
 
   async mounted() {
@@ -188,6 +185,11 @@ export default {
       this.ListingResults = listings;
       console.log(this.ListingResults);
     }
+    this.profilePic = await firebase
+      .storage()
+      .ref()
+      .child("/user/profile/" + user)
+      .getDownloadURL();
   },
   methods: {
     async retrieveUserType(id) {
