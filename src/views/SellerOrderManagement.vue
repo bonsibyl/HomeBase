@@ -17,7 +17,21 @@
     <v-container class="dashboardContainer">
       <h1 style="text-align: left">Order Management</h1>
       <hr />
-      <v-data-table :headers="headers" :items="orders">
+      <!-- <v-data-table :headers="headers" :items="orders">
+        <template v-slot:item.orderid="{ item }">
+          <v-chip :to="getLink(item.orderid)">
+            {{ item.orderid }}
+          </v-chip>
+        </template>
+
+        <template v-slot:item.orderstatus="{ item }">
+          <v-chip :color="getColor(item.orderstatus)" dark>
+            {{ item.orderstatus }}
+          </v-chip>
+        </template>
+      </v-data-table> -->
+
+      <v-data-table :headers="headers" :items="fireorders">
         <template v-slot:item.orderid="{ item }">
           <v-chip :to="getLink(item.orderid)">
             {{ item.orderid }}
@@ -35,6 +49,10 @@
 </template>
 
 <script>
+import db from "../firebase/firebaseInit";
+//import firebase from "firebase/app";
+
+
 export default {
   data: () => ({
     pages: [
@@ -83,23 +101,109 @@ export default {
         earnings: "$34.80",
       },
     ],
+    fireorders: [],
   }),
   methods: {
     getColor(orderstatus) {
       if (orderstatus == "Fulfilled") return "green";
-      else if (orderstatus == "In Progress") return "#dbaa23";
-      else if (orderstatus == "Pending Payment") return "#bf1802";
+      else if (orderstatus == "In Progress") return "#ff5500";
+      else if (orderstatus == "Payment Pending") return "#dbaa23";
     },
 
     getLink(orderid) {
       return "/order" + orderid;
     },
+
+    async retrieveOrders() {
+      const docRef = db.collection("orders");
+      var orders = [];
+      // await docRef.where("status", "==", "Fulfilled").get().then((querySnapshot) => {
+      //   querySnapshot.forEach((doc) => {
+      //     orders.push({ ...doc.data(), docID: doc.id});
+      //   });
+      // });
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          orders.push({ ...doc.data(), docID: doc.id});
+        });
+      });
+
+      return orders;
+    },
+
+    async retrieveName(buyerID) {
+      var docRef = db.collection("users").doc(buyerID);
+
+      var name = "";
+
+      await docRef.get().then((doc) => {
+        if (doc.exists) {
+          name = doc.data()["firstName"] + " " + doc.data()["lastName"];
+        }
+      });
+
+      return name;
+    },
+
+    convertToCurrency(value) {
+      const dollar = value.split(".")[0];
+      var cents = value.split(".")[1];
+      if (cents) {
+        if (cents.length == 1) {
+          cents = "." + cents + "0";
+        }
+      } else {
+        cents = ".00"
+      }
+
+      return dollar + cents;
+    }
   },
   computed: {
     checkRoute() {
       return this.$route.params.id;
     },
+    },
+
+  async mounted() {
+    const firebaseorders = await this.retrieveOrders();
+    // console.log("Orders Below");
+    // console.log(firebaseorders);
+
+    for (let i = 0; i < firebaseorders.length; i++) {
+
+      var dict = {};
+
+      var date = firebaseorders[i]["date"].toDate();
+      var dd = String(date.getDate()).padStart(2, '0');
+      var mm = String(date.getMonth() + 1).padStart(2, '0');
+      var yyyy = date.getFullYear();
+
+      date = dd + '/' + mm + '/' + yyyy;
+
+      var buyer = firebaseorders[i]["buyerID"];
+      var buyerDetails = await this.retrieveName(buyer);
+
+      console.log("TEST");
+      console.log(buyerDetails);
+
+
+
+      buyer = buyerDetails;
+      var status = firebaseorders[i]["status"];
+      var totalearnings = "$" + this.convertToCurrency(String(firebaseorders[i]["total"]));
+
+      dict["orderid"] = i + 1;
+      dict["date"] = date;
+      dict["custname"] = buyer;
+      dict["orderstatus"] = status;
+      dict["earnings"] = totalearnings;
+
+      this.fireorders.push(dict);
     }
+
+    //console.log(this.fireorders);
+  }
 };
 </script>
 

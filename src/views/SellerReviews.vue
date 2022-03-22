@@ -1,5 +1,12 @@
 <template>
   <v-app>
+    <Modal
+      v-if="modalActive"
+      :modalMessage="modalMessage"
+      v-on:close-modal="closeModal"
+    />
+    <Loading v-if="loading" />
+
     <v-navigation-drawer app absolute>
       <v-list>
         <v-list-item
@@ -17,31 +24,39 @@
     <v-container class="dashboardContainer">
       <h1 style="text-align: left">Shop Reviews</h1>
       <hr />
-      <v-row align="center">
-        <!-- <v-col
-          :cols="12"
-          v-for="result in ListingResults"
-          :key="result"
-          class="review-spacing"
-        > -->
-        <v-col
-          :cols="12"
-          v-for="result in reviewDetails"
-          :key="result"
-          class="review-spacing"
-        >
-          <v-row class="grey lighten-3 rounded-lg">
-            <v-col :cols="0" class="mr-0 reduce-space-circle">
-              <div class="circle">{{ result.name.toUpperCase() }}</div>
-            </v-col>
-            <v-col :cols="11" class="pt-md-6 ml-0">
-              <RatingStars :rating="result.rating" :isReview="true" />
-            </v-col>
-            <v-col :cols="12"
-              ><strong>{{ result.title }}</strong></v-col
+      <br />
+
+      <v-row>
+        <v-col v-show="ListingResults.length === 0">
+          <h2 class="font-weight-bold">No results found :(</h2>
+        </v-col>
+        <v-col v-for="result in ListingResults" :key="result.name" cols="4">
+          <v-card
+            class="rounded-lg test"
+            min-width="150"
+            min-height="100"
+            height="400"
+            hover
+            @click="showModal"
+          >
+            <v-img
+              gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
+              class="white--text align-end bottom-gradient test"
+              height="100%"
+              :src="result.imageURL"
             >
-            <v-col :cols="12">{{ result.description }}</v-col>
-          </v-row>
+              <v-card-title class="font-weight-medium">{{
+                result.name
+              }}</v-card-title>
+              <v-card-subtitle class="py-0">{{
+                result.qtyDesc
+              }}</v-card-subtitle>
+              <v-card-subtitle class="pt-0">{{
+                "$" + result.price
+              }}</v-card-subtitle>
+            </v-img></v-card
+          >
+          <ReviewPopUp :listingID="ListingResults" />
         </v-col>
         <!-- </v-col> -->
       </v-row>
@@ -53,9 +68,28 @@
 import RatingStars from "../components/RatingStars.vue";
 import firebase from "firebase/app";
 import db from "../firebase/firebaseInit";
+import ReviewPopUp from "./ReviewPopUp.vue";
+import Modal from "../components/Modal";
+import Loading from "../components/Loading";
 
 export default {
 
+  props: ['listingID'],
+  components: {
+    ReviewPopUp,
+    Modal,
+    Loading,
+  },
+  async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    const listings = await this.retrieveSellerListings(user);
+    for (let i = 0; i < listings.length; i++) {
+      var ref = listings[i];
+      var imageURL = await this.retrieveImage(ref.imageRef);
+      listings[i]["imageURL"] = imageURL;
+    }
+    this.ListingResults = listings;
+  },
   data: () => ({
     pages: [
       ["Overview", "/sellerorderoverview/:id"],
@@ -73,42 +107,42 @@ export default {
         color: null,
     },
   }),
-    async mounted() {
-    const user = firebase.auth().currentUser.uid;
-    this.userMatch = this.$route.params.id === user;
-    const information = await this.retrieveUserType(this.$route.params.id);
-    this.seller = information;
-    if (this.seller) {
-      const listings = await this.retrieveSellerListings(this.$route.params.id);
-      for (let i = 0; i < listings.length; i++) {
-        var ref = listings[i];
-        db.collection("listings")
-      .doc(ref)
-      .get()
-      .then((doc) => {
-        const allData = doc.data();
-        this.fullListing = allData;
-        this.productName = allData.name;
-        this.productDetails = allData.qtyDesc;
-        this.rating = allData.ReviewScoreCount
-          ? Math.round(allData.ReviewScoreTotal / allData.ReviewScoreCount)
-          : 0;
-        this.numReviews = allData.ReviewScoreCount;
-        this.price = allData.price;
-        this.productDescription = allData.desc;
-        this.tags = allData.tags;
-        this.reviewDetails = allData.Reviews;
-        this.imageURL = allData.imageRef;
-      });
-      }
-      this.ListingResults = listings;
-      console.log(this.ListingResults);
-    }
+    // async mounted() {
+    // const user = firebase.auth().currentUser.uid;
+    // this.userMatch = this.$route.params.id === user;
+    // const information = await this.retrieveUserType(this.$route.params.id);
+    // this.seller = information;
+    // if (this.seller) {
+    //   const listings = await this.retrieveSellerListings(this.$route.params.id);
+    //   for (let i = 0; i < listings.length; i++) {
+    //     var ref = listings[i];
+    //     db.collection("listings")
+    //   .doc(ref)
+    //   .get()
+    //   .then((doc) => {
+    //     const allData = doc.data();
+    //     this.fullListing = allData;
+    //     this.productName = allData.name;
+    //     this.productDetails = allData.qtyDesc;
+    //     this.rating = allData.ReviewScoreCount
+    //       ? Math.round(allData.ReviewScoreTotal / allData.ReviewScoreCount)
+    //       : 0;
+    //     this.numReviews = allData.ReviewScoreCount;
+    //     this.price = allData.price;
+    //     this.productDescription = allData.desc;
+    //     this.tags = allData.tags;
+    //     this.reviewDetails = allData.Reviews;
+    //     this.imageURL = allData.imageRef;
+    //   });
+    //   }
+    //   this.ListingResults = listings;
+    //   console.log(this.ListingResults);
+    // }
 
-  },
-  components: {
-    RatingStars,
-  },
+  //},
+  // components: {
+  //   RatingStars,
+  // },
   methods: {
     async retrieveUserType(id) {
       const docRef = db.collection("users").doc(id);
@@ -127,6 +161,13 @@ export default {
       });
       return sellerType;
     },
+    async closeModal() {
+      this.modalActive = !this.modalActive;
+    },
+    async showModal() {
+      this.$modal.show("review");
+    },
+
     async retrieveSellerListings(id) {
       const docRef = db.collection("listings").where("storeName", "==", id);
       var listings = [];
