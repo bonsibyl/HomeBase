@@ -6,7 +6,7 @@
           v-for="[page, route] in pages"
           :key="page"
           link
-          :to="route"
+          :to="route + checkRoute"
         >
           <v-list-item-content>
             {{ page }}
@@ -56,10 +56,10 @@ import db from "../firebase/firebaseInit";
 export default {
   data: () => ({
     pages: [
-      ["Overview", "/sellerorderoverview"],
-      ["Orders", "/sellerordermanagement"],
-      ["Reviews", "/sellerreviews"],
-      ["Analytics", "/dashboard"],
+      ["Overview", "/sellerorderoverview/"],
+      ["Orders", "/sellerordermanagement/"],
+      ["Reviews", "/sellerreviews/"],
+      ["Analytics", "/dashboard/"],
     ],
     headers: [
       { text: "Order ID", value: "orderid" },
@@ -159,21 +159,26 @@ export default {
       return dollar + cents;
     }
   },
+  computed: {
+    checkRoute() {
+      return this.$route.params.id;
+    },
+    },
 
   async mounted() {
     const firebaseorders = await this.retrieveOrders();
     // console.log("Orders Below");
     // console.log(firebaseorders);
-    
+
     for (let i = 0; i < firebaseorders.length; i++) {
-      
+
       var dict = {};
 
       var date = firebaseorders[i]["date"].toDate();
       var dd = String(date.getDate()).padStart(2, '0');
       var mm = String(date.getMonth() + 1).padStart(2, '0');
       var yyyy = date.getFullYear();
-      
+
       date = dd + '/' + mm + '/' + yyyy;
 
       var buyer = firebaseorders[i]["buyerID"];
@@ -183,7 +188,7 @@ export default {
       console.log(buyerDetails);
 
 
-      
+
       buyer = buyerDetails;
       var status = firebaseorders[i]["status"];
       var totalearnings = "$" + this.convertToCurrency(String(firebaseorders[i]["total"]));

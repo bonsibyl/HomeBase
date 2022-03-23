@@ -1,5 +1,5 @@
 <template>
-  <div class="background">
+  <div v-if="seller" class="background">
     <v-app>
       <v-navigation-drawer app absolute color="#f5f5f5">
         <v-list>
@@ -7,7 +7,7 @@
             v-for="[page, route] in pages"
             :key="page"
             link
-            :to="route"
+            :to="route + checkRoute"
             height="400"
           >
             <v-list-item-content>
@@ -24,13 +24,40 @@
           </v-col>
         </v-row>
         <v-row id="summrow">
-          <v-col v-for="[metric, number, icon] in metrics" :key="metric">
+          <v-col>
             <v-card color="#ffff">
               <v-card-title class="metricTitle">
-                {{ metric }}
-                <v-icon right>{{ icon }}</v-icon>
+                Number of Visits
+                <v-icon right color="red">mdi-chart-line</v-icon>
               </v-card-title>
-              <v-card-text class="metricNumber">{{ number }}</v-card-text>
+              <v-card-text class="metricNumber">{{numVisits}}</v-card-text>
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-card color="#ffff">
+              <v-card-title class="metricTitle">
+                Revenue
+                <v-icon right color="green">mdi-currency-usd</v-icon>
+              </v-card-title>
+              <v-card-text class="metricNumber">{{totalRev}}</v-card-text>
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-card color="#ffff">
+              <v-card-title class="metricTitle">
+                Average Review Score
+                <v-icon right color="blue">mdi-thumb-up</v-icon>
+              </v-card-title>
+              <v-card-text class="metricNumber">{{avgRating}}</v-card-text>
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-card color="#ffff">
+              <v-card-title class="metricTitle">
+                Number of Reviews
+                <v-icon right color="orange">mdi-message-draw</v-icon>
+              </v-card-title>
+              <v-card-text class="metricNumber">{{numReviews}}</v-card-text>
             </v-card>
           </v-col>
         </v-row>
@@ -57,22 +84,32 @@
 </template>
 
 <script>
+import firebase from "firebase/app";
+import db from "../firebase/firebaseInit";
+
 export default {
+  name: "Dashboard",
   data: () => ({
     pages: [
-      ["Overview", "/sellerorderoverview"],
-      ["Orders", "/sellerordermanagement"],
-      ["Reviews", "/sellerreviews"],
-      ["Analytics", "/dashboard"],
+      ["Overview", "/sellerorderoverview/"],
+      ["Orders", "/sellerordermanagement/"],
+      ["Reviews", "/sellerreviews/"],
+      ["Analytics", "/dashboard/"],
     ],
-    metrics: [
-      ["Number of Visits", 100, "mdi-chart-line", "red"],
-      ["Revenue", "$2000", "mdi-currency-usd", "green"],
-      ["Average Review Score", 3, "mdi-thumb-up", "blue"],
-      ["Reviews", 50, "mdi-message-draw", "orange"],
-    ],
-    value: [423, 446, 675, 510, 590, 750, 850, 905],
-    labels: [1, 2, 3, 4, 5, 6, 7, 8],
+    ListingResults: [],
+    numReviews: 0,
+    numVisits: 0,
+    totalRev: 0,
+    totalRating: 0,
+    avgRating: 0,
+    seller: null,
+    //Populating profile fields
+    shopUsername: "",
+    storeName: "",
+    buyerName: "",
+    email: "",
+    contactNo: "",
+    address: "",
     chartData: [
       {
         name: "Sales ($)",
@@ -89,6 +126,78 @@ export default {
       },
     ],
   }),
+  async mounted() {
+    const user = firebase.auth().currentUser.uid;
+    console.log(this.$route.params.id);
+    this.userMatch = this.$route.params.id === user;
+    const information = await this.retrieveUserType(this.$route.params.id);
+    this.seller = information;
+    if (this.seller) {
+      const listings = await this.retrieveSellerListings(this.$route.params.id);
+      const orders = await this.retrieveOrders(this.$route.params.id);
+      for (let i = 0; i < listings.length; i++) {
+        var ref = listings[i];
+        this.totalRating = this.totalRating + ref.ReviewScoreTotal;
+        this.numReviews = this.numReviews + ref.ReviewScoreCount;
+        this.numVisits = this.numVisits + ref.ViewCount;
+        console.log("retrieved");
+      }
+      for (let i = 0; i < orders.length; i++) {
+        var ref2 = orders[i];
+        this.totalRev = this.totalRev + (ref2.price * ref2.qty);
+      }
+      this.ListingResults = listings;
+      console.log(this.ListingResults);
+    }
+    this.avgRating = Math.round(this.totalRating/this.numReviews);
+  },
+    methods: {
+    async retrieveUserType(id) {
+      const docRef = db.collection("users").doc(id);
+      var sellerType = null;
+      await docRef.get().then((doc) => {
+        sellerType = doc.data().seller;
+        if (sellerType) {
+          this.storeName = doc.data().shopName;
+        } else {
+          this.buyerName = doc.data().firstName + " " + doc.data().lastName;
+        }
+        this.shopUsername = doc.data().username;
+        this.email = doc.data().email;
+        this.contactNo = doc.data().number;
+        this.address = doc.data().address;
+      });
+      return sellerType;
+    },
+    async retrieveSellerListings(id) {
+      const docRef = db.collection("listings").where("storeName", "==", id);
+      var listings = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          listings.push({ ...doc.data(), docID: doc.id });
+        });
+      });
+      return listings;
+    },
+    async retrieveOrders(id) {
+      const docRef = db
+        .collection("orders")
+        .where("sellerID", "==", id);
+      var orders = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          orders.push({ ...doc.data(), docID: doc.id });
+        });
+      });
+      return orders;
+    },
+  },
+    computed: {
+    checkRoute() {
+      return this.$route.params.id;
+    },
+  }
+
 };
 </script>
 

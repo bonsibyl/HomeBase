@@ -6,7 +6,7 @@
           v-for="[page, route] in pages"
           :key="page"
           link
-          :to="route"
+          :to="route + checkRoute"
         >
           <v-list-item-content>
             {{ page }}
@@ -29,10 +29,10 @@ import db from "../firebase/firebaseInit";
 export default {
   data: () => ({
     pages: [
-      ["Overview", "/sellerorderoverview"],
-      ["Orders", "/sellerordermanagement"],
-      ["Reviews", "/sellerreviews"],
-      ["Analytics", "/dashboard"],
+      ["Overview", "/sellerorderoverview/"],
+      ["Orders", "/sellerordermanagement/"],
+      ["Reviews", "/sellerreviews/"],
+      ["Analytics", "/dashboard/"],
     ],
     headers: [
       { text: "Item", value: "item" },
@@ -82,6 +82,11 @@ export default {
 
     fireorders: [],
   }),
+  computed: {
+    checkRoute() {
+      return this.$route.params.id;
+    },
+  },
 
   methods: {
     async retrieveOrders() {
@@ -101,7 +106,7 @@ export default {
     const firebaseorders = await this.retrieveOrders();
     console.log("Orders Below");
     console.log(firebaseorders);
-    
+
     for (let i = 0; i < firebaseorders.length; i++) {
     //   var dict = {};
       console.log(firebaseorders[i]["details"])

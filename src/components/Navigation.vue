@@ -82,7 +82,10 @@
                     </v-list-item>
                     <v-list-item
                       link
-                      to="/dashboard"
+                      :to="{
+                        name: 'Dashboard',
+                        params: { id: this.$store.state.profileId },
+                      }"
                       v-show="this.$store.state.seller"
                     >
                       <v-list-item-icon>

@@ -177,7 +177,7 @@ const routes = [
     },
   },
   {
-    path: "/dashboard",
+    path: "/dashboard/:id",
     name: "Dashboard",
     component: Dashboard,
     meta: {
@@ -185,7 +185,7 @@ const routes = [
     },
   },
   {
-    path: "/sellerorderoverview",
+    path: "/sellerorderoverview/:id",
     name: "Seller Order Overview",
     component: SellerOrderOverview,
     meta: {
@@ -193,7 +193,7 @@ const routes = [
     },
   },
   {
-    path: "/sellerordermanagement",
+    path: "/sellerordermanagement/:id",
     name: "Seller Order Management",
     component: SellerOrderManagement,
     meta: {
@@ -201,7 +201,7 @@ const routes = [
     },
   },
   {
-    path: "/ordersummary",
+    path: "/ordersummary/:id",
     name: "Order Summary",
     component: OrderSummary,
     meta: {
@@ -225,7 +225,7 @@ const routes = [
     },
   },
   {
-    path: "/sellerreviews",
+    path: "/sellerreviews/:id",
     name: "Reviews",
     component: SellerReviews,
     meta: {
