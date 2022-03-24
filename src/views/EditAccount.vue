@@ -8,7 +8,6 @@
     <div class="container" v-if="$store.state.seller">
       <h2><b>Account Settings</b></h2>
       <div class="profile-info">
-        <div class="sellerDisplay">{{ username }}</div>
         <div class="admin-badge">
           <adminIcon class="icon" />
           <span>Business</span>
@@ -45,7 +44,10 @@
           <label for="password">Password:</label>
           <input type="password" id="password" v-model="password" />
         </div>
-        <button @click="updateProfile">Save Changes</button>
+        <div class="buttonDiv">
+        <v-btn class="edit" dark :to="'/seller-register-2/'">Edit Other Shop Details</v-btn>
+        <v-btn class="save" dark @click="updateProfile">Save Changes</v-btn>
+        </div>
       </div>
     </div>
 
@@ -330,10 +332,6 @@ export default {
         margin-bottom: 25px;
         font-weight: bold;
       }
-
-      button:hover {
-        background-color: rgb(105, 153, 51);
-      }
     }
   }
 }
@@ -350,5 +348,24 @@ export default {
   align-items: center;
   justify-content: center;
   border-radius: 10px;
+}
+
+.edit {
+  float: left;
+  margin-right: 3%;
+  margin-top: 4%;
+  background-color: darkolivegreen !important;
+  font-weight: bold;
+}
+
+.save {
+  float: right;
+  margin-left: 3%;
+  
+}
+
+.buttonDiv {
+  display: flex;
+  margin: auto;
 }
 </style>

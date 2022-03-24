@@ -59,13 +59,13 @@
                 <v-col :cols="0" class="mr-0 reduce-space-circle">
                   <div class="circle">{{ review.name.toUpperCase() }}</div>
                 </v-col>
-                <v-col :cols="11" class="pt-md-6 ml-0">
+                <h4 :cols="0" class="pt-md-6 ml-0">
                   <RatingStars :rating="review.rating" :isReview="true" />
-                </v-col>
-                <v-col :cols="12"
-                  ><strong>{{ review.title }}</strong></v-col
-                >
-                <v-col :cols="12">{{ review.description }}</v-col>
+                </h4>
+                <v-col :cols="11">
+                  <h3 class="title">{{ review.title }}</h3>
+                  </v-col>
+                <v-col :cols="12"><p class="desc">{{ review.description }}</p></v-col>
               </v-row>
             </v-col>
 
@@ -259,5 +259,15 @@ hr {
 .v-icon {
   margin-left: -1%;
   margin-top: -1.5%;
+}
+
+.title {
+  margin-top: -15px;
+  margin-bottom: -10px;
+}
+
+.desc {
+  margin-top: -10px;
+  margin-bottom: 5px;
 }
 </style>
