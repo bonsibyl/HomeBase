@@ -34,7 +34,7 @@
       <v-data-table :headers="headers" :items="fireorders">
         <template v-slot:item.orderid="{ item }">
           <v-chip
-            :to="'/ordersummary/' + item.orderid"
+            :to="'/ordersummary/' + item.docid"
           >
             {{ item.orderid }}
           </v-chip>
@@ -85,11 +85,7 @@ export default {
     async retrieveOrders() {
       const docRef = db.collection("orders");
       var orders = [];
-      // await docRef.where("status", "==", "Fulfilled").get().then((querySnapshot) => {
-      //   querySnapshot.forEach((doc) => {
-      //     orders.push({ ...doc.data(), docID: doc.id});
-      //   });
-      // });
+
       await docRef.get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           orders.push({ ...doc.data(), docID: doc.id });
@@ -164,6 +160,7 @@ export default {
       dict["custname"] = buyer;
       dict["orderstatus"] = status;
       dict["earnings"] = totalearnings;
+      dict["docid"] = firebaseorders[i].docID;
 
       this.fireorders.push(dict);
     }

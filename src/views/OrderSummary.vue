@@ -10,76 +10,39 @@
     <div class="bigDiv">
       <div class="orderSummary">
         <h2>Order Summary</h2>
+
+        <h3>{{ this.fullBuyer }}</h3>
+
         <hr />
         <h2 class="orderNumber">#{{ this.$route.params.id }}</h2>
-        <h3 class="status">Order Status</h3>
+        <h3 class="status">{{ this.status }}</h3>
 
-        <table class="listings">
+        <table class="listings" v-for="item in orders" :key="item.name">
           <tr>
             <th>
-              <img
-                class="listingImg"
-                src="../assets/blogPhotos/financiers.jpeg"
-                alt=""
-              />
+              <v-img class="listingImg" :src="item.fullRef.imageURL"></v-img>
             </th>
             <td>
-              <p class="listingName">Almond Financiers</p>
-              <p class="listingShop">Box of 8 Financiers</p>
-              <p class="listingQuantity">Qty: 1</p>
+              <p class="listingName">{{ item.name }}</p>
+              <p class="listingShop">{{ item.quantityDesc }}</p>
+              <p class="listingQuantity">Qty: {{ item.quantity }}</p>
             </td>
             <td>
-              <p class="totalPrice">$13.90</p>
-            </td>
-          </tr>
-
-          <tr>
-            <th>
-              <img
-                class="listingImg"
-                src="../assets/blogPhotos/financiers.jpeg"
-                alt=""
-              />
-            </th>
-            <td>
-              <p class="listingName">Almond Financiers</p>
-              <p class="listingShop">Box of 8 Financiers</p>
-              <p class="listingQuantity">Qty: 1</p>
-            </td>
-            <td>
-              <p class="totalPrice">$13.90</p>
-            </td>
-          </tr>
-
-          <tr>
-            <th>
-              <img
-                class="listingImg"
-                src="../assets/blogPhotos/financiers.jpeg"
-                alt=""
-              />
-            </th>
-            <td>
-              <p class="listingName">Almond Financiers</p>
-              <p class="listingShop">Box of 8 Financiers</p>
-              <p class="listingQuantity">Qty: 1</p>
-            </td>
-            <td>
-              <p class="totalPrice">$13.90</p>
+              <p class="totalPrice">${{ item.fullRef.price }}</p>
             </td>
           </tr>
         </table>
 
         <div class="btns">
           <button
-            @click.prevent=""
+            @click.prevent="completeOrder()"
             class="button VerifyPayment"
             style="background-color: darkgreen"
           >
             <b>Complete Order</b>
           </button>
           <button
-            @click.prevent=""
+            @click.prevent="cancelOrder()"
             class="button CancelOrder"
             style="background-color: darkred"
           >
@@ -88,16 +51,16 @@
         </div>
         <hr />
 
-        <h3 class="totalAmount">Total: $43.50</h3>
+        <h3 class="totalAmount">Total Amount: ${{ this.totalAmount }}</h3>
       </div>
 
       <div class="customerDetails">
         <p class="details">
           Deliver to: <br /><br />
-          Name: {{this.buyerName}}<br />
-          Email: {{this.buyerEmail}} <br />
-          Contact No: {{this.buyerContact}} <br />
-          Address: {{this.buyerAddress}}
+          Name: {{ this.buyerName }}<br />
+          Email: {{ this.buyerEmail }} <br />
+          Contact No: {{ this.buyerContact }} <br />
+          Address: {{ this.buyerAddress }}
         </p>
 
         <button class="viewProfile" @click="showModal">
@@ -115,18 +78,20 @@ import Modal from "../components/Modal";
 import Loading from "../components/Loading";
 import ScreenshotVerification from "./ScreenshotVerification.vue";
 import db from "../firebase/firebaseInit";
-import firebase from "firebase/app";
 
 export default {
   name: "OrderSummary",
+
   data() {
     return {
       fullOrder: null, //done
+      orderID: null,
       orders: [],
       status: "", //done
       buyerID: "", //done
       totalAmount: null,
 
+      fullBuyer: [],
       buyerName: "",
       buyerEmail: "",
       buyerContact: "",
@@ -137,6 +102,22 @@ export default {
       loading: null,
     };
   },
+
+  async mounted() {
+    db.collection("orders")
+      .doc(this.$route.params.id)
+      .get()
+      .then((doc) => {
+        const allData = doc.data();
+        this.fullOrder = allData;
+        this.buyerID = allData.buyerID;
+        this.status = allData.status;
+        this.totalAmount = allData.total;
+        this.orders = allData.details;
+      })
+      .then(this.getBuyer());
+  },
+
   components: {
     Modal,
     Loading,
@@ -150,87 +131,62 @@ export default {
       this.$modal.show("screenshot");
     },
 
-    async mounted() {
-      const user = firebase.auth().currentUser.uid;
-      this.userMatch = this.$route.params.user === user;
-      db.collection("orders")
-        .doc(this.$route.params.id)
+    getColor(orderstatus) {
+      if (orderstatus == "Fulfilled") return "green";
+      else if (orderstatus == "In Progress") return "#ff5500";
+      else if (orderstatus == "Payment Pending") return "#dbaa23";
+    },
+
+    convertToCurrency(value) {
+      const dollar = value.split(".")[0];
+      var cents = value.split(".")[1];
+      if (cents) {
+        if (cents.length == 1) {
+          cents = "." + cents + "0";
+        }
+      } else {
+        cents = ".00";
+      }
+
+      return dollar + cents;
+    },
+
+    async getBuyer() {
+      await db
+        .collection("users")
+        .doc(this.buyerID)
         .get()
         .then((doc) => {
-          const allData = doc.data();
-          this.fullOrder = allData;
-          this.buyerID = allData.buyerID;
-          this.status = allData.status;
-          this.totalAmount = allData.total;
-          this.orders = allData.details;
-        })
-        .then(
-          db
-            .collection("users")
-            .doc(this.buyerID)
-            .get()
-            .then((doc) => {
-              const data = doc.data();
-              this.buyerName = data.firstName + " " + data.lastName;
-              this.buyerEmail = data.email;
-              this.buyerContact = data.number;
-              this.buyerAddress = data.address;
-            })
-        )
-        .then(() => {
-          const storageRef = firebase.storage().ref();
-          storageRef
-            .child(this.imageURL)
-            .getDownloadURL()
-            .then((url) => {
-              console.log(url);
-              this.image = url;
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          const data = doc.data();
+          this.fullBuyer = data;
+          this.buyerName = data.firstName + " " + data.lastName;
+          this.buyerEmail = data.email;
+          this.buyerContact = data.number;
+          this.buyerAddress = data.address;
         });
     },
 
-    methods: {
-      getColor(orderstatus) {
-        if (orderstatus == "Fulfilled") return "green";
-        else if (orderstatus == "In Progress") return "#ff5500";
-        else if (orderstatus == "Payment Pending") return "#dbaa23";
-      },
-
-      async retrieveName(buyerID) {
-        var docRef = db.collection("users").doc(buyerID);
-
-        var name = "";
-
-        await docRef.get().then((doc) => {
-          if (doc.exists) {
-            name = doc.data()["firstName"] + " " + doc.data()["lastName"];
-          }
+    completeOrder() {
+      this.status = 'Fulfilled'
+      db.collection("orders")
+        .doc(this.$route.params.id)
+        .update({
+          status: "Fulfilled",
         });
-
-        return name;
-      },
-
-      convertToCurrency(value) {
-        const dollar = value.split(".")[0];
-        var cents = value.split(".")[1];
-        if (cents) {
-          if (cents.length == 1) {
-            cents = "." + cents + "0";
-          }
-        } else {
-          cents = ".00";
-        }
-
-        return dollar + cents;
-      },
     },
-    computed: {
-      checkRoute() {
-        return this.$route.params.id;
-      },
+
+    cancelOrder() {
+      this.status = 'Cancelled'
+      db.collection("orders")
+        .doc(this.$route.params.id)
+        .update({
+          status: "Cancelled",
+        });
+    },
+  },
+  computed: {
+    checkRoute() {
+      return this.$route.params.id;
     },
   },
 };
@@ -314,6 +270,7 @@ td {
 
 .listingImg {
   width: 100px;
+  padding: 20px;
 }
 
 .listingName {
@@ -353,6 +310,7 @@ td {
   border-radius: 10px;
   padding: 7px;
   margin-top: 5px;
+  margin-bottom: 15px;
   background-color: green;
   font-weight: bold;
   color: white;
