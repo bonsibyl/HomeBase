@@ -80,6 +80,7 @@ import db from "../firebase/firebaseInit";
 
 export default {
   name: "OrderSummary",
+  props: ["orderNumber"],
 
   data() {
     return {
@@ -174,6 +175,7 @@ export default {
         .update({
           status: "Fulfilled",
         });
+        alert("Order Completed!")
     },
 
     cancelOrder() {
@@ -183,6 +185,7 @@ export default {
         .update({
           status: "Cancelled",
         });
+        alert("Order Cancelled!")
     },
   },
   computed: {
@@ -271,6 +274,7 @@ td {
 
 .listingImg {
   width: 100px;
+  height: 100px;
   padding: 20px;
 }
 

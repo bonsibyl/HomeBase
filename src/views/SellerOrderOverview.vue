@@ -18,7 +18,6 @@
       <h1 style="text-align: left">Overview</h1>
       <hr />
       <v-data-table :headers="headers" :items="orders"> </v-data-table>
-      <v-data-table :headers="headers" :items="orders"> </v-data-table>
     </v-container>
   </v-app>
 </template>

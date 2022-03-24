@@ -26,58 +26,67 @@
       <hr />
       <br />
 
-      <v-row>
         <v-col v-show="ListingResults.length === 0">
           <h2 class="font-weight-bold">No results found :(</h2>
         </v-col>
-        <v-col v-for="result in ListingResults" :key="result.name" cols="4">
-          <v-card
-            class="rounded-lg test"
-            min-width="150"
-            min-height="100"
-            height="400"
-            hover
-            @click="showModal"
-          >
-            <v-img
-              gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
-              class="white--text align-end bottom-gradient test"
-              height="100%"
-              :src="result.imageURL"
+        <v-card v-for="result in ListingResults" :key="result.name" cols="4">
+          <div class="listingInfo">
+            <v-img class="listingImg" :src="result.imageURL"></v-img>
+            <h3 class="listingDesc" v-if="result.ReviewScoreCount > 0">
+            {{result.name}}<br/>
+            ${{result.price}}, {{result.qtyDesc}}<br/>
+            Total Reviews: {{result.ReviewScoreCount}}<br/>
+            Average Rating: 
+            {{(result.ReviewScoreTotal / result.ReviewScoreCount).toFixed(2)}}
+            <v-icon color="yellow darken-2">mdi-star</v-icon>
+            </h3>
+
+            <h3 class="listingDesc" v-else>
+            {{result.name}}<br/>
+            ${{result.price}}, {{result.qtyDesc}}<br/>
+            Total Reviews: {{result.ReviewScoreCount}}<br/>
+            Average Rating: -
+            </h3>
+          </div>
+
+            <v-col
+              :cols="12"
+              v-for="review in result.Reviews"
+              :key="review.name"
+              class="review-spacing"
             >
-              <v-card-title class="font-weight-medium">{{
-                result.name
-              }}</v-card-title>
-              <v-card-subtitle class="py-0">{{
-                result.qtyDesc
-              }}</v-card-subtitle>
-              <v-card-subtitle class="pt-0">{{
-                "$" + result.price
-              }}</v-card-subtitle>
-            </v-img></v-card
-          >
-          <ReviewPopUp :listingID="ListingResults" />
-        </v-col>
-        <!-- </v-col> -->
-      </v-row>
+              <v-row class="grey lighten-3 rounded-lg">
+                <v-col :cols="0" class="mr-0 reduce-space-circle">
+                  <div class="circle">{{ review.name.toUpperCase() }}</div>
+                </v-col>
+                <v-col :cols="11" class="pt-md-6 ml-0">
+                  <RatingStars :rating="review.rating" :isReview="true" />
+                </v-col>
+                <v-col :cols="12"
+                  ><strong>{{ review.title }}</strong></v-col
+                >
+                <v-col :cols="12">{{ review.description }}</v-col>
+              </v-row>
+            </v-col>
+
+        </v-card>
     </v-container>
   </v-app>
 </template>
 
 <script>
-//import RatingStars from "../components/RatingStars.vue";
+import RatingStars from "../components/RatingStars.vue";
 import firebase from "firebase/app";
 import db from "../firebase/firebaseInit";
-import ReviewPopUp from "./ReviewPopUp.vue";
 import Modal from "../components/Modal";
 import Loading from "../components/Loading";
 
 export default {
   props: ["listingID"],
   components: {
-    ReviewPopUp,
     Modal,
     Loading,
+    RatingStars,
   },
   async mounted() {
     const user = firebase.auth().currentUser.uid;
@@ -106,42 +115,7 @@ export default {
       color: null,
     },
   }),
-  // async mounted() {
-  // const user = firebase.auth().currentUser.uid;
-  // this.userMatch = this.$route.params.id === user;
-  // const information = await this.retrieveUserType(this.$route.params.id);
-  // this.seller = information;
-  // if (this.seller) {
-  //   const listings = await this.retrieveSellerListings(this.$route.params.id);
-  //   for (let i = 0; i < listings.length; i++) {
-  //     var ref = listings[i];
-  //     db.collection("listings")
-  //   .doc(ref)
-  //   .get()
-  //   .then((doc) => {
-  //     const allData = doc.data();
-  //     this.fullListing = allData;
-  //     this.productName = allData.name;
-  //     this.productDetails = allData.qtyDesc;
-  //     this.rating = allData.ReviewScoreCount
-  //       ? Math.round(allData.ReviewScoreTotal / allData.ReviewScoreCount)
-  //       : 0;
-  //     this.numReviews = allData.ReviewScoreCount;
-  //     this.price = allData.price;
-  //     this.productDescription = allData.desc;
-  //     this.tags = allData.tags;
-  //     this.reviewDetails = allData.Reviews;
-  //     this.imageURL = allData.imageRef;
-  //   });
-  //   }
-  //   this.ListingResults = listings;
-  //   console.log(this.ListingResults);
-  // }
 
-  //},
-  // components: {
-  //   RatingStars,
-  // },
   methods: {
     async retrieveUserType(id) {
       const docRef = db.collection("users").doc(id);
@@ -238,5 +212,52 @@ hr {
 }
 .v-data-table::v-deep td {
   font-size: 17px !important;
+}
+
+.circle {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: #90caf9;
+  text-align: center;
+  padding: 12px;
+}
+
+.reduce-space-circle {
+  max-width: 70px;
+}
+.review-spacing {
+  padding: 20px;
+}
+.review-header {
+  color: #6f4411;
+  font-size: 1.2em;
+}
+
+.v-card {
+  padding: 2%;
+  margin-bottom: 1%;
+}
+
+.listingImg {
+  width: 110px;
+  height: 110px;
+  padding: 20px;
+  margin-left: 10px;
+  margin-bottom: 15px;
+}
+
+.listingDesc {
+  float: right;
+  margin-left: 20px;
+}
+
+.listingInfo {
+  display: inline-flex;
+}
+
+.v-icon {
+  margin-left: -1%;
+  margin-top: -1.5%;
 }
 </style>
