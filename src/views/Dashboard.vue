@@ -144,7 +144,7 @@ export default {
       }
       for (let i = 0; i < orders.length; i++) {
         var ref2 = orders[i];
-        this.totalRev = this.totalRev + (ref2.price * ref2.qty);
+        this.totalRev = this.totalRev + ref2.total;
       }
       this.ListingResults = listings;
       console.log(this.ListingResults);
