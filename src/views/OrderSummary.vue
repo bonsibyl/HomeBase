@@ -11,11 +11,10 @@
       <div class="orderSummary">
         <h2>Order Summary</h2>
 
-        <h3>{{ this.fullBuyer }}</h3>
-
         <hr />
         <h2 class="orderNumber">#{{ this.$route.params.id }}</h2>
-        <h3 class="status">{{ this.status }}</h3>
+
+        <v-chip class="status" :color="getColor(this.status)" dark>{{ this.status }}</v-chip>
 
         <table class="listings" v-for="item in orders" :key="item.name">
           <tr>
@@ -81,6 +80,7 @@ import db from "../firebase/firebaseInit";
 
 export default {
   name: "OrderSummary",
+  props: ["orderNumber"],
 
   data() {
     return {
@@ -104,7 +104,7 @@ export default {
   },
 
   async mounted() {
-    db.collection("orders")
+    await db.collection("orders")
       .doc(this.$route.params.id)
       .get()
       .then((doc) => {
@@ -115,7 +115,8 @@ export default {
         this.totalAmount = allData.total;
         this.orders = allData.details;
       })
-      .then(this.getBuyer());
+      
+      this.getBuyer();
   },
 
   components: {
@@ -133,8 +134,9 @@ export default {
 
     getColor(orderstatus) {
       if (orderstatus == "Fulfilled") return "green";
-      else if (orderstatus == "In Progress") return "#ff5500";
+      else if (orderstatus == "Processing") return "#ff5500";
       else if (orderstatus == "Payment Pending") return "#dbaa23";
+      else if (orderstatus == "Cancelled") return "#ad1313";
     },
 
     convertToCurrency(value) {
@@ -173,6 +175,7 @@ export default {
         .update({
           status: "Fulfilled",
         });
+        alert("Order Completed!")
     },
 
     cancelOrder() {
@@ -182,6 +185,7 @@ export default {
         .update({
           status: "Cancelled",
         });
+        alert("Order Cancelled!")
     },
   },
   computed: {
@@ -270,6 +274,7 @@ td {
 
 .listingImg {
   width: 100px;
+  height: 100px;
   padding: 20px;
 }
 
@@ -308,12 +313,10 @@ td {
 
 .status {
   border-radius: 10px;
-  padding: 7px;
+  padding: 20px;
   margin-top: 5px;
-  margin-bottom: 15px;
-  background-color: green;
+  margin-bottom: 5px;
   font-weight: bold;
-  color: white;
 }
 
 .details {

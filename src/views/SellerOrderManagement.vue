@@ -74,8 +74,9 @@ export default {
   methods: {
     getColor(orderstatus) {
       if (orderstatus == "Fulfilled") return "green";
-      else if (orderstatus == "In Progress") return "#ff5500";
+      else if (orderstatus == "Processing") return "#ff5500";
       else if (orderstatus == "Payment Pending") return "#dbaa23";
+      else if (orderstatus == "Cancelled") return "#ad1313";
     },
 
     getLink(orderid) {
