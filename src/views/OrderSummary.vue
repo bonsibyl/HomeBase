@@ -11,8 +11,8 @@
       <div class="orderSummary">
         <h2>Order Summary</h2>
         <hr />
-        <h2 class="orderNumber">#1003</h2>
-        <h3 class="status">Fulfilled</h3>
+        <h2 class="orderNumber">#{{ this.$route.params.id }}</h2>
+        <h3 class="status">Order Status</h3>
 
         <table class="listings">
           <tr>
@@ -71,13 +71,18 @@
         </table>
 
         <div class="btns">
-          <button @click.prevent="" class="button VerifyPayment" style="background-color:darkgreen">
-            <b>Verify Payment</b>
-          </button>
-          <button @click.prevent="" class="button CompleteOrder" style="background-color:chrome">
+          <button
+            @click.prevent=""
+            class="button VerifyPayment"
+            style="background-color: darkgreen"
+          >
             <b>Complete Order</b>
           </button>
-          <button @click.prevent="" class="button CancelOrder" style="background-color:darkred">
+          <button
+            @click.prevent=""
+            class="button CancelOrder"
+            style="background-color: darkred"
+          >
             <b>Cancel Order</b>
           </button>
         </div>
@@ -88,18 +93,15 @@
 
       <div class="customerDetails">
         <p class="details">
-        Deliver to: <br><br>
-        Name: Tan Wei Yang <br>
-        Email: tan.weiyang@gmail.com <br>
-        Contact No: +65 9321 1633 <br>
-        Address: 18 Kent Road Singapore 139218
+          Deliver to: <br /><br />
+          Name: {{this.buyerName}}<br />
+          Email: {{this.buyerEmail}} <br />
+          Contact No: {{this.buyerContact}} <br />
+          Address: {{this.buyerAddress}}
         </p>
 
-        <button class="viewProfile">
-          <v-icon>mdi-account-circle</v-icon>
-          View Profile
-        </button>
         <button class="viewProfile" @click="showModal">
+          <v-icon>mdi-camera</v-icon>
           <ScreenshotVerification />
           View Payment
         </button>
@@ -112,10 +114,24 @@
 import Modal from "../components/Modal";
 import Loading from "../components/Loading";
 import ScreenshotVerification from "./ScreenshotVerification.vue";
+import db from "../firebase/firebaseInit";
+import firebase from "firebase/app";
+
 export default {
   name: "OrderSummary",
   data() {
     return {
+      fullOrder: null, //done
+      orders: [],
+      status: "", //done
+      buyerID: "", //done
+      totalAmount: null,
+
+      buyerName: "",
+      buyerEmail: "",
+      buyerContact: "",
+      buyerAddress: "",
+
       modalActive: false, //toggle pop-up on & off
       modalMessage: "", //pop-up message shown
       loading: null,
@@ -132,6 +148,89 @@ export default {
     },
     showModal() {
       this.$modal.show("screenshot");
+    },
+
+    async mounted() {
+      const user = firebase.auth().currentUser.uid;
+      this.userMatch = this.$route.params.user === user;
+      db.collection("orders")
+        .doc(this.$route.params.id)
+        .get()
+        .then((doc) => {
+          const allData = doc.data();
+          this.fullOrder = allData;
+          this.buyerID = allData.buyerID;
+          this.status = allData.status;
+          this.totalAmount = allData.total;
+          this.orders = allData.details;
+        })
+        .then(
+          db
+            .collection("users")
+            .doc(this.buyerID)
+            .get()
+            .then((doc) => {
+              const data = doc.data();
+              this.buyerName = data.firstName + " " + data.lastName;
+              this.buyerEmail = data.email;
+              this.buyerContact = data.number;
+              this.buyerAddress = data.address;
+            })
+        )
+        .then(() => {
+          const storageRef = firebase.storage().ref();
+          storageRef
+            .child(this.imageURL)
+            .getDownloadURL()
+            .then((url) => {
+              console.log(url);
+              this.image = url;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        });
+    },
+
+    methods: {
+      getColor(orderstatus) {
+        if (orderstatus == "Fulfilled") return "green";
+        else if (orderstatus == "In Progress") return "#ff5500";
+        else if (orderstatus == "Payment Pending") return "#dbaa23";
+      },
+
+      async retrieveName(buyerID) {
+        var docRef = db.collection("users").doc(buyerID);
+
+        var name = "";
+
+        await docRef.get().then((doc) => {
+          if (doc.exists) {
+            name = doc.data()["firstName"] + " " + doc.data()["lastName"];
+          }
+        });
+
+        return name;
+      },
+
+      convertToCurrency(value) {
+        const dollar = value.split(".")[0];
+        var cents = value.split(".")[1];
+        if (cents) {
+          if (cents.length == 1) {
+            cents = "." + cents + "0";
+          }
+        } else {
+          cents = ".00";
+        }
+
+        return dollar + cents;
+      },
+    },
+    computed: {
+      checkRoute() {
+        return this.$route.params.id;
+      },
     },
   },
 };
@@ -155,7 +254,6 @@ export default {
 
 .bigDiv {
   display: flex;
-
 }
 
 .orderSummary {
@@ -271,8 +369,7 @@ td {
   background-color: rgb(209, 209, 204);
   border-radius: 20px;
   font-weight: bold;
-  width: 180px;
+  width: 200px;
   margin-top: 15px;
-  margin-left: 15px;
 }
 </style>
