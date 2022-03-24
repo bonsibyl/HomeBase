@@ -108,7 +108,7 @@
               <h2 class="font-weight-bold">No orders yet :(</h2>
             </v-col>
             <v-col
-              class="pl-5"
+              
               :cols="12"
               v-for="(order, index) in filteredOrders"
               :key="index"
@@ -125,6 +125,7 @@
                     dense
                     v-for="(each, index) in order.details"
                     :key="index"
+                    no-gutters
                   >
                     <v-col :cols="12">
                       <u>{{ each.name }}</u>
@@ -138,13 +139,12 @@
                   </v-row>
                 </v-col>
                 <v-col>
-                  <v-row>
                     <v-btn min-width="12vw" :color="btnColor(order.status)"
                       >{{ order.status }}
                     </v-btn>
-                  </v-row>
-                  <v-row class="pt-4">
+
                     <v-btn
+                      class="mt-4"
                       min-width="12vw"
                       color="yellow darken-2"
                       @click="showModal(order)"
@@ -152,6 +152,7 @@
                       >Leave a review!</v-btn
                     >
                     <v-btn
+                      class="mt-4"
                       min-width="12vw"
                       v-if="order.status == 'Payment Pending'"
                       color="teal lighten-2"
@@ -159,7 +160,6 @@
                     >
                       Click to Pay!
                     </v-btn>
-                  </v-row>
                 </v-col>
                 <v-col>{{ `$` + order.total }}</v-col>
               </v-row>
