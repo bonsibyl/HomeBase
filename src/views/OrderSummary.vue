@@ -27,7 +27,7 @@
               <p class="listingQuantity">Qty: {{ item.quantity }}</p>
             </td>
             <td>
-              <p class="totalPrice">${{ item.fullRef.price }}</p>
+              <p class="totalPrice">${{ item.fullRef.price.toFixed(2) }}</p>
             </td>
           </tr>
         </table>
@@ -50,7 +50,7 @@
         </div>
         <hr />
 
-        <h3 class="totalAmount">Total Amount: ${{ this.totalAmount }}</h3>
+        <h3 class="totalAmount">Total Amount: ${{ this.totalAmount.toFixed(2) }}</h3>
       </div>
 
       <div class="customerDetails">
@@ -321,6 +321,7 @@ td {
 
 .details {
   font-size: 20px;
+  font-weight: bold;
 }
 
 .viewProfile {
