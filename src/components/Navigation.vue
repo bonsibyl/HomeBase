@@ -21,16 +21,6 @@
             </v-col>
             <v-col>
               <v-btn
-                icon
-                color="black"
-                to="/message"
-                exact-active-class="activebtn"
-              >
-                <v-icon>mdi-message-outline</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col>
-              <v-btn
                 v-if="!this.$store.state.seller"
                 icon
                 color="black"
@@ -181,9 +171,17 @@
           <v-spacer></v-spacer>
           <v-list class="py-2">
             <v-list-item>
-              <v-btn block tile dark large height="48px" to="/checkout">
-                Checkout
-              </v-btn>
+                <v-btn
+                  :disabled="cartDetails.length === 0"
+                  block
+                  tile
+                  :dark="cartDetails.length > 0"
+                  large
+                  height="48px"
+                  to="/checkout"
+                >
+                  Checkout
+                </v-btn>
             </v-list-item>
           </v-list>
         </v-layout>
