@@ -14,7 +14,9 @@
         <hr />
         <h2 class="orderNumber">#{{ this.$route.params.id }}</h2>
 
-        <v-chip class="status" :color="getColor(this.status)" dark>{{ this.status }}</v-chip>
+        <v-chip class="status" :color="getColor(this.status)" dark>{{
+          this.status
+        }}</v-chip>
 
         <table class="listings" v-for="item in orders" :key="item.name">
           <tr>
@@ -50,7 +52,9 @@
         </div>
         <hr />
 
-        <h3 class="totalAmount">Total Amount: ${{ this.totalAmount.toFixed(2) }}</h3>
+        <h3 class="totalAmount">
+          Total Amount: ${{ this.totalAmount.toFixed(2) }}
+        </h3>
       </div>
 
       <div class="customerDetails">
@@ -77,11 +81,9 @@ import Modal from "../components/Modal";
 import Loading from "../components/Loading";
 import ScreenshotVerification from "./ScreenshotVerification.vue";
 import db from "../firebase/firebaseInit";
-
 export default {
   name: "OrderSummary",
   props: ["orderNumber"],
-
   data() {
     return {
       fullOrder: null, //done
@@ -90,21 +92,19 @@ export default {
       status: "", //done
       buyerID: "", //done
       totalAmount: null,
-
       fullBuyer: [],
       buyerName: "",
       buyerEmail: "",
       buyerContact: "",
       buyerAddress: "",
-
       modalActive: false, //toggle pop-up on & off
       modalMessage: "", //pop-up message shown
       loading: null,
     };
   },
-
   async mounted() {
-    await db.collection("orders")
+    await db
+      .collection("orders")
       .doc(this.$route.params.id)
       .get()
       .then((doc) => {
@@ -114,11 +114,10 @@ export default {
         this.status = allData.status;
         this.totalAmount = allData.total;
         this.orders = allData.details;
-      })
-      
-      this.getBuyer();
-  },
+      });
 
+    this.getBuyer();
+  },
   components: {
     Modal,
     Loading,
@@ -131,14 +130,12 @@ export default {
     showModal() {
       this.$modal.show("screenshot");
     },
-
     getColor(orderstatus) {
       if (orderstatus == "Fulfilled") return "green";
       else if (orderstatus == "Processing") return "#ff5500";
       else if (orderstatus == "Payment Pending") return "#dbaa23";
       else if (orderstatus == "Cancelled") return "#ad1313";
     },
-
     convertToCurrency(value) {
       const dollar = value.split(".")[0];
       var cents = value.split(".")[1];
@@ -149,10 +146,8 @@ export default {
       } else {
         cents = ".00";
       }
-
       return dollar + cents;
     },
-
     async getBuyer() {
       await db
         .collection("users")
@@ -167,25 +162,19 @@ export default {
           this.buyerAddress = data.address;
         });
     },
-
     completeOrder() {
-      this.status = 'Fulfilled'
-      db.collection("orders")
-        .doc(this.$route.params.id)
-        .update({
-          status: "Fulfilled",
-        });
-        alert("Order Completed!")
+      this.status = "Fulfilled";
+      db.collection("orders").doc(this.$route.params.id).update({
+        status: "Fulfilled",
+      });
+      alert("Order Completed!");
     },
-
     cancelOrder() {
-      this.status = 'Cancelled'
-      db.collection("orders")
-        .doc(this.$route.params.id)
-        .update({
-          status: "Cancelled",
-        });
-        alert("Order Cancelled!")
+      this.status = "Cancelled";
+      db.collection("orders").doc(this.$route.params.id).update({
+        status: "Cancelled",
+      });
+      alert("Order Cancelled!");
     },
   },
   computed: {
@@ -201,21 +190,17 @@ export default {
   background-color: rgb(255, 245, 228);
   position: relative;
   flex-grow: 1;
-
   h2 {
     text-align: left;
     margin-top: 2%;
   }
-
   p {
     margin-top: 4%;
   }
 }
-
 .bigDiv {
   display: flex;
 }
-
 .orderSummary {
   background-color: white;
   width: 65%;
@@ -224,7 +209,6 @@ export default {
   display: inline-block;
   overflow: auto;
 }
-
 .customerDetails {
   background-color: white;
   width: 25%;
@@ -233,7 +217,6 @@ export default {
   display: inline-block;
   overflow: auto;
 }
-
 hr {
   width: 100%;
   text-align: center;
@@ -243,14 +226,12 @@ hr {
   margin-bottom: -1%;
   margin-top: 1%;
 }
-
 .btns {
   display: floor($number: 0);
   text-align: right;
   position: absolte;
   bottom: 0;
 }
-
 .button {
   transition: 500ms ease all;
   padding: 12px 24px;
@@ -262,55 +243,45 @@ hr {
   margin: 25px 10px 25px 5px;
   width: 180px;
 }
-
 table {
   position: relative;
 }
-
 td {
   width: 100%;
   padding: 0px 30px;
 }
-
 .listingImg {
   width: 100px;
   height: 100px;
   padding: 20px;
 }
-
 .listingName {
   font-weight: bold;
   font-size: 20px;
   margin-bottom: -4%;
 }
-
 .listingShop {
   margin-bottom: -3%;
   font-weight: bold;
   color: grey;
 }
-
 .listingQuantity {
   margin-bottom: 5%;
   font-weight: bold;
   color: grey;
 }
-
 .removeItem {
   width: 100% !important;
   background-color: darkred;
 }
-
 .removeItem:hover {
   background-color: rgb(173, 61, 61);
 }
-
 .totalAmount {
   padding: 2% 0.6% 4% 0;
   font-size: 25px;
   text-align: right;
 }
-
 .status {
   border-radius: 10px;
   padding: 20px;
@@ -318,12 +289,10 @@ td {
   margin-bottom: 5px;
   font-weight: bold;
 }
-
 .details {
   font-size: 20px;
   font-weight: bold;
 }
-
 .viewProfile {
   transition: 500ms ease all;
   padding: 12px 24px;
