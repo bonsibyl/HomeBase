@@ -29,6 +29,18 @@
               >
                 <v-icon>mdi-cart</v-icon>
               </v-btn>
+              <v-btn
+                v-else
+                icon
+                color="black"
+                :to="{
+                  name: 'Dashboard',
+                  params: { id: this.$store.state.profileId },
+                }"
+                exact-active-class="activebtn"
+              >
+                <v-icon>mdi-chart-pie</v-icon>
+              </v-btn>
             </v-col>
             <v-col>
               <v-menu offset-y transition="slide-y-transition">
@@ -69,19 +81,6 @@
                         <v-icon>mdi-account-cog</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title>Settings</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item
-                      link
-                      :to="{
-                        name: 'Dashboard',
-                        params: { id: this.$store.state.profileId },
-                      }"
-                      v-show="this.$store.state.seller"
-                    >
-                      <v-list-item-icon>
-                        <v-icon>mdi-chart-pie</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title>Dashboard</v-list-item-title>
                     </v-list-item>
                   </v-list-group>
                   <v-list-item @click="signOut">
@@ -171,17 +170,17 @@
           <v-spacer></v-spacer>
           <v-list class="py-2">
             <v-list-item>
-                <v-btn
-                  :disabled="cartDetails.length === 0"
-                  block
-                  tile
-                  :dark="cartDetails.length > 0"
-                  large
-                  height="48px"
-                  to="/checkout"
-                >
-                  Checkout
-                </v-btn>
+              <v-btn
+                :disabled="cartDetails.length === 0"
+                block
+                tile
+                :dark="cartDetails.length > 0"
+                large
+                height="48px"
+                to="/checkout"
+              >
+                Checkout
+              </v-btn>
             </v-list-item>
           </v-list>
         </v-layout>
