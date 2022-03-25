@@ -104,7 +104,6 @@
               <h2 class="font-weight-bold">No orders yet :(</h2>
             </v-col>
             <v-col
-              
               :cols="12"
               v-for="(order, index) in filteredOrders"
               :key="index"
@@ -135,27 +134,27 @@
                   </v-row>
                 </v-col>
                 <v-col>
-                    <v-btn min-width="12vw" :color="btnColor(order.status)"
-                      >{{ order.status }}
-                    </v-btn>
+                  <v-btn min-width="12vw" :color="btnColor(order.status)"
+                    >{{ order.status }}
+                  </v-btn>
 
-                    <v-btn
-                      class="mt-4"
-                      min-width="12vw"
-                      color="yellow darken-2"
-                      @click="showModal(order)"
-                      v-if="order.status == 'Fulfilled'"
-                      >Leave a review!</v-btn
-                    >
-                    <v-btn
-                      class="mt-4"
-                      min-width="12vw"
-                      v-if="order.status == 'Payment Pending'"
-                      color="teal lighten-2"
-                      @click="showPayment(order)"
-                    >
-                      Click to Pay!
-                    </v-btn>
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    color="yellow darken-2"
+                    @click="showModal(order)"
+                    v-if="order.status == 'Fulfilled'"
+                    >Leave a review!</v-btn
+                  >
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    v-if="order.status == 'Payment Pending'"
+                    color="teal lighten-2"
+                    @click="showPayment(order)"
+                  >
+                    Click to Pay!
+                  </v-btn>
                 </v-col>
                 <v-col>{{ `$` + order.total }}</v-col>
               </v-row>
@@ -302,6 +301,7 @@ export default {
     showPayment(details) {
       this.qrRef = details.sellerID;
       this.$modal.show("screenshot");
+      this.$store.commit("checkQRUpdateFunc");
     },
     applySort(results) {
       switch (this.ActiveSort) {

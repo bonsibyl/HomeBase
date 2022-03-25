@@ -9,7 +9,7 @@
     <div class="box">
       <div class="partition" id="partition-register">
         <div class="partition-title">
-          <img class="paylahQR" src="../assets/blogPhotos/paylah.jpeg" alt="" />
+          <img class="paylahQR" :src="qrPic" alt="" />
           <br />
           We have received your order with thanks! <br /><br />
           To proceed, please upload a screenshot of your PayLah! payment to
@@ -51,19 +51,27 @@ export default {
   props: {
     qrRoute: String,
   },
-  async mounted() {
-    this.qrPic = await firebase
-      .storage()
-      .ref()
-      .child("/user/qr/" + this.qrRoute)
-      .getDownloadURL();
-  },
   methods: {
     submit() {
       alert("You have successfully submitted your payment screenshot");
     },
     cancel() {
       this.$modal.hide("screenshot");
+    },
+  },
+  computed: {
+    checkQRUpdate() {
+      return this.$store.state.checkQRUpdate;
+    },
+  },
+  watch: {
+    async checkQRUpdate(oldCount, newCount) {
+      console.log(oldCount + " " + newCount);
+      this.qrPic = await firebase
+        .storage()
+        .ref()
+        .child("/user/qr/" + this.qrRoute)
+        .getDownloadURL();
     },
   },
 };
