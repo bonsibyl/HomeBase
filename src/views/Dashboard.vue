@@ -139,9 +139,13 @@ export default {
         var ref = listings[i];
         this.totalRating = this.totalRating + ref.ReviewScoreTotal;
         this.numReviews = this.numReviews + ref.ReviewScoreCount;
-        this.numVisits = this.numVisits + ref.ViewCount;
-        console.log("retrieved");
       }
+      db.collection("users")
+        .doc(user)
+        .get()
+        .then((doc) => {
+          this.numVisits = doc.data().viewCount;
+        });
       for (let i = 0; i < orders.length; i++) {
         var ref2 = orders[i];
         this.totalRev = this.totalRev + ref2.total;

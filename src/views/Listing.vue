@@ -211,6 +211,11 @@ export default {
     this.userMatch = this.$route.params.user === user;
     const information = await this.retrieveUserType(user);
     this.seller = information;
+    if (!this.userMatch) {
+      db.collection("users")
+        .doc(this.$route.params.id)
+        .update({ viewCount: firebase.firestore.FieldValue.increment(1) });
+    }
     db.collection("listings")
       .doc(this.$route.params.id)
       .get()
