@@ -71,13 +71,25 @@
         </table>
 
         <div class="btns">
-          <button @click.prevent="" class="button VerifyPayment" style="background-color:darkgreen">
+          <button
+            @click.prevent=""
+            class="button VerifyPayment"
+            style="background-color: darkgreen"
+          >
             <b>Verify Payment</b>
           </button>
-          <button @click.prevent="" class="button CompleteOrder" style="background-color:chrome">
+          <button
+            @click.prevent=""
+            class="button CompleteOrder"
+            style="background-color: chrome"
+          >
             <b>Complete Order</b>
           </button>
-          <button @click.prevent="" class="button CancelOrder" style="background-color:darkred">
+          <button
+            @click.prevent=""
+            class="button CancelOrder"
+            style="background-color: darkred"
+          >
             <b>Cancel Order</b>
           </button>
         </div>
@@ -88,11 +100,11 @@
 
       <div class="customerDetails">
         <p class="details">
-        Deliver to: <br><br>
-        Name: Tan Wei Yang <br>
-        Email: tan.weiyang@gmail.com <br>
-        Contact No: +65 9321 1633 <br>
-        Address: 18 Kent Road Singapore 139218
+          Deliver to: <br /><br />
+          Name: Tan Wei Yang <br />
+          Email: tan.weiyang@gmail.com <br />
+          Contact No: +65 9321 1633 <br />
+          Address: 18 Kent Road Singapore 139218
         </p>
 
         <button class="viewProfile">
@@ -119,12 +131,28 @@ export default {
       modalActive: false, //toggle pop-up on & off
       modalMessage: "", //pop-up message shown
       loading: null,
+      orderDetails: null,
     };
   },
   components: {
     Modal,
     Loading,
     ScreenshotVerification,
+  },
+  props: {
+    id: String,
+    item: Object,
+  },
+  mounted() {
+    if (!this.item) {
+      this.orderDetails = JSON.parse(localStorage.getItem("orderCache"));
+    } else {
+      localStorage.setItem("orderCache", JSON.stringify(this.item));
+      this.orderDetails = this.item;
+    }
+    console.log(this.id);
+    console.log(this.orderDetails);
+    console.log(this.$route.params.id);
   },
   methods: {
     closeModal() {
@@ -155,7 +183,6 @@ export default {
 
 .bigDiv {
   display: flex;
-
 }
 
 .orderSummary {

@@ -32,13 +32,13 @@
       </v-data-table> -->
 
       <v-data-table :headers="headers" :items="fireorders">
-        <template v-slot:item.orderid="{ item }">
-          <v-chip :to="getLink(item.orderid)">
+        <template v-slot:[`item.orderid`]="{ item }">
+          <v-chip @click="getLink(item)">
             {{ item.orderid }}
           </v-chip>
         </template>
 
-        <template v-slot:item.orderstatus="{ item }">
+        <template v-slot:[`item.orderstatus`]="{ item }">
           <v-chip :color="getColor(item.orderstatus)" dark>
             {{ item.orderstatus }}
           </v-chip>
@@ -51,7 +51,6 @@
 <script>
 import db from "../firebase/firebaseInit";
 //import firebase from "firebase/app";
-
 
 export default {
   data: () => ({
@@ -68,39 +67,6 @@ export default {
       { text: "Fulfillment Status", value: "orderstatus" },
       { text: "Total Earnings", value: "earnings" },
     ],
-    orders: [
-      {
-        orderid: "1012",
-        date: "01/02/2022",
-        custname: "Constance Tang",
-        orderstatus: "In Progress",
-        earnings: "$44.00",
-      },
-
-      {
-        orderid: "1005",
-        date: "01/02/2022",
-        custname: "Elon Musk",
-        orderstatus: "Pending Payment",
-        earnings: "$12.00",
-      },
-
-      {
-        orderid: "1003",
-        date: "01/02/2022",
-        custname: "Tan Ah Mah",
-        orderstatus: "Fulfilled",
-        earnings: "$12.00",
-      },
-
-      {
-        orderid: "1002",
-        date: "01/02/2022",
-        custname: "Tan Wei Yang",
-        orderstatus: "Fulfilled",
-        earnings: "$34.80",
-      },
-    ],
     fireorders: [],
   }),
   methods: {
@@ -110,8 +76,11 @@ export default {
       else if (orderstatus == "Payment Pending") return "#dbaa23";
     },
 
-    getLink(orderid) {
-      return "/order" + orderid;
+    getLink(item) {
+      this.$router.push({
+        name: "Order Summary",
+        params: { id: item.orderid, item: item },
+      });
     },
 
     async retrieveOrders() {
@@ -124,7 +93,7 @@ export default {
       // });
       await docRef.get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          orders.push({ ...doc.data(), docID: doc.id});
+          orders.push({ ...doc.data(), docID: doc.id });
         });
       });
 
@@ -153,17 +122,17 @@ export default {
           cents = "." + cents + "0";
         }
       } else {
-        cents = ".00"
+        cents = ".00";
       }
 
       return dollar + cents;
-    }
+    },
   },
   computed: {
     checkRoute() {
       return this.$route.params.id;
     },
-    },
+  },
 
   async mounted() {
     const firebaseorders = await this.retrieveOrders();
@@ -171,15 +140,14 @@ export default {
     // console.log(firebaseorders);
 
     for (let i = 0; i < firebaseorders.length; i++) {
-
       var dict = {};
 
       var date = firebaseorders[i]["date"].toDate();
-      var dd = String(date.getDate()).padStart(2, '0');
-      var mm = String(date.getMonth() + 1).padStart(2, '0');
+      var dd = String(date.getDate()).padStart(2, "0");
+      var mm = String(date.getMonth() + 1).padStart(2, "0");
       var yyyy = date.getFullYear();
 
-      date = dd + '/' + mm + '/' + yyyy;
+      date = dd + "/" + mm + "/" + yyyy;
 
       var buyer = firebaseorders[i]["buyerID"];
       var buyerDetails = await this.retrieveName(buyer);
@@ -187,23 +155,23 @@ export default {
       console.log("TEST");
       console.log(buyerDetails);
 
-
-
       buyer = buyerDetails;
       var status = firebaseorders[i]["status"];
-      var totalearnings = "$" + this.convertToCurrency(String(firebaseorders[i]["total"]));
+      var totalearnings =
+        "$" + this.convertToCurrency(String(firebaseorders[i]["total"]));
 
       dict["orderid"] = i + 1;
       dict["date"] = date;
       dict["custname"] = buyer;
       dict["orderstatus"] = status;
       dict["earnings"] = totalearnings;
+      dict["orderDetails"] = firebaseorders[i];
 
       this.fireorders.push(dict);
     }
 
     //console.log(this.fireorders);
-  }
+  },
 };
 </script>
 

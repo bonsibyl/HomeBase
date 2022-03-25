@@ -17,7 +17,7 @@
                 <h4 class="text--secondary">Address: {{ address }}</h4>
               </v-col>
               <v-col cols="auto" class="col-btn">
-                <v-btn @click="toggleEditMode" v-if="userMatch">
+                <v-btn @click="editDetails" v-if="userMatch">
                   Edit Details
                   <v-icon right>mdi-pencil</v-icon>
                 </v-btn>
@@ -34,7 +34,7 @@
             <v-col cols="auto">
               <h4 class="text--secondary">Listings</h4>
             </v-col>
-            <v-col class="pl-0" v-if="editMode">
+            <v-col class="pl-0" v-if="userMatch">
               <v-btn plain x-small :to="createListing"
                 ><v-icon>mdi-plus</v-icon></v-btn
               ></v-col
@@ -98,7 +98,7 @@
                   :src="result.imageURL"
                 >
                   <v-btn
-                    v-if="editMode"
+                    v-if="userMatch"
                     class="edit-listing-buttons"
                     @click="triggerDeletePopup(result.docID)"
                     text
@@ -109,7 +109,7 @@
                     <v-icon dark>mdi-delete</v-icon>
                   </v-btn>
                   <v-btn
-                    v-if="editMode"
+                    v-if="userMatch"
                     :to="editRoute + result.docID"
                     class="edit-listing-buttons"
                     text
@@ -158,7 +158,6 @@ export default {
     Filters: ["Vegan", "Halal", "Gluten-Free"],
     ActiveFilters: [],
     seller: null,
-    editMode: false,
     userMatch: false,
     //Populating profile fields
     shopUsername: "",
@@ -167,7 +166,7 @@ export default {
     email: "",
     contactNo: "",
     address: "",
-    profilePic: [],
+    profilePic: "",
   }),
 
   async mounted() {
@@ -188,7 +187,7 @@ export default {
     this.profilePic = await firebase
       .storage()
       .ref()
-      .child("/user/profile/" + user)
+      .child("/user/profile/" + this.$route.params.id)
       .getDownloadURL();
   },
   methods: {
@@ -240,8 +239,8 @@ export default {
         });
       return imageURL;
     },
-    toggleEditMode() {
-      this.editMode = !this.editMode;
+    editDetails() {
+      this.$router.push({ path: "/editaccount" });
     },
     triggerDeletePopup(docID) {
       this.deleteRef = docID;
