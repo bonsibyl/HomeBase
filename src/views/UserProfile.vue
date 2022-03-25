@@ -2,7 +2,7 @@
   <v-app>
     <review-form :reviewRef="this.reviewRef" />
     <screenshot-upload :orderRef="this.orderRef" />
-    <ScreenshotUpload :qrRoute="this.qrRef" />
+    <ScreenshotUpload :qrRoute="this.qrRef" , :orderRef="this.orderRef" />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
         <div id="content">
@@ -138,8 +138,6 @@
                   <v-btn min-width="12vw" :color="btnColor(order.status)"
                     >{{ order.status }}
                   </v-btn>
-
-                  <<<<<<< HEAD
                   <v-btn
                     class="mt-4"
                     min-width="12vw"
@@ -212,16 +210,11 @@ export default {
     contactNo: "",
     address: "",
     reviewRef: null,
-<<<<<<< HEAD
     orderRef:null,
-=======
     qrRef: null,
-    profilePic: "",
->>>>>>> ddef7946567e38193b338197f71caa820699d950
   }),
   async mounted() {
-    const user = firebase.auth().currentUser.uid;
-    this.userMatch = this.$route.params.id === user;
+    //const user = firebase.auth().currentUser.uid;
     const information = await this.retrieveUserType(this.$route.params.id);
     this.seller = information;
     if (!this.seller) {
@@ -324,11 +317,8 @@ export default {
       this.$modal.show("review");
     },
     showPayment(details) {
-<<<<<<< HEAD
       this.orderRef = details;
-=======
       this.qrRef = details.sellerID;
->>>>>>> ddef7946567e38193b338197f71caa820699d950
       this.$modal.show("screenshot");
     },
     applySort(results) {

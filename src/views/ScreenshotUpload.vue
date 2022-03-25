@@ -59,13 +59,13 @@ export default {
   // props: {
   //   orderRef: String,
   // },
-  props: ["orderRef"],
   created() {
     this.modalWidth =
       window.innerWidth < MODAL_WIDTH ? MODAL_WIDTH / 2 : MODAL_WIDTH;
   },
   props: {
     qrRoute: String,
+    orderRef: String,
   },
   async mounted() {
     this.qrPic = await firebase
