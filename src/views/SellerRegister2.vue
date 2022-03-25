@@ -129,18 +129,40 @@ export default {
 
   async mounted() {
     this.userID = firebase.auth().currentUser.uid;
+    console.log(this.userID);
     await firebase
       .storage()
       .ref()
-      .child("/user/qr/" + firebase.auth().currentUser.uid)
+      .child("/user/qr/" + this.userID)
       .getDownloadURL()
-      .catch((this.check = true));
+      .catch((error) => {
+        console.log(error);
+        this.check = true;
+      });
+
     await db
       .collection("users")
       .doc(this.userID)
       .get()
       .then((doc) => {
         this.shopDesc = doc.data().shopDesc ? doc.data().shopDesc : "";
+        if (doc.data().openingDetails) {
+          const ref = doc.data().openingDetails;
+          this.monOpening = ref.Monday.opening;
+          this.monClosing = ref.Monday.closing;
+          this.tuesOpening = ref.Tuesday.opening;
+          this.tuesClosing = ref.Tuesday.closing;
+          this.wedOpening = ref.Wednesday.opening;
+          this.wedClosing = ref.Wednesday.closing;
+          this.thursOpening = ref.Thursday.opening;
+          this.thursClosing = ref.Thursday.closing;
+          this.friOpening = ref.Friday.opening;
+          this.friClosing = ref.Friday.closing;
+          this.satOpening = ref.Saturday.opening;
+          this.satClosing = ref.Saturday.closing;
+          this.sunOpening = ref.Saturday.opening;
+          this.sunClosing = ref.Saturday.closing;
+        }
       });
   },
 
@@ -150,8 +172,7 @@ export default {
       var qrURL = "/user/qr/" + firebase.auth().currentUser.uid;
       var profileURL = "/user/profile/" + firebase.auth().currentUser.uid;
       //check if image already exists
-      console.log(this.profileModel);
-      console.log(this.qrModel);
+      console.log(this.check);
       if (
         this.check &&
         (Array.isArray(this.profileModel) || Array.isArray(this.qrModel))
@@ -164,26 +185,29 @@ export default {
         this.error = false;
         this.errorMsg = "";
         //image handling
-        storageRef.child(qrURL).put(this.qrModel);
-        storageRef.child(profileURL).put(this.profileModel);
+        console.log(this.profileModel);
+        if (!Array.isArray(this.profileModel)) {
+          await storageRef.child(profileURL).put(this.profileModel);
+        }
+        if (!Array.isArray(this.qrModel)) {
+          await storageRef.child(qrURL).put(this.qrModel);
+        }
         //image handling end
         const dataBase = db.collection("users").doc(this.userID);
         await dataBase.update({
           shopDesc: this.shopDesc,
-          monOpening: this.monOpening,
-          monClosing: this.monClosing,
-          tuesOpening: this.tuesOpening,
-          tuesClosing: this.tuesClosing,
-          wedOpening: this.wedOpening,
-          wedClosing: this.wedClosing,
-          thursOpening: this.thursOpening,
-          thursClosing: this.thursClosing,
-          friOpening: this.friOpening,
-          friClosing: this.friClosing,
-          satOpening: this.satOpening,
-          satClosing: this.satClosing,
-          sunOpening: this.sunOpening,
-          sunClosing: this.sunClosing,
+          openingDetails: {
+            Monday: { opening: this.monOpening, closing: this.monClosing },
+            Tuesday: { opening: this.tuesOpening, closing: this.tuesClosing },
+            Wednesday: { opening: this.wedOpening, closing: this.wedClosing },
+            Thursday: {
+              opening: this.thursOpening,
+              closing: this.thursClosing,
+            },
+            Friday: { opening: this.friOpening, closing: this.friClosing },
+            Saturday: { opening: this.satOpening, closing: this.satClosing },
+            Sunday: { opening: this.sunOpening, closing: this.sunClosing },
+          },
         });
         this.$router.push({ name: "AuthHome" }); //push user to homepage aft auth
         return;

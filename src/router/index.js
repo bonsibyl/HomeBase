@@ -204,6 +204,7 @@ const routes = [
     path: "/ordersummary/:id",
     name: "Order Summary",
     component: OrderSummary,
+    props: true,
     meta: {
       title: "Order Summary",
     },

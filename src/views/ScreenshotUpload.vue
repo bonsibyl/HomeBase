@@ -28,9 +28,7 @@
           ></v-file-input>
         </div>
         <div class="button-div">
-          <button id="submit-btn" @click.prevent="submit">
-            Submit
-          </button>
+          <button id="submit-btn" @click.prevent="submit">Submit</button>
           <button id="cancel-btn" @click.prevent="cancel">Go Back</button>
           <div style="margin-bottom: 20px"></div>
         </div>
@@ -48,6 +46,7 @@ export default {
   name: "ScreenshotUpload",
   data(){
     return {
+      qrPic: "",
       OrderInfo: [],
       uploaded: [],
       imageRules: [
@@ -64,6 +63,16 @@ export default {
   created() {
     this.modalWidth =
       window.innerWidth < MODAL_WIDTH ? MODAL_WIDTH / 2 : MODAL_WIDTH;
+  },
+  props: {
+    qrRoute: String,
+  },
+  async mounted() {
+    this.qrPic = await firebase
+      .storage()
+      .ref()
+      .child("/user/qr/" + this.qrRoute)
+      .getDownloadURL();
   },
   methods: {
     submit() {

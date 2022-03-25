@@ -32,15 +32,13 @@
       </v-data-table> -->
 
       <v-data-table :headers="headers" :items="fireorders">
-        <template v-slot:item.orderid="{ item }">
-          <v-chip
-            :to="'/ordersummary/' + item.docid"
-          >
+        <template v-slot:[`item.orderid`]="{ item }">
+          <v-chip :to="'/ordersummary/' + item.docid">
             {{ item.orderid }}
           </v-chip>
         </template>
 
-        <template v-slot:item.orderstatus="{ item }">
+        <template v-slot:[`item.orderstatus`]="{ item }">
           <v-chip :color="getColor(item.orderstatus)" dark>
             {{ item.orderstatus }}
           </v-chip>
@@ -79,8 +77,11 @@ export default {
       else if (orderstatus == "Cancelled") return "#ad1313";
     },
 
-    getLink(orderid) {
-      return "/order" + orderid;
+    getLink(item) {
+      this.$router.push({
+        name: "Order Summary",
+        params: { id: item.orderid, item: item },
+      });
     },
 
     async retrieveOrders() {

@@ -12,6 +12,11 @@
           <adminIcon class="icon" />
           <span>Business</span>
         </div>
+        <v-row :justify="'center'">
+          <v-col :cols="3">
+            <v-btn block @click="editShopRoute">Edit Shop Details</v-btn>
+          </v-col>
+        </v-row>
         <div class="input">
           <label for="username">Username:</label>
           <input disabled type="text" id="username" v-model="username" />
@@ -45,8 +50,10 @@
           <input type="password" id="password" v-model="password" />
         </div>
         <div class="buttonDiv">
-        <v-btn class="edit" dark :to="'/seller-register-2/'">Edit Other Shop Details</v-btn>
-        <v-btn class="save" dark @click="updateProfile">Save Changes</v-btn>
+          <v-btn class="edit" dark :to="'/seller-register-2/'"
+            >Edit Other Shop Details</v-btn
+          >
+          <v-btn class="save" dark @click="updateProfile">Save Changes</v-btn>
         </div>
       </div>
     </div>
@@ -61,6 +68,17 @@
           <adminIcon class="icon" />
           <span>Customer</span>
         </div>
+        <v-row :justify="'center'">
+          <v-col :cols="3">
+            <v-btn block @click="changePicture">Edit Profile Pic</v-btn>
+          </v-col>
+          <v-file-input
+            id="pic-input"
+            class="hide-input"
+            accept="image/png, image/jpeg, image/bmp"
+            v-model="uploaded"
+          ></v-file-input>
+        </v-row>
         <div class="input">
           <label for="firstName">First Name:</label>
           <input type="text" id="firstName" v-model="firstName" />
@@ -132,10 +150,15 @@ export default {
       },
       currentPassword: "",
       error: false,
+      uploaded: null,
     };
   },
   methods: {
+    changePicture() {
+      document.getElementById("pic-input").click();
+    },
     async updateProfile() {
+      console.log(this.uploaded);
       this.error = false;
       if (this.password) {
         if (this.password.length < 6) {
@@ -146,7 +169,7 @@ export default {
           };
           return;
         }
-        const user = firebase.auth().currentUser;
+        var user = firebase.auth().currentUser;
         const credential = firebase.auth.EmailAuthProvider.credential(
           user.email,
           this.currentPassword
@@ -176,18 +199,35 @@ export default {
         });
       }
       if (!this.error) {
+        this.$store.dispatch("updateUserSettings");
+        if (this.uploaded) {
+          await firebase
+            .storage()
+            .ref()
+            .child("user/profile/" + firebase.auth().currentUser.uid)
+            .put(this.uploaded)
+            .catch(() => {
+              firebase
+                .storage()
+                .ref()
+                .child("user/profile/" + firebase.auth().currentUser.uid)
+                .put(this.uploaded);
+            });
+        }
         this.snackbar = {
           show: true,
           msg: "Changes saved!",
           color: "success",
         };
-        this.$store.dispatch("updateUserSettings");
       } else {
         console.log("wtf is going on");
       }
     },
     closeModal() {
       this.modalActive = !this.modalActive;
+    },
+    editShopRoute() {
+      this.$router.push({ name: "SellerRegister2" });
     },
   },
   computed: {
@@ -361,11 +401,14 @@ export default {
 .save {
   float: right;
   margin-left: 3%;
-  
 }
 
 .buttonDiv {
   display: flex;
   margin: auto;
+}
+
+.hide-input {
+  display: none;
 }
 </style>

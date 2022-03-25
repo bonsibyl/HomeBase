@@ -30,7 +30,7 @@
                 Number of Visits
                 <v-icon right color="red">mdi-chart-line</v-icon>
               </v-card-title>
-              <v-card-text class="metricNumber">{{numVisits}}</v-card-text>
+              <v-card-text class="metricNumber">{{ numVisits }}</v-card-text>
             </v-card>
           </v-col>
           <v-col>
@@ -39,7 +39,7 @@
                 Revenue
                 <v-icon right color="green">mdi-currency-usd</v-icon>
               </v-card-title>
-              <v-card-text class="metricNumber">{{totalRev}}</v-card-text>
+              <v-card-text class="metricNumber">{{ totalRev }}</v-card-text>
             </v-card>
           </v-col>
           <v-col>
@@ -48,7 +48,7 @@
                 Average Review Score
                 <v-icon right color="blue">mdi-thumb-up</v-icon>
               </v-card-title>
-              <v-card-text class="metricNumber">{{avgRating}}</v-card-text>
+              <v-card-text class="metricNumber">{{ avgRating }}</v-card-text>
             </v-card>
           </v-col>
           <v-col>
@@ -57,7 +57,7 @@
                 Number of Reviews
                 <v-icon right color="orange">mdi-message-draw</v-icon>
               </v-card-title>
-              <v-card-text class="metricNumber">{{numReviews}}</v-card-text>
+              <v-card-text class="metricNumber">{{ numReviews }}</v-card-text>
             </v-card>
           </v-col>
         </v-row>
@@ -149,9 +149,9 @@ export default {
       this.ListingResults = listings;
       console.log(this.ListingResults);
     }
-    this.avgRating = Math.round(this.totalRating/this.numReviews);
+    this.avgRating = Math.round(this.totalRating / this.numReviews);
   },
-    methods: {
+  methods: {
     async retrieveUserType(id) {
       const docRef = db.collection("users").doc(id);
       var sellerType = null;
@@ -180,9 +180,7 @@ export default {
       return listings;
     },
     async retrieveOrders(id) {
-      const docRef = db
-        .collection("orders")
-        .where("sellerID", "==", id);
+      const docRef = db.collection("orders").where("sellerID", "==", id);
       var orders = [];
       await docRef.get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -192,12 +190,11 @@ export default {
       return orders;
     },
   },
-    computed: {
+  computed: {
     checkRoute() {
       return this.$route.params.id;
     },
-  }
-
+  },
 };
 </script>
 

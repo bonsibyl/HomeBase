@@ -57,9 +57,9 @@
                         result.name
                       }}</v-card-title>
                       <v-card-subtitle class="text-left"
-                        >{{ result.qtyDesc}}
+                        >{{ result.qtyDesc }}
                         <br />
-                        {{"$" + result.price }}</v-card-subtitle
+                        {{ "$" + result.price }}</v-card-subtitle
                       >
                     </v-img>
                     <v-fade-transition>

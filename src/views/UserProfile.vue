@@ -2,7 +2,7 @@
   <v-app>
     <review-form :reviewRef="this.reviewRef" />
     <screenshot-upload :orderRef="this.orderRef" />
-    <ScreenshotUpload />
+    <ScreenshotUpload :qrRoute="this.qrRef" />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
         <div id="content">
@@ -28,11 +28,7 @@
             <v-spacer></v-spacer>
             <v-col id="img">
               <v-card height="400" width="650">
-                <v-img
-                  height="100%"
-                  src="https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378"
-                >
-                </v-img>
+                <v-img height="100%" :src="profilePic"> </v-img>
               </v-card>
             </v-col>
           </v-row>
@@ -143,6 +139,7 @@
                     >{{ order.status }}
                   </v-btn>
 
+                  <<<<<<< HEAD
                   <v-btn
                     class="mt-4"
                     min-width="12vw"
@@ -160,6 +157,25 @@
                   >
                     Click to Pay!
                   </v-btn>
+                  =======
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    color="yellow darken-2"
+                    @click="showModal(order)"
+                    v-if="order.status == 'Fulfilled'"
+                    >Leave a review!</v-btn
+                  >
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    v-if="order.status == 'Payment Pending'"
+                    color="teal lighten-2"
+                    @click="showPayment(order)"
+                  >
+                    Click to Pay!
+                  </v-btn>
+                  >>>>>>> ddef7946567e38193b338197f71caa820699d950
                 </v-col>
                 <v-col>{{ `$` + order.total }}</v-col>
               </v-row>
@@ -196,7 +212,12 @@ export default {
     contactNo: "",
     address: "",
     reviewRef: null,
+<<<<<<< HEAD
     orderRef:null,
+=======
+    qrRef: null,
+    profilePic: "",
+>>>>>>> ddef7946567e38193b338197f71caa820699d950
   }),
   async mounted() {
     const user = firebase.auth().currentUser.uid;
@@ -207,6 +228,11 @@ export default {
       const orders = await this.retrieveOrders();
       this.Orders = orders;
     }
+    this.profilePic = await firebase
+      .storage()
+      .ref()
+      .child("/user/profile/" + this.$route.params.id)
+      .getDownloadURL();
   },
   computed: {
     filteredOrders() {
@@ -298,7 +324,11 @@ export default {
       this.$modal.show("review");
     },
     showPayment(details) {
+<<<<<<< HEAD
       this.orderRef = details;
+=======
+      this.qrRef = details.sellerID;
+>>>>>>> ddef7946567e38193b338197f71caa820699d950
       this.$modal.show("screenshot");
     },
     applySort(results) {
