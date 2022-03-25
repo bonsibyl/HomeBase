@@ -197,6 +197,7 @@ export default {
         sellerID: finalOrders[0].storeName,
         status: "Payment Pending",
         total: finalOrders[0].price * finalOrders[0].qty,
+        paymentImgRef: "",
       };
       ans.push(obj);
       //segment by store

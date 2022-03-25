@@ -22,6 +22,9 @@
             filled
             full-width
             prepend-icon="mdi-camera"
+            accept="image/png, image/jpeg, image/bmp"
+            v-model="uploaded"
+            :rules="imageRules"
           ></v-file-input>
         </div>
         <div class="button-div">
@@ -36,21 +39,113 @@
   </modal>
 </template>
 <script>
+import db from "../firebase/firebaseInit";
+import firebase from "firebase/app";
+
 const MODAL_WIDTH = 656;
 export default {
   components: {},
   name: "ScreenshotUpload",
+  data(){
+    return {
+      OrderInfo: [],
+      uploaded: [],
+      imageRules: [
+        (value) => !!value || "Image is required",
+        (value) =>
+          value.size < 2000000 || "Image size should be less than 2 MB!",
+      ],
+    }
+  },
+  // props: {
+  //   orderRef: String,
+  // },
+  props: ["orderRef"],
   created() {
     this.modalWidth =
       window.innerWidth < MODAL_WIDTH ? MODAL_WIDTH / 2 : MODAL_WIDTH;
   },
   methods: {
     submit() {
+      // if (!this.$refs.form.validate()) {
+      //   return;
+      // }
+      var storageRef = firebase.storage().ref();
+      const user = firebase.auth().currentUser.uid;
+      console.log(this.OrderInfo[0]);
+      if (this.uploaded.size > 0) {
+        var imageUpload = this.uploaded;
+        var upload = storageRef
+          .child("orders/" + this.productName + user)
+          .put(imageUpload);
+        // Listen for state changes, errors, and completion of the upload.
+        upload.on(
+          firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+          (snapshot) => {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            var progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case firebase.storage.TaskState.PAUSED: // or 'paused'
+                console.log("Upload is paused");
+                break;
+              case firebase.storage.TaskState.RUNNING: // or 'running'
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            switch (error.code) {
+              case "storage/unauthorized":
+                break;
+              case "storage/canceled":
+                break;
+              case "storage/unknown":
+                break;
+            }
+          },
+          () => {
+            // Upload completed successfully, now we can get the download URL
+            upload.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              console.log("File available at", downloadURL);
+            });
+          }
+        );
+      }
+
+      db.collection("orders")
+        .doc(this.orderRef)
+        .update({
+          paymentImgRef:
+              this.uploaded.size > 0
+                ? "orders/" + this.productName + user
+                : "",
+        })
+        .catch((error) => {
+          this.snackbar = {
+            color: "error",
+            show: true,
+            msg: error,
+          };
+        });
       alert("You have successfully submitted your payment screenshot");
+      this.$modal.hide("screenshot");
     },
     cancel() {
       this.$modal.hide("screenshot");
     },
+  },
+  computed: {
+    checkOrderUpdate() {
+      return this.orderRef;
+    }
+  },
+  watch: {
+    checkOrderUpdate(newVal, oldVal) {
+      this.OrderInfo = [this.orderRef];
+      newVal = oldVal;
+    }
   },
 };
 </script>
