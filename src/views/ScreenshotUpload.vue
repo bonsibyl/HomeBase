@@ -38,6 +38,7 @@
 </template>
 <script>
 import firebase from "firebase/app";
+import db from "../firebase/firebaseInit";
 
 const MODAL_WIDTH = 656;
 export default {
@@ -68,9 +69,6 @@ export default {
   },
   methods: {
     submit() {
-      // if (!this.$refs.form.validate()) {
-      //   return;
-      // }
       var storageRef = firebase.storage().ref();
       console.log(this.OrderInfo[0]);
       if (this.uploaded.size > 0) {
@@ -109,10 +107,15 @@ export default {
             // Upload completed successfully, now we can get the download URL
             upload.snapshot.ref.getDownloadURL().then((downloadURL) => {
               console.log("File available at", downloadURL);
+              db.collection("orders").doc(this.orderRef.docID).update({
+                status: "Processing",
+                paymentImgRef: downloadURL,
+              });
             });
           }
         );
       }
+
       alert("You have successfully submitted your payment screenshot");
       this.$modal.hide("screenshot");
     },
