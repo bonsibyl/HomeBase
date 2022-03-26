@@ -22,6 +22,7 @@
             filled
             full-width
             prepend-icon="mdi-camera"
+            v-model="uploaded"
           ></v-file-input>
         </div>
         <div class="button-div">
@@ -42,6 +43,7 @@ export default {
   data() {
     return {
       qrPic: "",
+      uploaded: [],
     };
   },
   created() {
