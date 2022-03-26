@@ -15,9 +15,9 @@
       </v-list>
     </v-navigation-drawer>
     <v-container class="dashboardContainer">
-      <h1 style="text-align: left">Overview</h1>
+      <h1 style="text-align: left">Today's Overview</h1>
       <hr />
-      <v-data-table :headers="headers" :items="orders"> </v-data-table>
+      <v-data-table :headers="headers" :items="fireorders"> </v-data-table>
     </v-container>
   </v-app>
 </template>
@@ -35,8 +35,8 @@ export default {
     ],
     headers: [
       { text: "Item", value: "item" },
-      { text: "Batch No.", value: "batchno" },
-      { text: "Total No. of Pieces", value: "pieceno" },
+      //{ text: "Batch No.", value: "batchno" },
+      //{ text: "Total No. of Pieces", value: "pieceno" },
       { text: "Total no. of Units", value: "unitno" },
       { text: "Price per Unit", value: "perunitprice" },
       { text: "Total Earnings", value: "earnings" },
@@ -91,7 +91,13 @@ export default {
     async retrieveOrders() {
       const docRef = db.collection("orders");
       var orders = [];
-      await docRef.where("status", "==", "Fulfilled").get().then((querySnapshot) => {
+
+      var dayStart = new Date();
+      dayStart.setHours(0,0,0,0);
+      var dayEnd = new Date();
+      dayEnd.setHours(23, 59, 59, 999);
+
+      await docRef.where("date", ">=", dayStart).where("date", "<=", dayEnd).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           orders.push({ ...doc.data(), docID: doc.id});
         });
@@ -99,18 +105,53 @@ export default {
 
       return orders;
     }
+
+
   },
 
   async mounted() {
     const firebaseorders = await this.retrieveOrders();
-    console.log("Orders Below");
     console.log(firebaseorders);
 
-    for (let i = 0; i < firebaseorders.length; i++) {
-    //   var dict = {};
-      console.log(firebaseorders[i]["details"])
+    var itemDict = {}
 
+    for (let i = 0; i < firebaseorders.length; i++) {
+      //console.log(i);
+      //console.log(firebaseorders[i]["details"][0]);
+      var itemName = firebaseorders[i]["details"][0]["name"];
+      var itemQty = firebaseorders[i]["details"][0]["quantity"];
+      var itemPrice = firebaseorders[i]["details"][0]["fullRef"]["price"];
+
+      if (!(itemName in itemDict)) {
+        itemDict[itemName] = {}
+        itemDict[itemName]["itemQty"] = itemQty;
+        itemDict[itemName]["itemPrice"] = itemPrice;
+        
+      } else {
+        itemDict[itemName]["itemQty"] = itemDict[itemName]["itemQty"] + itemQty;
+      }
     }
+
+    console.log(itemDict);
+
+    console.log("hello");
+
+    for (let key in itemDict) {
+      var dict = {}
+      dict["item"] = key;
+      dict["unitno"] = itemDict[key]["itemQty"];
+      dict["perunitprice"] = "$" + itemDict[key]["itemPrice"];
+      //dict["earnings"] = parseFloat(itemDict[key]["itemQty"]) * parseFloat(itemDict[key]["itemPrice"]);
+      dict["earnings"] = "$" + (itemDict[key]["itemQty"] * itemDict[key]["itemPrice"]);
+    
+      this.fireorders.push(dict);
+    
+    }
+
+    console.log(this.fireorders);
+    
+
+
   }
 };
 </script>
