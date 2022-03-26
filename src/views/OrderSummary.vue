@@ -10,6 +10,17 @@
 
       <div class="bigDiv">
         <div class="orderSummary">
+
+        <v-btn
+          @click="goBack"
+          color="#B4B4B4"
+          class="black--text goBack"
+          text
+        >
+          <v-icon dark left>mdi-arrow-left</v-icon>
+          Back to orders
+        </v-btn>
+
           <h2>Order Summary</h2>
 
           <hr />
@@ -147,6 +158,10 @@ export default {
     ScreenshotVerification,
   },
   methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
+
     closeModal() {
       this.modalActive = !this.modalActive;
     },
@@ -324,6 +339,7 @@ td {
   font-size: 20px;
   font-weight: bold;
 }
+
 .viewProfile {
   transition: 500ms ease all;
   padding: 12px 24px;
@@ -332,6 +348,12 @@ td {
   border-radius: 20px;
   font-weight: bold;
   width: 200px;
+  margin-top: 15px;
+}
+
+.goBack {
+  margin-left: -12px;
+  margin-bottom: -15px;
   margin-top: 15px;
 }
 </style>

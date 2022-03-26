@@ -1,7 +1,7 @@
 <template>
   <div v-if="seller" class="background">
     <v-app>
-      <v-navigation-drawer app absolute color="#f5f5f5">
+      <v-navigation-drawer app absolute color="#f5f5f5" height="100%">
         <v-list  class="pt-0">
           <v-list-item
             v-for="[page, route] in pages"
