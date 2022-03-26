@@ -8,9 +8,9 @@
   >
     <div class="box">
       <div class="partition" id="partition-register">
-        <div class="partition-title" v-if="this.paymentURL">
+        <div class="partition-title" v-if="this.payment">
           <br>
-          <v-img class="paylahQR" :src="this.paymentURL"></v-img>
+          <v-img class="paylahQR" :src="this.payment"></v-img>
           <br />
           The customer's payment screenshot is attached above for your verification!
         </div>
@@ -23,7 +23,6 @@
           The customer has yet to make payment. <br>
           Feel free to reach out to the customer via the profile details provided!
         </div>
-
         <button id="cancel-btn" @click.prevent="cancel">Exit</button>
       </div>
     </div>
@@ -32,7 +31,7 @@
 <script>
 const MODAL_WIDTH = 656;
 export default {
-  props: ["paymentURL"],
+  props: ["payment"],
   components: {},
   name: "ScreenshotVerification",
   created() {
