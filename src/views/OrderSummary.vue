@@ -12,7 +12,7 @@
         <h2>Order Summary</h2>
 
         <hr />
-        <h2 class="orderNumber">#{{ orderID }}</h2>
+        <h2 class="orderNumber">#{{ this.orderID }}</h2>
 
         <v-chip class="status" :color="getColor(this.status)" dark>{{
           this.status
@@ -68,7 +68,7 @@
 
         <button class="viewProfile" @click="showModal">
           <v-icon>mdi-camera</v-icon>
-          <ScreenshotVerification />
+          <ScreenshotVerification :payment="this.paymentURL"/>
           View Payment
         </button>
       </div>
@@ -92,6 +92,7 @@ export default {
       status: "", //done
       buyerID: "", //done
       totalAmount: null,
+      paymentURL: "",
       fullBuyer: [],
       buyerName: "",
       buyerEmail: "",
@@ -111,10 +112,12 @@ export default {
         const allData = doc.data();
         this.fullOrder = allData;
         this.buyerID = allData.buyerID;
+        this.orderID = allData.orderID;
         this.status = allData.status;
         this.totalAmount = allData.total;
         this.orders = allData.details;
         this.orderID = allData.orderID;
+        this.paymentURL = allData.paymentImgRef;
       });
 
     this.getBuyer();

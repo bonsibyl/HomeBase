@@ -39,7 +39,7 @@
                 Revenue
                 <v-icon right color="green">mdi-currency-usd</v-icon>
               </v-card-title>
-              <v-card-text class="metricNumber">{{ totalRev }}</v-card-text>
+              <v-card-text class="metricNumber">${{ totalRev.toFixed(2) }}</v-card-text>
             </v-card>
           </v-col>
           <v-col>

@@ -8,7 +8,8 @@
         Take a look at your analytics dashboard.
       </p>
       <router-link
-        :to="{ name: 'Dashboard' }"
+        :to="{ name: 'Dashboard', params: { id: this.$store.state.profileId }}"
+        
         tag="button"
         class="landing-register-button"
       >
