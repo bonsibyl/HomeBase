@@ -14,7 +14,7 @@
         </div>
         <v-row :justify="'center'">
           <v-col :cols="3">
-            <v-btn block @click="editShopRoute">Edit Shop Details</v-btn>
+            <v-btn class="edit" block @click="editShopRoute">Edit Shop Details</v-btn>
           </v-col>
         </v-row>
         <div class="input">
@@ -50,9 +50,6 @@
           <input type="password" id="password" v-model="password" />
         </div>
         <div class="buttonDiv">
-          <v-btn class="edit" dark :to="'/seller-register-2/'"
-            >Edit Other Shop Details</v-btn
-          >
           <v-btn class="save" dark @click="updateProfile">Save Changes</v-btn>
         </div>
       </div>
