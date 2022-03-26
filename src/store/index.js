@@ -25,6 +25,7 @@ const store = createStore(Vuex.Store, {
     cartItems: [],
     checkCartUpdate: 0,
     checkQRUpdate: 0,
+    checkOrderUpdate: 0,
   },
   mutations: {
     toggleEditPost(state, payload) {
@@ -42,6 +43,9 @@ const store = createStore(Vuex.Store, {
     },
     checkQRUpdateFunc(state) {
       state.checkQRUpdate++;
+    },
+    checkOrderUpdateFunc(state) {
+      state.checkOrderUpdate++;
     },
     setProfileInfo(state, doc) {
       //doc is dbResults

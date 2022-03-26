@@ -37,7 +37,6 @@
   </modal>
 </template>
 <script>
-import db from "../firebase/firebaseInit";
 import firebase from "firebase/app";
 
 const MODAL_WIDTH = 656;
@@ -65,7 +64,7 @@ export default {
   },
   props: {
     qrRoute: String,
-    orderRef: String,
+    orderRef: Object,
   },
   methods: {
     submit() {
@@ -73,12 +72,11 @@ export default {
       //   return;
       // }
       var storageRef = firebase.storage().ref();
-      const user = firebase.auth().currentUser.uid;
       console.log(this.OrderInfo[0]);
       if (this.uploaded.size > 0) {
         var imageUpload = this.uploaded;
         var upload = storageRef
-          .child("orders/" + this.productName + user)
+          .child("orders/" + this.orderRef.docID)
           .put(imageUpload);
         // Listen for state changes, errors, and completion of the upload.
         upload.on(
@@ -115,20 +113,6 @@ export default {
           }
         );
       }
-
-      db.collection("orders")
-        .doc(this.orderRef)
-        .update({
-          paymentImgRef:
-            this.uploaded.size > 0 ? "orders/" + this.productName + user : "",
-        })
-        .catch((error) => {
-          this.snackbar = {
-            color: "error",
-            show: true,
-            msg: error,
-          };
-        });
       alert("You have successfully submitted your payment screenshot");
       this.$modal.hide("screenshot");
     },
