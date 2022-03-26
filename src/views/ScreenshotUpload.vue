@@ -9,7 +9,7 @@
     <div class="box">
       <div class="partition" id="partition-register">
         <div class="partition-title">
-          <img class="paylahQR" src="../assets/blogPhotos/paylah.jpeg" alt="" />
+          <img class="paylahQR" :src="qrPic" alt="" />
           <br />
           We have received your order with thanks! <br /><br />
           To proceed, please upload a screenshot of your PayLah! payment to
@@ -37,14 +37,13 @@
   </modal>
 </template>
 <script>
-import db from "../firebase/firebaseInit";
 import firebase from "firebase/app";
 
 const MODAL_WIDTH = 656;
 export default {
   components: {},
   name: "ScreenshotUpload",
-  data(){
+  data() {
     return {
       qrPic: "",
       OrderInfo: [],
@@ -54,7 +53,7 @@ export default {
         (value) =>
           value.size < 2000000 || "Image size should be less than 2 MB!",
       ],
-    }
+    };
   },
   // props: {
   //   orderRef: String,
@@ -65,14 +64,7 @@ export default {
   },
   props: {
     qrRoute: String,
-    orderRef: String,
-  },
-  async mounted() {
-    this.qrPic = await firebase
-      .storage()
-      .ref()
-      .child("/user/qr/" + this.qrRoute)
-      .getDownloadURL();
+    orderRef: Object,
   },
   methods: {
     submit() {
@@ -80,12 +72,11 @@ export default {
       //   return;
       // }
       var storageRef = firebase.storage().ref();
-      const user = firebase.auth().currentUser.uid;
       console.log(this.OrderInfo[0]);
       if (this.uploaded.size > 0) {
         var imageUpload = this.uploaded;
         var upload = storageRef
-          .child("orders/" + this.productName + user)
+          .child("orders/" + this.orderRef.docID)
           .put(imageUpload);
         // Listen for state changes, errors, and completion of the upload.
         upload.on(
@@ -122,22 +113,6 @@ export default {
           }
         );
       }
-
-      db.collection("orders")
-        .doc(this.orderRef)
-        .update({
-          paymentImgRef:
-              this.uploaded.size > 0
-                ? "orders/" + this.productName + user
-                : "",
-        })
-        .catch((error) => {
-          this.snackbar = {
-            color: "error",
-            show: true,
-            msg: error,
-          };
-        });
       alert("You have successfully submitted your payment screenshot");
       this.$modal.hide("screenshot");
     },
@@ -146,15 +121,26 @@ export default {
     },
   },
   computed: {
+    checkQRUpdate() {
+      return this.$store.state.checkQRUpdate;
+    },
     checkOrderUpdate() {
       return this.orderRef;
-    }
+    },
   },
   watch: {
+    async checkQRUpdate(oldCount, newCount) {
+      console.log(oldCount + " " + newCount);
+      this.qrPic = await firebase
+        .storage()
+        .ref()
+        .child("/user/qr/" + this.qrRoute)
+        .getDownloadURL();
+    },
     checkOrderUpdate(newVal, oldVal) {
       this.OrderInfo = [this.orderRef];
       newVal = oldVal;
-    }
+    },
   },
 };
 </script>

@@ -37,7 +37,9 @@
             {{ item.orderid }}
           </v-chip>
         </template>
-
+        <template v-slot:[`item.earnings`]="{ item }">
+          ${{ convertToCurrency(String(item.earnings)) }}
+        </template>
         <template v-slot:[`item.orderstatus`]="{ item }">
           <v-chip :color="getColor(item.orderstatus)" dark>
             {{ item.orderstatus }}
@@ -135,6 +137,15 @@ export default {
     const firebaseorders = await this.retrieveOrders();
     // console.log("Orders Below");
     // console.log(firebaseorders);
+    console.log(firebaseorders[0].date);
+    firebaseorders.sort((a, b) => {
+      if (a.date < b.date) {
+        return -1;
+      } else if (a.date > b.date) {
+        return 1;
+      }
+      return 0;
+    });
 
     for (let i = 0; i < firebaseorders.length; i++) {
       var dict = {};
@@ -149,22 +160,23 @@ export default {
       var buyer = firebaseorders[i]["buyerID"];
       var buyerDetails = await this.retrieveName(buyer);
 
-      console.log("TEST");
-      console.log(buyerDetails);
-
       buyer = buyerDetails;
       var status = firebaseorders[i]["status"];
-      var totalearnings =
-        "$" + this.convertToCurrency(String(firebaseorders[i]["total"]));
-
-      dict["orderid"] = i + 1;
+      // var totalearnings =
+      //   "$" + this.convertToCurrency(String(firebaseorders[i]["total"]));
+      console.log(firebaseorders[i]);
+      await db
+        .collection("orders")
+        .doc(firebaseorders[i].docID)
+        .update({ orderID: i + 1001 });
+      dict["orderid"] = i + 1001;
       dict["date"] = date;
       dict["custname"] = buyer;
       dict["orderstatus"] = status;
-      dict["earnings"] = totalearnings;
+      dict["earnings"] = firebaseorders[i]["total"];
       dict["docid"] = firebaseorders[i].docID;
 
-      this.fireorders.push(dict);
+      this.fireorders.splice(0, 0, dict);
     }
 
     //console.log(this.fireorders);

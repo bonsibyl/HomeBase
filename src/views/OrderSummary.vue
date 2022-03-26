@@ -12,7 +12,7 @@
         <h2>Order Summary</h2>
 
         <hr />
-        <h2 class="orderNumber">#{{ this.$route.params.id }}</h2>
+        <h2 class="orderNumber">#{{ orderID }}</h2>
 
         <v-chip class="status" :color="getColor(this.status)" dark>{{
           this.status
@@ -114,6 +114,7 @@ export default {
         this.status = allData.status;
         this.totalAmount = allData.total;
         this.orders = allData.details;
+        this.orderID = allData.orderID;
       });
 
     this.getBuyer();
