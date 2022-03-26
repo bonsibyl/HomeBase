@@ -213,6 +213,8 @@ export default {
       })
       .catch((error) => {
         console.log(error);
+        this.profilePic =
+          "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
       });
   },
   computed: {
@@ -267,7 +269,7 @@ export default {
       return sellerType;
     },
     async retrieveOrders() {
-      console.log("retrieving orders")
+      console.log("retrieving orders");
       const docRef = db
         .collection("orders")
         .where("buyerID", "==", this.$route.params.id);

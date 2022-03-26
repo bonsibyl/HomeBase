@@ -67,7 +67,12 @@
         <v-row>{{ productDescription }}</v-row>
         <v-row class="store-tags">
           <v-chip-group active-class="">
-            <v-chip class="tags" v-for="tag in tags" :key="tag" label>
+            <v-chip
+              class="tags"
+              v-for="(tag, index) in tags"
+              :key="index"
+              label
+            >
               {{ tag }}
             </v-chip>
           </v-chip-group></v-row
@@ -131,8 +136,8 @@
       >
       <v-col
         :cols="12"
-        v-for="review in reviewDetails"
-        :key="review"
+        v-for="(review, index) in reviewDetails"
+        :key="index"
         class="review-spacing"
       >
         <v-row class="grey lighten-3 rounded-lg">
@@ -179,22 +184,13 @@ export default {
       shopName: "",
       productName: "",
       productDetails: "",
-      rating: 3,
-      numReviews: 5,
-      price: 10.0,
+      rating: 0,
+      numReviews: 0,
+      price: 0,
       productDescription: "",
       tags: [],
-      openingHours: [
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-        "10:00am - 6:30pm",
-      ],
-      makerDetails:
-        "Nutty Buttery Bakery is a small home-based bakery established in 2019. We specialise in French desserts, such as financiers, macarons and eclairs. We also bake whole cakes to-order.",
+      openingHours: [],
+      makerDetails: "",
       storeDetails: "",
       reviewDetails: [],
       userMatch: false,
@@ -213,7 +209,7 @@ export default {
     this.seller = information;
     if (!this.userMatch) {
       db.collection("users")
-        .doc(this.$route.params.id)
+        .doc(this.$route.params.user)
         .update({ viewCount: firebase.firestore.FieldValue.increment(1) });
     }
     db.collection("listings")
@@ -242,10 +238,11 @@ export default {
           .then((doc) => {
             const data = doc.data();
             this.shopName = data.shopName;
-            this.makerDetails = data.makerDetails
-              ? data.makerDetails
+            this.makerDetails = data.shopDesc
+              ? data.shopDesc
               : "The shop owner has yet to upload his details!";
             this.storeDetails = data.address;
+            this.convertFullOpeningDetails(data.openingDetails);
             // this.openingHours = data.openingHours;
           })
       )
@@ -273,6 +270,46 @@ export default {
       });
       return sellerType;
     },
+    convertFullOpeningDetails(details) {
+      const final = [];
+      for (var i in details) {
+        var insertion;
+        if (i == "Monday") {
+          insertion = 0;
+        } else if (i == "Tuesday") {
+          insertion = 1;
+        } else if (i == "Wednesday") {
+          insertion = 2;
+        } else if (i == "Thursday") {
+          insertion = 3;
+        } else if (i == "Friday") {
+          insertion = 4;
+        } else if (i == "Saturday") {
+          insertion = 5;
+        } else if (i == "Sunday") {
+          insertion = 6;
+        }
+        final[insertion] = this.transformTimeEntry(details[i]);
+      }
+      this.openingHours = final;
+    },
+    transformTimeEntry(details) {
+      if (details.opening == "" || details.closing == "") {
+        return "Closed";
+      } else {
+        const firstTime = this.convertTime(details.opening);
+        const secondTime = this.convertTime(details.closing);
+        return firstTime + " - " + secondTime;
+      }
+    },
+    convertTime(time) {
+      var H = +time.substr(0, 2);
+      var h = H % 12 || 12;
+      h = h < 10 ? "0" + h : h;
+      var ampm = H < 12 || H === 24 ? "AM" : "PM";
+      time = h + time.substr(2, 3) + ampm;
+      return time;
+    },
     goBack() {
       this.$router.go(-1);
     },
@@ -286,22 +323,11 @@ export default {
             x.name + x.storeName === addListing.name + addListing.storeName
           );
         });
-        const diffStoreCheck = cartRef.filter((x) => {
-          return x.storeName !== addListing.storeName;
-        });
         if (duplicateCheck.length > 0) {
           this.snackbar = {
             color: "error",
             show: true,
             msg: "You have already added this item to your cart!",
-          };
-          return;
-        }
-        if (diffStoreCheck.length > 0) {
-          this.snackbar = {
-            color: "error",
-            show: true,
-            msg: "You can only add items from the same store to your cart!",
           };
           return;
         }

@@ -189,11 +189,19 @@ export default {
       this.ListingResults = listings;
       console.log(this.ListingResults);
     }
-    this.profilePic = await firebase
+    await firebase
       .storage()
       .ref()
       .child("/user/profile/" + this.$route.params.id)
-      .getDownloadURL();
+      .getDownloadURL()
+      .then((url) => {
+        this.profilePic = url;
+      })
+      .catch((error) => {
+        console.log(error);
+        this.profilePic =
+          "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
+      });
   },
   methods: {
     async retrieveUserType(id) {

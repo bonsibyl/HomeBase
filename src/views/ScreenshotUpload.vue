@@ -134,11 +134,17 @@ export default {
   watch: {
     async checkQRUpdate(oldCount, newCount) {
       console.log(oldCount + " " + newCount);
-      this.qrPic = await firebase
+      await firebase
         .storage()
         .ref()
         .child("/user/qr/" + this.qrRoute)
-        .getDownloadURL();
+        .getDownloadURL()
+        .then((url) => {
+          this.qrPic = url;
+        })
+        .catch((error) => {
+          this.qrPic = error;
+        });
     },
     checkOrderUpdate(newVal, oldVal) {
       this.OrderInfo = [this.orderRef];
