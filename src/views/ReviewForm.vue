@@ -72,8 +72,18 @@
               centered
               :timeout="2000"
               color="red"
-              >Please provide a rating to all items!</v-snackbar
-            >
+              >Please provide a rating to all items!
+              <template v-slot:action="{ attrs }">
+                <v-btn
+                  color="white"
+                  text
+                  v-bind="attrs"
+                  @click="snackbar.show = false"
+                >
+                  Close
+                </v-btn>
+              </template>
+            </v-snackbar>
           </v-form>
         </div>
       </div>
