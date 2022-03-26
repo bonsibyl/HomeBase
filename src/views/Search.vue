@@ -144,14 +144,17 @@
                     hover
                   >
                     <v-img
-                      gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
+                      gradient="to bottom, rgba(255, 255, 255, 0) 10%, rgba(0, 0, 0, 0) 60%, rgba(132, 131, 131, 0.8) 100%"
                       class="white--text align-end bottom-gradient"
                       height="100%"
                       :src="result.imageURL"
                     >
-                      <v-card-title class="font-weight-medium">{{
+                      <v-card-title class="font-weight-medium pt-0">{{
                         result.name
                       }}</v-card-title>
+                      <v-card-subtitle class="py-0">By {{
+                        result.shopName
+                      }}</v-card-subtitle>
                       <v-card-subtitle class="py-0">{{
                         result.qtyDesc
                       }}</v-card-subtitle>
