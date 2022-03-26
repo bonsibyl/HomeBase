@@ -68,7 +68,7 @@
 
         <button class="viewProfile" @click="showModal">
           <v-icon>mdi-camera</v-icon>
-          <ScreenshotVerification />
+          <ScreenshotVerification :payment="this.paymentURL"/>
           View Payment
         </button>
       </div>
@@ -92,6 +92,7 @@ export default {
       status: "", //done
       buyerID: "", //done
       totalAmount: null,
+      paymentURL: "",
       fullBuyer: [],
       buyerName: "",
       buyerEmail: "",
@@ -116,6 +117,7 @@ export default {
         this.totalAmount = allData.total;
         this.orders = allData.details;
         this.orderID = allData.orderID;
+        this.paymentURL = allData.paymentImgRef;
       });
 
     this.getBuyer();
