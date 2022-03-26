@@ -7,8 +7,8 @@
     />
     <Loading v-if="loading" />
 
-    <v-navigation-drawer app absolute>
-      <v-list>
+    <v-navigation-drawer app absolute color="#f5f5f5">
+      <v-list class="pt-0">
         <v-list-item
           v-for="[page, route] in pages"
           :key="page"

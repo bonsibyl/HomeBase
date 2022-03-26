@@ -53,10 +53,13 @@
                       height="100%"
                       :src="result.imageURL"
                     >
-                      <v-card-title class="font-weight-medium">{{
+                      <v-card-title class="font-weight-medium pt-0">{{
                         result.name
                       }}</v-card-title>
-                      <v-card-subtitle class="text-left"
+                      <v-card-subtitle class="text-left py-0">By {{
+                        result.shopName
+                      }}</v-card-subtitle>
+                      <v-card-subtitle class="text-left pt-0"
                         >{{ result.qtyDesc }}
                         <br />
                         {{ "$" + result.price }}</v-card-subtitle

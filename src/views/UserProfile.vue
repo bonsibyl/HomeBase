@@ -140,7 +140,7 @@
                   <v-btn
                     class="mt-4"
                     min-width="12vw"
-                    color="yellow darken-2"
+                    color="light-blue lighten-3"
                     @click="showModal(order)"
                     v-if="order.status == 'Fulfilled'"
                     >Leave a review!</v-btn
@@ -149,7 +149,7 @@
                     class="mt-4"
                     min-width="12vw"
                     v-if="order.status == 'Payment Pending'"
-                    color="teal lighten-2"
+                    color="light-blue lighten-3"
                     @click="showPayment(order)"
                   >
                     Click to Pay!
