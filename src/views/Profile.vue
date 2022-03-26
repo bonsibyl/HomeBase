@@ -175,6 +175,11 @@ export default {
     const information = await this.retrieveUserType(this.$route.params.id);
     this.seller = information;
     if (this.seller) {
+      if (!this.userMatch) {
+        db.collection("users")
+          .doc(this.$route.params.id)
+          .update({ viewCount: firebase.firestore.FieldValue.increment(1) });
+      }
       const listings = await this.retrieveSellerListings(this.$route.params.id);
       for (let i = 0; i < listings.length; i++) {
         var ref = listings[i];

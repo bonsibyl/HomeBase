@@ -185,15 +185,17 @@ export default {
             this.error = true;
             return;
           });
-        await user.updatePassword(this.password).catch((error) => {
-          this.snackbar = {
-            show: true,
-            msg: error,
-            color: "error",
-          };
-          this.error = true;
-          return;
-        });
+        if (!this.error) {
+          await user.updatePassword(this.password).catch((error) => {
+            this.snackbar = {
+              show: true,
+              msg: error,
+              color: "error",
+            };
+            this.error = true;
+            return;
+          });
+        }
       }
       if (!this.error) {
         this.$store.dispatch("updateUserSettings");

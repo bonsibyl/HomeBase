@@ -115,6 +115,7 @@ export default {
         this.status = allData.status;
         this.totalAmount = allData.total;
         this.orders = allData.details;
+        this.orderID = allData.orderID;
       });
 
     this.getBuyer();

@@ -1,8 +1,7 @@
 <template>
   <v-app>
     <review-form :reviewRef="this.reviewRef" />
-    <screenshot-upload :orderRef="this.orderRef" />
-    <ScreenshotUpload :qrRoute="this.qrRef" , :orderRef="this.orderRef" />
+    <screenshot-upload :orderRef="this.orderRef" :qrRoute="this.qrRef" />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
         <div id="content">
@@ -155,25 +154,6 @@
                   >
                     Click to Pay!
                   </v-btn>
-                  =======
-                  <v-btn
-                    class="mt-4"
-                    min-width="12vw"
-                    color="yellow darken-2"
-                    @click="showModal(order)"
-                    v-if="order.status == 'Fulfilled'"
-                    >Leave a review!</v-btn
-                  >
-                  <v-btn
-                    class="mt-4"
-                    min-width="12vw"
-                    v-if="order.status == 'Payment Pending'"
-                    color="teal lighten-2"
-                    @click="showPayment(order)"
-                  >
-                    Click to Pay!
-                  </v-btn>
-                  >>>>>>> ddef7946567e38193b338197f71caa820699d950
                 </v-col>
                 <v-col>{{ `$` + order.total }}</v-col>
               </v-row>
@@ -210,8 +190,9 @@ export default {
     contactNo: "",
     address: "",
     reviewRef: null,
-    orderRef:null,
+    orderRef: null,
     qrRef: null,
+    profilePic: "",
   }),
   async mounted() {
     //const user = firebase.auth().currentUser.uid;
@@ -221,11 +202,18 @@ export default {
       const orders = await this.retrieveOrders();
       this.Orders = orders;
     }
-    this.profilePic = await firebase
+    console.log(firebase.storage());
+    await firebase
       .storage()
       .ref()
       .child("/user/profile/" + this.$route.params.id)
-      .getDownloadURL();
+      .getDownloadURL()
+      .then((url) => {
+        this.profilePic = url;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   computed: {
     filteredOrders() {
@@ -319,7 +307,10 @@ export default {
     showPayment(details) {
       this.orderRef = details;
       this.qrRef = details.sellerID;
+      console.log(this.qrRef);
       this.$modal.show("screenshot");
+      this.$store.commit("checkQRUpdateFunc");
+      this.$store.commit("checkOrderUpdateFunc");
     },
     applySort(results) {
       switch (this.ActiveSort) {
