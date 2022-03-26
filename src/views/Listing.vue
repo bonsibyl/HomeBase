@@ -307,8 +307,18 @@ export default {
         }
         cartRef.push(addListing);
         localStorage.setItem("cart", JSON.stringify(cartRef));
+        this.snackbar = {
+          color: "success",
+          show: true,
+          msg: "Added to your cart!",
+        };
       } else {
         localStorage.setItem("cart", JSON.stringify([addListing]));
+        this.snackbar = {
+          color: "success",
+          show: true,
+          msg: "Added to your cart!",
+        };
       }
     },
   },

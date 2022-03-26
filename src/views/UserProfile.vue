@@ -106,7 +106,7 @@
             <v-col
               :cols="12"
               v-for="(order, index) in filteredOrders"
-              :key="index"
+              :key="`Order-${index}`"
             >
               <v-row>
                 <v-col>{{ order.date.toDate().toLocaleDateString() }}</v-col>
@@ -232,13 +232,13 @@ export default {
     btnColor(status) {
       switch (status) {
         case "Fulfilled":
-          return "green lighten-2";
+          return "green";
         case "Payment Pending":
-          return "orange lighten-2";
+          return "#dbaa23";
         case "Processing":
-          return "light-blue lighten-1";
+          return "#ff5500";
         case "Cancelled":
-          return "red lighten-1";
+          return "#ad1313";
       }
     },
     togglePastOrder() {
@@ -267,6 +267,7 @@ export default {
       return sellerType;
     },
     async retrieveOrders() {
+      console.log("retrieving orders")
       const docRef = db
         .collection("orders")
         .where("buyerID", "==", this.$route.params.id);
