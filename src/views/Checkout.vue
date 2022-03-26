@@ -35,10 +35,10 @@
                 <h4 class="grey--text">@{{ listing.shopName }}</h4>
                 <h3>{{ listing.name }}</h3>
                 <h3>({{ listing.qtyDesc }})</h3>
-                <h3>${{ listing.price }}</h3>
+                <h3>${{ listing.price.toFixed(2) }}</h3>
               </v-col>
               <v-col id="total" align="left">
-                <h3>${{ parseFloat(listing.price) * listing.qty }}</h3>
+                <h3>${{ (parseFloat(listing.price)*listing.qty).toFixed(2) }}</h3>
               </v-col>
               <v-col align="left">
                 <v-btn
@@ -56,7 +56,7 @@
         </template>
 
         <hr />
-        <h3 class="totalAmount">Grand Total: ${{ totalCost }}</h3>
+        <h3 class="totalAmount">Grand Total: ${{ totalCost.toFixed(2) }}</h3>
 
         <div class="btns">
           <button
