@@ -1,7 +1,8 @@
 <template>
   <v-app>
     <review-form :reviewRef="this.reviewRef" />
-    <ScreenshotUpload :qrRoute="this.qrRef" />
+    <screenshot-upload :orderRef="this.orderRef" />
+    <ScreenshotUpload :qrRoute="this.qrRef" , :orderRef="this.orderRef" />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
         <div id="content">
@@ -137,7 +138,6 @@
                   <v-btn min-width="12vw" :color="btnColor(order.status)"
                     >{{ order.status }}
                   </v-btn>
-
                   <v-btn
                     class="mt-4"
                     min-width="12vw"
@@ -155,6 +155,25 @@
                   >
                     Click to Pay!
                   </v-btn>
+                  =======
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    color="yellow darken-2"
+                    @click="showModal(order)"
+                    v-if="order.status == 'Fulfilled'"
+                    >Leave a review!</v-btn
+                  >
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    v-if="order.status == 'Payment Pending'"
+                    color="teal lighten-2"
+                    @click="showPayment(order)"
+                  >
+                    Click to Pay!
+                  </v-btn>
+                  >>>>>>> ddef7946567e38193b338197f71caa820699d950
                 </v-col>
                 <v-col>{{ `$` + order.total }}</v-col>
               </v-row>
@@ -191,12 +210,11 @@ export default {
     contactNo: "",
     address: "",
     reviewRef: null,
+    orderRef: null,
     qrRef: null,
-    profilePic: "",
   }),
   async mounted() {
-    const user = firebase.auth().currentUser.uid;
-    this.userMatch = this.$route.params.id === user;
+    //const user = firebase.auth().currentUser.uid;
     const information = await this.retrieveUserType(this.$route.params.id);
     this.seller = information;
     if (!this.seller) {
@@ -299,6 +317,7 @@ export default {
       this.$modal.show("review");
     },
     showPayment(details) {
+      this.orderRef = details;
       this.qrRef = details.sellerID;
       this.$modal.show("screenshot");
       this.$store.commit("checkQRUpdateFunc");
