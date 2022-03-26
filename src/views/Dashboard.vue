@@ -39,7 +39,9 @@
                 Revenue
                 <v-icon right color="green">mdi-currency-usd</v-icon>
               </v-card-title>
-              <v-card-text class="metricNumber">${{ totalRev.toFixed(2) }}</v-card-text>
+              <v-card-text class="metricNumber"
+                >${{ totalRev.toFixed(2) }}</v-card-text
+              >
             </v-card>
           </v-col>
           <v-col>
@@ -70,7 +72,7 @@
               <v-card-text>
                 <line-chart
                   :data="chartData"
-                  :colors="['#m02']"
+                  :colors="['green']"
                   :legend="false"
                 ></line-chart>
                 <p id="graphlabel">Month</p>
@@ -110,18 +112,35 @@ export default {
     email: "",
     contactNo: "",
     address: "",
+    janRev: 0,
+    febRev: 0,
+    marRev: 0,
+    aprRev: 0,
+    mayRev: 0,
+    junRev: 0,
+    julRev: 0,
+    augRev: 0,
+    sepRev: 0,
+    octRev: 0,
+    novRev: 0,
+    decRev: 0,
     chartData: [
       {
         name: "Sales ($)",
+
         data: {
-          1: 423,
-          2: 446,
-          3: 675,
-          4: 510,
-          5: 590,
-          6: 750,
-          7: 850,
-          8: 905,
+          'Jan':0,
+          'Feb': 0,
+          'Mar':0,
+          'Apr': 0,
+          'May':0,
+          'Jun': 0,
+          'Jul':0,
+          'Aug': 0,
+          'Sep':0,
+          'Oct': 0,
+          'Nov':0,
+          'Dec': 0,
         },
       },
     ],
@@ -149,9 +168,62 @@ export default {
       for (let i = 0; i < orders.length; i++) {
         var ref2 = orders[i];
         this.totalRev = this.totalRev + ref2.total;
+        //console.log(ref2.date.toDate().getMonth());
+         if (ref2.date.toDate().getMonth() == 0) {
+          this.janRev = this.janRev + ref2.total;
+        }
+         if (ref2.date.toDate().getMonth() == 1) {
+          this.febRev = this.febRev + ref2.total;
+        }
+        if (ref2.date.toDate().getMonth() == 2) {
+          this.marRev = this.marRev + ref2.total;
+        }
+         if (ref2.date.toDate().getMonth() == 3) {
+          this.aprRev = this.aprRev + ref2.total;
+        }
+        if (ref2.date.toDate().getMonth() == 4) {
+          this.mayRev = this.mayRev + ref2.total;
+        }
+         if (ref2.date.toDate().getMonth() == 5) {
+          this.junRev = this.junRev + ref2.total;
+        }
+        if (ref2.date.toDate().getMonth() == 6) {
+          this.julRev = this.julRev + ref2.total;
+        }
+         if (ref2.date.toDate().getMonth() == 7) {
+          this.augRev = this.augRev + ref2.total;
+        }
+        if (ref2.date.toDate().getMonth() == 8) {
+          this.sepRev = this.sepRev + ref2.total;
+        }
+         if (ref2.date.toDate().getMonth() == 9) {
+          this.octRev = this.octRev + ref2.total;
+        }
+        if (ref2.date.toDate().getMonth() == 10) {
+          this.novRev = this.novRev + ref2.total;
+        }
+         if (ref2.date.toDate().getMonth() == 11) {
+          this.decRev = this.decRev + ref2.total;
+        }
       }
       this.ListingResults = listings;
       console.log(this.ListingResults);
+      this.chartData = [{
+        name: "Sales ($)",
+
+        data: {
+          'Jan':this.janRev,
+          'Feb': this.febRev,
+          'Mar':this.marRev,
+          'Apr': this.aprRev,
+          'May':this.mayRev,
+          'Jun': this.junRev,
+          'Jul':this.julRev,
+          'Aug': this.augRev,
+          'Sep':this.sepRev,
+          'Oct': this.octRev,
+          'Nov':this.novRev,
+          'Dec': this.decRev,},}]
     }
     this.avgRating = Math.round(this.totalRating / this.numReviews);
   },
