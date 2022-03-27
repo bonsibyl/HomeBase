@@ -1,20 +1,30 @@
 <template>
   <div class="landing-container">
-    <div v-if="$store.state.seller" class="landing-rectangle">
-      <strong class="supporting-header">Welcome back to Homebase!</strong>
+    <div v-if="$store.state.seller">
+        <div class="landing-rectangle">
+        <v-container>
+          <strong class="supporting-header">Welcome back to Homebase!</strong>
 
-      <p class="supporting-text">
-        How did your shop fare this week? <br />
-        Take a look at your analytics dashboard.
-      </p>
-      <router-link
-        :to="{ name: 'Dashboard', params: { id: this.$store.state.profileId }}"
-        
-        tag="button"
-        class="landing-register-button"
-      >
-        View Shop Analytics
-      </router-link>
+          <p class="supporting-text">
+            How did your shop fare this week? <br />
+            Take a look at your analytics dashboard.
+          </p>
+          <router-link
+            :to="{ name: 'Dashboard', params: { id: this.$store.state.profileId }}"
+            
+            tag="button"
+            class="landing-register-button"
+          >
+            View Shop Analytics
+          </router-link>
+        </v-container>
+      </div>
+      <v-container></v-container>
+      <v-container class="landing-overview">
+        <h1 class="overview-title">Today's Order Overview</h1>
+        <v-data-table :headers="headers" :items="fireorders">
+        </v-data-table>
+      </v-container>
     </div>
     <div v-else>
       <div class="landing-rectangle">
@@ -30,7 +40,9 @@
           >View All Available Bakes!</router-link
         >
       </div>
+
       <v-container class="separator"></v-container>
+
       <div class="browse-new">
         <div class="content-buyer">
           <br />
@@ -91,6 +103,51 @@ export default {
   name: "Landing",
   data: () => ({
     ListingResults: [],
+    headers: [
+      { text: "Item", value: "item" },
+      //{ text: "Batch No.", value: "batchno" },
+      //{ text: "Total No. of Pieces", value: "pieceno" },
+      { text: "Total no. of Units", value: "unitno" },
+      { text: "Price per Unit", value: "perunitprice" },
+      { text: "Total Earnings", value: "earnings" },
+    ],
+    orders: [
+      {
+        item: "Almond Financiers",
+        batchno: "1",
+        pieceno: "40",
+        unitno: "5",
+        perunitprice: "$13.90",
+        earnings: "$69.50",
+      },
+
+      {
+        item: "Chocolate Macarons",
+        batchno: "1",
+        pieceno: "36",
+        unitno: "2",
+        perunitprice: "$20.90",
+        earnings: "$41.80",
+      },
+
+      {
+        item: "Almond Financiers",
+        batchno: "2",
+        pieceno: "16",
+        unitno: "2",
+        perunitprice: "$13.90",
+        earnings: "$27.80",
+      },
+
+      {
+        item: "Blueberry Muffins",
+        batchno: "1",
+        pieceno: "6",
+        unitno: "2",
+        perunitprice: "$12.90",
+        earnings: "$25.80",
+      },
+    ],
   }),
   async mounted() {
     const listings = await this.retrieveListings();
@@ -169,6 +226,16 @@ export default {
       text-align: center;
     }
   }
+
+  .landing-overview {
+    background-color: rgba(255,255,255, 0.7);
+    width: 100%;
+    .overview-title {
+      text-align:left;
+    }
+  }
+
+
   .landing-register-button {
     border-radius: 0px;
     height: 75px;
