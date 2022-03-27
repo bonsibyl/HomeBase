@@ -135,8 +135,7 @@ export default {
 
   async mounted() {
     const firebaseorders = await this.retrieveOrders();
-    // console.log("Orders Below");
-    // console.log(firebaseorders);
+
     console.log(firebaseorders[0].date);
     firebaseorders.sort((a, b) => {
       if (a.date < b.date) {
