@@ -111,43 +111,7 @@ export default {
       { text: "Price per Unit", value: "perunitprice" },
       { text: "Total Earnings", value: "earnings" },
     ],
-    orders: [
-      {
-        item: "Almond Financiers",
-        batchno: "1",
-        pieceno: "40",
-        unitno: "5",
-        perunitprice: "$13.90",
-        earnings: "$69.50",
-      },
-
-      {
-        item: "Chocolate Macarons",
-        batchno: "1",
-        pieceno: "36",
-        unitno: "2",
-        perunitprice: "$20.90",
-        earnings: "$41.80",
-      },
-
-      {
-        item: "Almond Financiers",
-        batchno: "2",
-        pieceno: "16",
-        unitno: "2",
-        perunitprice: "$13.90",
-        earnings: "$27.80",
-      },
-
-      {
-        item: "Blueberry Muffins",
-        batchno: "1",
-        pieceno: "6",
-        unitno: "2",
-        perunitprice: "$12.90",
-        earnings: "$25.80",
-      },
-    ],
+    fireorders: [],
   }),
   async mounted() {
     const listings = await this.retrieveListings();
@@ -157,6 +121,45 @@ export default {
       listings[i]["imageURL"] = imageURL;
     }
     this.ListingResults = listings;
+
+    const firebaseorders = await this.retrieveOrders();
+    console.log(firebaseorders);
+
+    var itemDict = {}
+
+    for (let i = 0; i < firebaseorders.length; i++) {
+      //console.log(i);
+      //console.log(firebaseorders[i]["details"][0]);
+      var itemName = firebaseorders[i]["details"][0]["name"];
+      var itemQty = firebaseorders[i]["details"][0]["quantity"];
+      var itemPrice = firebaseorders[i]["details"][0]["fullRef"]["price"];
+
+      if (!(itemName in itemDict)) {
+        itemDict[itemName] = {}
+        itemDict[itemName]["itemQty"] = itemQty;
+        itemDict[itemName]["itemPrice"] = itemPrice;
+        
+      } else {
+        itemDict[itemName]["itemQty"] = itemDict[itemName]["itemQty"] + itemQty;
+      }
+    }
+
+    console.log(itemDict);
+
+    console.log("hello");
+
+    for (let key in itemDict) {
+      var dict = {}
+      dict["item"] = key;
+      dict["unitno"] = itemDict[key]["itemQty"];
+      dict["perunitprice"] = "$" + itemDict[key]["itemPrice"];
+      //dict["earnings"] = parseFloat(itemDict[key]["itemQty"]) * parseFloat(itemDict[key]["itemPrice"]);
+      dict["earnings"] = "$" + (itemDict[key]["itemQty"] * itemDict[key]["itemPrice"]);
+    
+      this.fireorders.push(dict);
+    
+    }
+    
   },
   computed: {
     isSeller() {
@@ -198,6 +201,23 @@ export default {
             "https://cdn.shopify.com/s/files/1/0017/4699/3227/products/image_e0c99cb9-6dbf-427a-91b0-de7a3e115026_900x.jpg?v=1596376378";
         });
       return imageURL;
+    },
+    async retrieveOrders() {
+      const docRef = db.collection("orders");
+      var orders = [];
+
+      var dayStart = new Date();
+      dayStart.setHours(0,0,0,0);
+      var dayEnd = new Date();
+      dayEnd.setHours(23, 59, 59, 999);
+
+      await docRef.where("date", ">=", dayStart).where("date", "<=", dayEnd).get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          orders.push({ ...doc.data(), docID: doc.id});
+        });
+      });
+
+      return orders;
     },
   },
 };
