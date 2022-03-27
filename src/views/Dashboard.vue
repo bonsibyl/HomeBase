@@ -131,6 +131,7 @@ export default {
     day5Rev: 0,
     day6Rev: 0,
     day7Rev: 0,
+    revDates: [],
 
     chartData: [
       {
@@ -180,8 +181,7 @@ export default {
 
       for (let i = 0; i < orders.length; i++) {
         var ref2 = orders[i]; //ref2 is each order
-        console.log("hi");
-        console.log(ref2);
+
         this.totalRev = this.totalRev + ref2.total;
         if (ref2.date.toDate().getDate() == todayDate) {
           this.day7Rev += ref2.total;
@@ -242,6 +242,13 @@ export default {
         //   this.decRev = this.decRev + ref2.total;
         // }
       }
+
+
+
+      for (let j = (todayDate - 6); j <= todayDate; j++) {
+        this.revDates.push(j);
+      }
+
       this.ListingResults = listings;
       console.log(this.ListingResults);
       this.chartData = [{
@@ -268,6 +275,7 @@ export default {
           'Day 6': this.day6Rev,
           'Day 7': this.day7Rev,
         },}]
+
     }
     this.avgRating = Math.round(this.totalRating / this.numReviews);
   },

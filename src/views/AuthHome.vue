@@ -129,6 +129,21 @@ export default {
       // { text: "Total Earnings", value: "earnings" },
     ],
     fireorders: [],
+    day1Rev: 0,
+    day2Rev: 0,
+    day3Rev: 0,
+    day4Rev: 0,
+    day5Rev: 0,
+    day6Rev: 0,
+    day7Rev: 0,
+    revDates: [],
+
+    chartData: [
+      {
+        name: "Sales ($)",
+        data: {},
+      },
+    ],
   }),
   async mounted() {
     const listings = await this.retrieveListings();
@@ -176,6 +191,68 @@ export default {
       this.fireorders.push(dict);
     
     }
+
+    const orders = await this.retrieveOrdersForAnalytics(this.$store.state.profileId);
+
+    var today = new Date();
+    var todayDate = today.getDate();
+
+      for (let i = 0; i < orders.length; i++) {
+        var ref2 = orders[i]; //ref2 is each order
+
+        this.totalRev = this.totalRev + ref2.total;
+        if (ref2.date.toDate().getDate() == todayDate) {
+          this.day7Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 1)) {
+          this.day6Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 2)) {
+          this.day5Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 3)) {
+          this.day4Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 4)) {
+          this.day3Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 5)) {
+          this.day2Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 6)) {
+          this.day1Rev += ref2.total;
+        }
+      }
+      for (let j = (todayDate - 6); j <= todayDate; j++) {
+        this.revDates.push(j);
+      }
+
+      this.ListingResults = listings;
+      console.log(this.ListingResults);
+      this.chartData = [{
+        name: "Sales ($)",
+
+        data: {
+          // 'Jan':this.janRev,
+          // 'Feb': this.febRev,
+          // 'Mar':this.marRev,
+          // 'Apr': this.aprRev,
+          // 'May':this.mayRev,
+          // 'Jun': this.junRev,
+          // 'Jul':this.julRev,
+          // 'Aug': this.augRev,
+          // 'Sep':this.sepRev,
+          // 'Oct': this.octRev,
+          // 'Nov':this.novRev,
+          // 'Dec': this.decRev,
+          'Day 1': this.day1Rev,
+          'Day 2': this.day2Rev,
+          'Day 3': this.day3Rev,
+          'Day 4': this.day4Rev,
+          'Day 5': this.day5Rev,
+          'Day 6': this.day6Rev,
+          'Day 7': this.day7Rev,
+        },}]
     
   },
   computed: {
@@ -234,6 +311,17 @@ export default {
         });
       });
 
+      return orders;
+    },
+
+    async retrieveOrdersForAnalytics(id) {
+      const docRef = db.collection("orders").where("sellerID", "==", id);
+      var orders = [];
+      await docRef.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          orders.push({ ...doc.data(), docID: doc.id });
+        });
+      });
       return orders;
     },
   },
