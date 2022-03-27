@@ -14,7 +14,9 @@
         </div>
         <v-row :justify="'center'">
           <v-col :cols="3">
-            <v-btn class="edit" block @click="editShopRoute">Edit Shop Details</v-btn>
+            <v-btn class="edit" block @click="editShopRoute"
+              >Edit Shop Details</v-btn
+            >
           </v-col>
         </v-row>
         <div class="input">
@@ -121,6 +123,11 @@
       transition="scale-transition"
     >
       {{ snackbar.msg }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" text v-bind="attrs" @click="snackbar.show = false">
+          Close
+        </v-btn>
+      </template>
     </v-snackbar>
   </div>
 </template>

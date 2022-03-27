@@ -136,6 +136,11 @@
       transition="scale-transition"
     >
       {{ snackbar.msg }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" text v-bind="attrs" @click="snackbar.show = false">
+          Close
+        </v-btn>
+      </template>
     </v-snackbar>
   </div>
 </template>

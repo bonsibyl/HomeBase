@@ -80,7 +80,12 @@
                           </v-list-item-action>
                           <v-list-item-content>
                             <v-list-item-title
+                              v-if="Range.lower != 41"
                               v-text="`$` + Range.lower + `-` + Range.upper"
+                            ></v-list-item-title>
+                            <v-list-item-title
+                              v-else
+                              v-text="`>$`+40"
                             ></v-list-item-title>
                           </v-list-item-content>
                         </template>
@@ -152,9 +157,9 @@
                       <v-card-title class="font-weight-medium pt-0">{{
                         result.name
                       }}</v-card-title>
-                      <v-card-subtitle class="py-0">By {{
-                        result.shopName
-                      }}</v-card-subtitle>
+                      <v-card-subtitle class="py-0"
+                        >By {{ result.shopName }}</v-card-subtitle
+                      >
                       <v-card-subtitle class="py-0">{{
                         result.qtyDesc
                       }}</v-card-subtitle>
@@ -206,6 +211,10 @@ export default {
       {
         lower: 31,
         upper: 40,
+      },
+      {
+        lower: 41,
+        upper: Number.MAX_VALUE,
       },
     ],
     ActiveRanges: [],

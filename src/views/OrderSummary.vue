@@ -1,79 +1,104 @@
 <template>
-  <div class="order-checkout">
-    <Modal
-      v-if="modalActive"
-      :modalMessage="modalMessage"
-      v-on:close-modal="closeModal"
-    />
-    <Loading v-if="loading" />
+  <v-app>
+    <div class="order-checkout">
+      <Modal
+        v-if="modalActive"
+        :modalMessage="modalMessage"
+        v-on:close-modal="closeModal"
+      />
+      <Loading v-if="loading" />
 
-    <div class="bigDiv">
-      <div class="orderSummary">
-        <h2>Order Summary</h2>
+      <div class="bigDiv">
+        <div class="orderSummary">
 
-        <hr />
-        <h2 class="orderNumber">#{{ this.orderID }}</h2>
+        <v-btn
+          @click="goBack"
+          color="#B4B4B4"
+          class="black--text goBack"
+          text
+        >
+          <v-icon dark left>mdi-arrow-left</v-icon>
+          Back to orders
+        </v-btn>
 
-        <v-chip class="status" :color="getColor(this.status)" dark>{{
-          this.status
-        }}</v-chip>
+          <h2>Order Summary</h2>
 
-        <table class="listings" v-for="item in orders" :key="item.name">
-          <tr>
-            <th>
-              <v-img class="listingImg" :src="item.fullRef.imageURL"></v-img>
-            </th>
-            <td>
-              <p class="listingName">{{ item.name }}</p>
-              <p class="listingShop">{{ item.quantityDesc }}</p>
-              <p class="listingQuantity">Qty: {{ item.quantity }}</p>
-            </td>
-            <td>
-              <p class="totalPrice">${{ item.fullRef.price.toFixed(2) }}</p>
-            </td>
-          </tr>
-        </table>
+          <hr />
+          <h2 class="orderNumber">#{{ this.orderID }}</h2>
 
-        <div class="btns">
-          <button
-            @click.prevent="completeOrder()"
-            class="button VerifyPayment"
-            style="background-color: darkgreen"
-          >
-            <b>Complete Order</b>
-          </button>
-          <button
-            @click.prevent="cancelOrder()"
-            class="button CancelOrder"
-            style="background-color: darkred"
-          >
-            <b>Cancel Order</b>
+          <v-chip class="status" :color="getColor(this.status)" dark>{{
+            this.status
+          }}</v-chip>
+
+          <table class="listings" v-for="item in orders" :key="item.name">
+            <tr>
+              <th>
+                <v-img class="listingImg" :src="item.fullRef.imageURL"></v-img>
+              </th>
+              <td>
+                <p class="listingName">{{ item.name }}</p>
+                <p class="listingShop">{{ item.quantityDesc }}</p>
+                <p class="listingQuantity">Qty: {{ item.quantity }}</p>
+              </td>
+              <td>
+                <p class="totalPrice">${{ item.fullRef.price.toFixed(2) }}</p>
+              </td>
+            </tr>
+          </table>
+
+          <div class="btns">
+            <button
+              @click.prevent="completeOrder()"
+              class="button VerifyPayment"
+              style="background-color: darkgreen"
+            >
+              <b>Complete Order</b>
+            </button>
+            <button
+              @click.prevent="cancelOrder()"
+              class="button CancelOrder"
+              style="background-color: darkred"
+            >
+              <b>Cancel Order</b>
+            </button>
+          </div>
+          <hr />
+
+          <h3 class="totalAmount">
+            Total Amount: ${{ this.totalAmount.toFixed(2) }}
+          </h3>
+        </div>
+
+        <div class="customerDetails">
+          <p class="details">
+            Deliver to: <br /><br />
+            Name: {{ this.buyerName }}<br />
+            Email: {{ this.buyerEmail }} <br />
+            Contact No: {{ this.buyerContact }} <br />
+            Address: {{ this.buyerAddress }}
+          </p>
+
+          <button class="viewProfile" @click="showModal">
+            <v-icon>mdi-camera</v-icon>
+            <ScreenshotVerification :payment="this.paymentURL" />
+            View Payment
           </button>
         </div>
-        <hr />
-
-        <h3 class="totalAmount">
-          Total Amount: ${{ this.totalAmount.toFixed(2) }}
-        </h3>
-      </div>
-
-      <div class="customerDetails">
-        <p class="details">
-          Deliver to: <br /><br />
-          Name: {{ this.buyerName }}<br />
-          Email: {{ this.buyerEmail }} <br />
-          Contact No: {{ this.buyerContact }} <br />
-          Address: {{ this.buyerAddress }}
-        </p>
-
-        <button class="viewProfile" @click="showModal">
-          <v-icon>mdi-camera</v-icon>
-          <ScreenshotVerification :payment="this.paymentURL"/>
-          View Payment
-        </button>
       </div>
     </div>
-  </div>
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      transition="scale-transition"
+    >
+      {{ snackbar.msg }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" text v-bind="attrs" @click="snackbar.show = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </v-app>
 </template>
 
 <script>
@@ -101,6 +126,11 @@ export default {
       modalActive: false, //toggle pop-up on & off
       modalMessage: "", //pop-up message shown
       loading: null,
+      snackbar: {
+        show: false,
+        msg: null,
+        color: null,
+      },
     };
   },
   async mounted() {
@@ -128,6 +158,10 @@ export default {
     ScreenshotVerification,
   },
   methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
+
     closeModal() {
       this.modalActive = !this.modalActive;
     },
@@ -171,14 +205,22 @@ export default {
       db.collection("orders").doc(this.$route.params.id).update({
         status: "Fulfilled",
       });
-      alert("Order Completed!");
+      this.snackbar = {
+        color: "success",
+        show: true,
+        msg: "Order Fulfilled!",
+      };
     },
     cancelOrder() {
       this.status = "Cancelled";
       db.collection("orders").doc(this.$route.params.id).update({
         status: "Cancelled",
       });
-      alert("Order Cancelled!");
+      this.snackbar = {
+        color: "info",
+        show: true,
+        msg: "Order Cancelled!",
+      };
     },
   },
   computed: {
@@ -297,6 +339,7 @@ td {
   font-size: 20px;
   font-weight: bold;
 }
+
 .viewProfile {
   transition: 500ms ease all;
   padding: 12px 24px;
@@ -305,6 +348,12 @@ td {
   border-radius: 20px;
   font-weight: bold;
   width: 200px;
+  margin-top: 15px;
+}
+
+.goBack {
+  margin-left: -12px;
+  margin-bottom: -15px;
   margin-top: 15px;
 }
 </style>
