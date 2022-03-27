@@ -71,6 +71,9 @@ export default {
     submit() {
       var storageRef = firebase.storage().ref();
       console.log(this.OrderInfo[0]);
+      if (this.uploaded.size == null) {
+        alert("Please upload a file");
+      }
       if (this.uploaded.size > 0) {
         var imageUpload = this.uploaded;
         var upload = storageRef
@@ -114,10 +117,12 @@ export default {
             });
           }
         );
-      }
 
       alert("You have successfully submitted your payment screenshot");
       this.$modal.hide("screenshot");
+      //location.reload();
+      }
+      location.reload();
     },
     cancel() {
       this.$modal.hide("screenshot");
