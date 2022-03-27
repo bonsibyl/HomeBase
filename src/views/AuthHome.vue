@@ -21,11 +21,28 @@
       </div>
       <v-container></v-container>
       <v-container class="landing-overview">
-        <h1 class="overview-title">Today's Order Overview</h1>
+        <h1 class="overview-title">Today's Orders</h1>
         <v-data-table :headers="headers" :items="fireorders">
         </v-data-table>
       </v-container>
+      <v-container></v-container>
+      <v-container class="landing-overview">
+        <v-card width="1980" height="500px" id="graphcard" color="#ffff">
+              <v-card-title id="graphcardtitle" class="text-h5 justify-center">
+                Monthly Sales Trends
+              </v-card-title>
+              <v-card-text>
+                <line-chart
+                  :data="chartData"
+                  :colors="['green']"
+                  :legend="false"
+                ></line-chart>
+                <p id="graphlabel">Month</p>
+              </v-card-text>
+            </v-card>
+      </v-container>
     </div>
+
     <div v-else>
       <div class="landing-rectangle">
         <strong class="supporting-header">Welcome back to Homebase!</strong>
@@ -108,8 +125,8 @@ export default {
       //{ text: "Batch No.", value: "batchno" },
       //{ text: "Total No. of Pieces", value: "pieceno" },
       { text: "Total no. of Units", value: "unitno" },
-      { text: "Price per Unit", value: "perunitprice" },
-      { text: "Total Earnings", value: "earnings" },
+      // { text: "Price per Unit", value: "perunitprice" },
+      // { text: "Total Earnings", value: "earnings" },
     ],
     fireorders: [],
   }),
@@ -227,6 +244,7 @@ export default {
 .landing-container {
   background-image: url("../assets/LandingBackground.png");
   background-size: cover;
+  background-attachment: scroll;
   height: 92vh;
   text-align: center;
   display: block;
