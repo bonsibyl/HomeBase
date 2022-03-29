@@ -19,15 +19,13 @@
           </router-link>
         </v-container>
       </div>
-      <v-container></v-container>
-      <v-container class="landing-overview">
+
+      <div class="landing-overview">
         <h1 class="overview-title">Today's Orders</h1>
         <v-data-table :headers="headers" :items="fireorders">
         </v-data-table>
-      </v-container>
-      <v-container></v-container>
-      <v-container class="landing-overview">
-        <v-card width="1980" height="500px" id="graphcard" color="#ffff">
+        <br>
+        <v-card id="graphcard" color="#ffff">
               <v-card-title id="graphcardtitle" class="text-h5 justify-center">
                 Monthly Sales Trends
               </v-card-title>
@@ -40,7 +38,8 @@
                 <p id="graphlabel">Month</p>
               </v-card-text>
             </v-card>
-      </v-container>
+      </div>
+
     </div>
 
     <div v-else>
@@ -233,18 +232,6 @@ export default {
         name: "Sales ($)",
 
         data: {
-          // 'Jan':this.janRev,
-          // 'Feb': this.febRev,
-          // 'Mar':this.marRev,
-          // 'Apr': this.aprRev,
-          // 'May':this.mayRev,
-          // 'Jun': this.junRev,
-          // 'Jul':this.julRev,
-          // 'Aug': this.augRev,
-          // 'Sep':this.sepRev,
-          // 'Oct': this.octRev,
-          // 'Nov':this.novRev,
-          // 'Dec': this.decRev,
           'Day 1': this.day1Rev,
           'Day 2': this.day2Rev,
           'Day 3': this.day3Rev,
@@ -354,10 +341,15 @@ export default {
   }
 
   .landing-overview {
-    background-color: rgba(255,255,255, 0.7);
-    width: 100%;
+    background-color: #fffbf5;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    border-radius: 20px;
+    padding: 2% 10% 4% 10%;
     .overview-title {
       text-align:left;
+      margin-bottom: 10px;
     }
   }
 
