@@ -67,7 +67,7 @@
           <v-col>
             <v-card width="1980" height="500px" id="graphcard" color="#ffff">
               <v-card-title id="graphcardtitle" class="text-h5 justify-center">
-                Monthly Sales Trends
+                Weekly Sales Trends
               </v-card-title>
               <v-card-text>
                 <line-chart
@@ -75,7 +75,7 @@
                   :colors="['green']"
                   :legend="false"
                 ></line-chart>
-                <p id="graphlabel">Month</p>
+                <p id="graphlabel">Day</p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -112,36 +112,46 @@ export default {
     email: "",
     contactNo: "",
     address: "",
-    janRev: 0,
-    febRev: 0,
-    marRev: 0,
-    aprRev: 0,
-    mayRev: 0,
-    junRev: 0,
-    julRev: 0,
-    augRev: 0,
-    sepRev: 0,
-    octRev: 0,
-    novRev: 0,
-    decRev: 0,
+    // janRev: 0,
+    // febRev: 0,
+    // marRev: 0,
+    // aprRev: 0,
+    // mayRev: 0,
+    // junRev: 0,
+    // julRev: 0,
+    // augRev: 0,
+    // sepRev: 0,
+    // octRev: 0,
+    // novRev: 0,
+    // decRev: 0,
+    day1Rev: 0,
+    day2Rev: 0,
+    day3Rev: 0,
+    day4Rev: 0,
+    day5Rev: 0,
+    day6Rev: 0,
+    day7Rev: 0,
+    revDates: [],
+
     chartData: [
       {
         name: "Sales ($)",
 
-        data: {
-          'Jan':0,
-          'Feb': 0,
-          'Mar':0,
-          'Apr': 0,
-          'May':0,
-          'Jun': 0,
-          'Jul':0,
-          'Aug': 0,
-          'Sep':0,
-          'Oct': 0,
-          'Nov':0,
-          'Dec': 0,
-        },
+        // data: {
+        //   'Jan':0,
+        //   'Feb': 0,
+        //   'Mar':0,
+        //   'Apr': 0,
+        //   'May':0,
+        //   'Jun': 0,
+        //   'Jul':0,
+        //   'Aug': 0,
+        //   'Sep':0,
+        //   'Oct': 0,
+        //   'Nov':0,
+        //   'Dec': 0,
+        // },
+        data: {},
       },
     ],
   }),
@@ -165,65 +175,107 @@ export default {
         .then((doc) => {
           this.numVisits = doc.data().viewCount;
         });
+
+      var today = new Date();
+      var todayDate = today.getDate();
+
       for (let i = 0; i < orders.length; i++) {
-        var ref2 = orders[i];
+        var ref2 = orders[i]; //ref2 is each order
+
         this.totalRev = this.totalRev + ref2.total;
+        if (ref2.date.toDate().getDate() == todayDate) {
+          this.day7Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 1)) {
+          this.day6Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 2)) {
+          this.day5Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 3)) {
+          this.day4Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 4)) {
+          this.day3Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 5)) {
+          this.day2Rev += ref2.total;
+        }
+        else if (ref2.date.toDate().getDate() == (todayDate - 6)) {
+          this.day1Rev += ref2.total;
+        } 
         //console.log(ref2.date.toDate().getMonth());
-         if (ref2.date.toDate().getMonth() == 0) {
-          this.janRev = this.janRev + ref2.total;
-        }
-         if (ref2.date.toDate().getMonth() == 1) {
-          this.febRev = this.febRev + ref2.total;
-        }
-        if (ref2.date.toDate().getMonth() == 2) {
-          this.marRev = this.marRev + ref2.total;
-        }
-         if (ref2.date.toDate().getMonth() == 3) {
-          this.aprRev = this.aprRev + ref2.total;
-        }
-        if (ref2.date.toDate().getMonth() == 4) {
-          this.mayRev = this.mayRev + ref2.total;
-        }
-         if (ref2.date.toDate().getMonth() == 5) {
-          this.junRev = this.junRev + ref2.total;
-        }
-        if (ref2.date.toDate().getMonth() == 6) {
-          this.julRev = this.julRev + ref2.total;
-        }
-         if (ref2.date.toDate().getMonth() == 7) {
-          this.augRev = this.augRev + ref2.total;
-        }
-        if (ref2.date.toDate().getMonth() == 8) {
-          this.sepRev = this.sepRev + ref2.total;
-        }
-         if (ref2.date.toDate().getMonth() == 9) {
-          this.octRev = this.octRev + ref2.total;
-        }
-        if (ref2.date.toDate().getMonth() == 10) {
-          this.novRev = this.novRev + ref2.total;
-        }
-         if (ref2.date.toDate().getMonth() == 11) {
-          this.decRev = this.decRev + ref2.total;
-        }
+        //  if (ref2.date.toDate().getMonth() == 0) {
+        //   this.janRev = this.janRev + ref2.total;
+        // }
+        //  if (ref2.date.toDate().getMonth() == 1) {
+        //   this.febRev = this.febRev + ref2.total;
+        // }
+        // if (ref2.date.toDate().getMonth() == 2) {
+        //   this.marRev = this.marRev + ref2.total;
+        // }
+        //  if (ref2.date.toDate().getMonth() == 3) {
+        //   this.aprRev = this.aprRev + ref2.total;
+        // }
+        // if (ref2.date.toDate().getMonth() == 4) {
+        //   this.mayRev = this.mayRev + ref2.total;
+        // }
+        //  if (ref2.date.toDate().getMonth() == 5) {
+        //   this.junRev = this.junRev + ref2.total;
+        // }
+        // if (ref2.date.toDate().getMonth() == 6) {
+        //   this.julRev = this.julRev + ref2.total;
+        // }
+        //  if (ref2.date.toDate().getMonth() == 7) {
+        //   this.augRev = this.augRev + ref2.total;
+        // }
+        // if (ref2.date.toDate().getMonth() == 8) {
+        //   this.sepRev = this.sepRev + ref2.total;
+        // }
+        //  if (ref2.date.toDate().getMonth() == 9) {
+        //   this.octRev = this.octRev + ref2.total;
+        // }
+        // if (ref2.date.toDate().getMonth() == 10) {
+        //   this.novRev = this.novRev + ref2.total;
+        // }
+        //  if (ref2.date.toDate().getMonth() == 11) {
+        //   this.decRev = this.decRev + ref2.total;
+        // }
       }
+
+
+
+      for (let j = (todayDate - 6); j <= todayDate; j++) {
+        this.revDates.push(j);
+      }
+
       this.ListingResults = listings;
       console.log(this.ListingResults);
       this.chartData = [{
         name: "Sales ($)",
 
         data: {
-          'Jan':this.janRev,
-          'Feb': this.febRev,
-          'Mar':this.marRev,
-          'Apr': this.aprRev,
-          'May':this.mayRev,
-          'Jun': this.junRev,
-          'Jul':this.julRev,
-          'Aug': this.augRev,
-          'Sep':this.sepRev,
-          'Oct': this.octRev,
-          'Nov':this.novRev,
-          'Dec': this.decRev,},}]
+          // 'Jan':this.janRev,
+          // 'Feb': this.febRev,
+          // 'Mar':this.marRev,
+          // 'Apr': this.aprRev,
+          // 'May':this.mayRev,
+          // 'Jun': this.junRev,
+          // 'Jul':this.julRev,
+          // 'Aug': this.augRev,
+          // 'Sep':this.sepRev,
+          // 'Oct': this.octRev,
+          // 'Nov':this.novRev,
+          // 'Dec': this.decRev,
+          'Day 1': this.day1Rev,
+          'Day 2': this.day2Rev,
+          'Day 3': this.day3Rev,
+          'Day 4': this.day4Rev,
+          'Day 5': this.day5Rev,
+          'Day 6': this.day6Rev,
+          'Day 7': this.day7Rev,
+        },}]
+
     }
     this.avgRating = Math.round(this.totalRating / this.numReviews);
   },
