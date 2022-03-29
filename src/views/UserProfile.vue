@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <review-form :reviewRef="this.reviewRef" />
+    <review-form :reviewRef="this.reviewRef" :orderRef="this.orderRef" />
     <screenshot-upload :orderRef="this.orderRef" :qrRoute="this.qrRef" />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
@@ -142,7 +142,9 @@
                     min-width="12vw"
                     color="light-blue lighten-3"
                     @click="showModal(order)"
-                    v-if="order.status == 'Fulfilled'"
+                    v-if="
+                      order.reviewLeft == false && order.status == 'Fulfilled'
+                    "
                     >Leave a review!</v-btn
                   >
                   <v-btn
@@ -304,6 +306,7 @@ export default {
       return imageURL;
     },
     showModal(details) {
+      this.orderRef = details;
       this.reviewRef = details;
       this.$modal.show("review");
     },
