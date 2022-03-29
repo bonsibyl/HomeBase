@@ -28,7 +28,7 @@
           ></v-file-input>
         </div>
         <div class="button-div">
-          <button id="submit-btn" @click.prevent="submit">Submit</button>
+          <button id="submit-btn" @click="submit">Submit</button>
           <button id="cancel-btn" @click.prevent="cancel">Go Back</button>
           <div style="margin-bottom: 20px"></div>
         </div>
@@ -118,11 +118,11 @@ export default {
           }
         );
 
-      alert("You have successfully submitted your payment screenshot");
-      this.$modal.hide("screenshot");
-      //location.reload();
+        alert("You have successfully submitted your payment screenshot");
+        this.$modal.hide("screenshot");
+        //location.reload();
       }
-      location.reload();
+      //location.reload();
     },
     cancel() {
       this.$modal.hide("screenshot");
