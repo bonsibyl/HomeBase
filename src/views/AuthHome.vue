@@ -27,7 +27,7 @@
         <br>
         <v-card id="graphcard" color="#ffff">
               <v-card-title id="graphcardtitle" class="text-h5 justify-center">
-                Monthly Sales Trends
+                Weekly Sales Trends
               </v-card-title>
               <v-card-text>
                 <line-chart
@@ -35,7 +35,7 @@
                   :colors="['green']"
                   :legend="false"
                 ></line-chart>
-                <p id="graphlabel">Month</p>
+                <p id="graphlabel">Day</p>
               </v-card-text>
             </v-card>
       </div>
@@ -344,7 +344,7 @@ export default {
     background-color: #fffbf5;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 50px;
+    margin-top: 180px;
     border-radius: 20px;
     padding: 2% 10% 4% 10%;
     .overview-title {
