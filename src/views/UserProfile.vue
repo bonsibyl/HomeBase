@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <review-form :reviewRef="this.reviewRef" />
+    <review-form :reviewRef="this.reviewRef" :orderRef="this.orderRef" />
     <screenshot-upload :orderRef="this.orderRef" :qrRoute="this.qrRef" />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
@@ -120,44 +120,53 @@
                   :key="index"
                   no-gutters
                 >
-                  <v-col :cols="12">
-                    <u>{{ each.name }}</u>
-                  </v-col>
-                  <v-col class="caption" :cols="12">
-                    {{ each.quantityDesc }}
-                  </v-col>
-                  <v-col class="caption" :cols="12">
-                    Qty: {{ each.quantity }}
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-col>
-                <v-btn min-width="12vw" :color="btnColor(order.status)"
-                  >{{ order.status }}
-                </v-btn>
-                <v-btn
-                  class="mt-4"
-                  min-width="12vw"
-                  color="light-blue lighten-3"
-                  @click="showModal(order)"
-                  v-if="order.status == 'Fulfilled'"
-                  >Leave a review!</v-btn
-                >
-                <v-btn
-                  class="mt-4"
-                  min-width="12vw"
-                  v-if="order.status == 'Payment Pending'"
-                  color="light-blue lighten-3"
-                  @click="showPayment(order)"
-                >
-                  Click to Pay!
-                </v-btn>
-              </v-col>
-              <v-col>{{ `$` + order.total }}</v-col>
-            </v-row>
-            <br />
-            <v-divider></v-divider>
-          </v-col>
+                <v-col>
+                  <v-row
+                    dense
+                    v-for="(each, index) in order.details"
+                    :key="index"
+                    no-gutters
+                  >
+                    <v-col :cols="12">
+                      <u>{{ each.name }}</u>
+                    </v-col>
+                    <v-col class="caption" :cols="12">
+                      {{ each.quantityDesc }}
+                    </v-col>
+                    <v-col class="caption" :cols="12">
+                      Qty: {{ each.quantity }}
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col>
+                  <v-btn min-width="12vw" :color="btnColor(order.status)"
+                    >{{ order.status }}
+                  </v-btn>
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    color="light-blue lighten-3"
+                    @click="showModal(order)"
+                    v-if="
+                      order.reviewLeft == false && order.status == 'Fulfilled'
+                    "
+                    >Leave a review!</v-btn
+                  >
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    v-if="order.status == 'Payment Pending'"
+                    color="light-blue lighten-3"
+                    @click="showPayment(order)"
+                  >
+                    Click to Pay!
+                  </v-btn>
+                </v-col>
+                <v-col>{{ `$` + order.total }}</v-col>
+              </v-row>
+              <br />
+              <v-divider></v-divider>
+            </v-col>
           </v-row>
         </div>
       </v-sheet>
@@ -302,6 +311,7 @@ export default {
       return imageURL;
     },
     showModal(details) {
+      this.orderRef = details;
       this.reviewRef = details;
       this.$modal.show("review");
     },
