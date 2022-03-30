@@ -117,7 +117,6 @@ export default {
   },
   props: {
     reviewRef: Object,
-    orderRef: Object,
   },
   created() {
     this.modalWidth =
@@ -125,7 +124,6 @@ export default {
   },
   methods: {
     async submit() {
-      console.log(this.orderRef);
       if (!this.$refs.form.validate()) {
         return;
       }
@@ -138,9 +136,6 @@ export default {
       var ref = db
         .collection("listings")
         .where("storeName", "==", this.OrderInfo[0].sellerID);
-      db.collection("orders").doc(this.orderRef.docID).update({
-        reviewLeft: true,
-      });
       for (var i = 0; i < this.OrderInfo[0].details.length; i++) {
         var updateRef = this.OrderInfo[0].details[i];
         await ref
@@ -187,17 +182,10 @@ export default {
     checkReviewUpdate() {
       return this.reviewRef;
     },
-    checkOrderUpdate() {
-      return this.orderRef;
-    },
   },
   watch: {
     checkReviewUpdate(newVal, oldVal) {
       this.OrderInfo = [this.reviewRef];
-      newVal = oldVal;
-    },
-    checkOrderUpdate(newVal, oldVal) {
-      this.OrderInfo = [this.orderRef];
       newVal = oldVal;
     },
   },
