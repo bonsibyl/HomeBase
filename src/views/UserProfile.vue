@@ -32,7 +32,7 @@
             </v-col>
           </v-row>
           <v-row id="filterrow" align="end">
-            <v-col cols="auto">
+            <v-col cols="auto" class="pl-0">
               <v-btn
                 :color="PastOrder === false ? 'primary' : 'grey'"
                 text
@@ -89,77 +89,75 @@
             </v-col>
           </v-row>
           <v-divider id="divider1"></v-divider>
+          <v-row id="orderheaders">
+            <v-col>Date</v-col>
+            <v-col>Bakery</v-col>
+            <v-col>Order Details</v-col>
+            <v-col>Order Status</v-col>
+            <v-col>Order Total</v-col>
+          </v-row>
+          <v-divider></v-divider>
           <v-row>
-            <v-col :cols="12">
-              <v-row class="order-headers ml-4 mt-4">
-                <v-col>Date</v-col>
-                <v-col>Bakery</v-col>
-                <v-col>Order Details</v-col>
-                <v-col>Order Status</v-col>
-                <v-col>Order Total</v-col>
-              </v-row>
-              <v-divider></v-divider>
-            </v-col>
-            <v-col v-show="filteredOrders.length === 0">
-              <h2 class="font-weight-bold">No orders yet :(</h2>
-            </v-col>
-            <v-col
-              :cols="12"
-              v-for="(order, index) in filteredOrders"
-              :key="`Order-${index}`"
-            >
-              <v-row>
-                <v-col>{{ order.date.toDate().toLocaleDateString() }}</v-col>
-                <v-col
-                  ><u
-                    ><strong>{{ order.bakery }}</strong></u
-                  ></v-col
+          <v-col v-show="filteredOrders.length === 0">
+            <h2 class="font-weight-bold">No orders yet :(</h2>
+          </v-col>
+          <v-col
+            :cols="12"
+            v-for="(order, index) in filteredOrders"
+            :key="`Order-${index}`"
+          >
+            <v-row>
+              <v-col>{{ order.date.toDate().toLocaleDateString() }}</v-col>
+              <v-col
+                ><u
+                  ><strong>{{ order.bakery }}</strong></u
+                ></v-col
+              >
+              <v-col>
+                <v-row
+                  dense
+                  v-for="(each, index) in order.details"
+                  :key="index"
+                  no-gutters
                 >
-                <v-col>
-                  <v-row
-                    dense
-                    v-for="(each, index) in order.details"
-                    :key="index"
-                    no-gutters
-                  >
-                    <v-col :cols="12">
-                      <u>{{ each.name }}</u>
-                    </v-col>
-                    <v-col class="caption" :cols="12">
-                      {{ each.quantityDesc }}
-                    </v-col>
-                    <v-col class="caption" :cols="12">
-                      Qty: {{ each.quantity }}
-                    </v-col>
-                  </v-row>
-                </v-col>
-                <v-col>
-                  <v-btn min-width="12vw" :color="btnColor(order.status)"
-                    >{{ order.status }}
-                  </v-btn>
-                  <v-btn
-                    class="mt-4"
-                    min-width="12vw"
-                    color="light-blue lighten-3"
-                    @click="showModal(order)"
-                    v-if="order.status == 'Fulfilled'"
-                    >Leave a review!</v-btn
-                  >
-                  <v-btn
-                    class="mt-4"
-                    min-width="12vw"
-                    v-if="order.status == 'Payment Pending'"
-                    color="light-blue lighten-3"
-                    @click="showPayment(order)"
-                  >
-                    Click to Pay!
-                  </v-btn>
-                </v-col>
-                <v-col>{{ `$` + order.total }}</v-col>
-              </v-row>
-              <br />
-              <v-divider></v-divider>
-            </v-col>
+                  <v-col :cols="12">
+                    <u>{{ each.name }}</u>
+                  </v-col>
+                  <v-col class="caption" :cols="12">
+                    {{ each.quantityDesc }}
+                  </v-col>
+                  <v-col class="caption" :cols="12">
+                    Qty: {{ each.quantity }}
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col>
+                <v-btn min-width="12vw" :color="btnColor(order.status)"
+                  >{{ order.status }}
+                </v-btn>
+                <v-btn
+                  class="mt-4"
+                  min-width="12vw"
+                  color="light-blue lighten-3"
+                  @click="showModal(order)"
+                  v-if="order.status == 'Fulfilled'"
+                  >Leave a review!</v-btn
+                >
+                <v-btn
+                  class="mt-4"
+                  min-width="12vw"
+                  v-if="order.status == 'Payment Pending'"
+                  color="light-blue lighten-3"
+                  @click="showPayment(order)"
+                >
+                  Click to Pay!
+                </v-btn>
+              </v-col>
+              <v-col>{{ `$` + order.total }}</v-col>
+            </v-row>
+            <br />
+            <v-divider></v-divider>
+          </v-col>
           </v-row>
         </div>
       </v-sheet>
@@ -352,6 +350,9 @@ export default {
 }
 #searchrow {
   padding-top: 5vh;
+}
+#orderheaders {
+  
 }
 .col-info {
   padding: 0px;
