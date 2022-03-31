@@ -89,6 +89,7 @@ export default {
 
   methods: {
     async retrieveOrders() {
+
       const docRef = db.collection("orders");
       var orders = [];
 
@@ -96,12 +97,17 @@ export default {
       dayStart.setHours(0,0,0,0);
       var dayEnd = new Date();
       dayEnd.setHours(23, 59, 59, 999);
+      
+      
 
       await docRef.where("date", ">=", dayStart).where("date", "<=", dayEnd).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           orders.push({ ...doc.data(), docID: doc.id});
         });
       });
+
+      console.log("hello");
+      console.log(orders);
 
       return orders;
     }
@@ -111,13 +117,18 @@ export default {
 
   async mounted() {
     const firebaseorders = await this.retrieveOrders();
-    console.log(firebaseorders);
+    //console.log(firebaseorders);
 
     var itemDict = {}
 
     for (let i = 0; i < firebaseorders.length; i++) {
       //console.log(i);
-      //console.log(firebaseorders[i]["details"][0]);
+      console.log(firebaseorders[i]);
+
+      if (firebaseorders[i]["sellerID"] != this.$route.params.id) {
+        continue;
+      }
+
       var itemName = firebaseorders[i]["details"][0]["name"];
       var itemQty = firebaseorders[i]["details"][0]["quantity"];
       var itemPrice = firebaseorders[i]["details"][0]["fullRef"]["price"];
@@ -132,10 +143,6 @@ export default {
       }
     }
 
-    console.log(itemDict);
-
-    console.log("hello");
-
     for (let key in itemDict) {
       var dict = {}
       dict["item"] = key;
@@ -148,7 +155,7 @@ export default {
     
     }
 
-    console.log(this.fireorders);
+    //console.log(this.fireorders);
     
 
 
