@@ -117,6 +117,7 @@ export default {
   },
   props: {
     reviewRef: Object,
+    orderRef: Object,
   },
   created() {
     this.modalWidth =
@@ -133,6 +134,9 @@ export default {
       }
       const user = firebase.auth().currentUser.email;
       console.log(this.OrderInfo.details);
+      db.collection("orders").doc(this.orderRef.docID).update({
+        reviewLeft: true,
+      });
       var ref = db
         .collection("listings")
         .where("storeName", "==", this.OrderInfo[0].sellerID);
