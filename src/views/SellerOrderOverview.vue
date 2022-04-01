@@ -91,24 +91,22 @@ export default {
     async retrieveOrders() {
 
       const docRef = db.collection("orders");
+      var temporders = [];
       var orders = [];
 
       var dayStart = new Date();
       dayStart.setHours(0,0,0,0);
       var dayEnd = new Date();
       dayEnd.setHours(23, 59, 59, 999);
-      
-      
 
-      await docRef.where("date", ">=", dayStart).where("date", "<=", dayEnd).get().then((querySnapshot) => {
+      await docRef.where("sellerID", "==", this.$route.params.id).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          orders.push({ ...doc.data(), docID: doc.id});
+          temporders.push({ ...doc.data(), docID: doc.id});
         });
       });
 
-      console.log("hello");
-      console.log(orders);
-
+      orders = temporders.filter(orderrecord => (orderrecord["date"].toDate() >= dayStart) && (orderrecord["date"].toDate() <= dayEnd))
+      
       return orders;
     }
 
