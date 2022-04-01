@@ -87,7 +87,7 @@ export default {
     },
 
     async retrieveOrders() {
-      const docRef = db.collection("orders");
+      const docRef = db.collection("orders").where("sellerID", "==", this.$route.params.id);
       var orders = [];
 
       await docRef.get().then((querySnapshot) => {
