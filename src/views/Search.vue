@@ -166,6 +166,9 @@
                       <v-card-subtitle class="pt-0">{{
                         "$" + result.price
                       }}</v-card-subtitle>
+                      <v-card-subtitle class="pt-0">{{
+                        result.tags
+                      }}</v-card-subtitle>
                     </v-img>
                     <v-fade-transition>
                       <v-overlay v-if="hover" absolute color="#fff">
@@ -304,9 +307,19 @@ export default {
       });
     },
     filterByTags(results) {
-      return results.filter((listing) =>
-        this.ActiveFilters.every((x) => listing.tags.indexOf(x) > -1)
-      );
+
+      let filters = this.ActiveFilters;
+      function checkFilters(listing) {
+        if (listing.tags === null) {
+          console.log(listing.name)
+          return false;
+        } else if (filters.every((x) => listing.tags.indexOf(x) > -1)) {
+          return true;
+        }
+      }
+      return results.filter(checkFilters);
+      }
+      
     },
     filterByPrice(results) {
       let ranges = this.ActiveRanges;
@@ -338,8 +351,8 @@ export default {
           return results.sort((a, b) => b.price - a.price);
       }
     },
-  },
-};
+  }
+
 </script>
 
 <style scoped>
