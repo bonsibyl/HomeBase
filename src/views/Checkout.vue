@@ -38,7 +38,9 @@
                 <h3>${{ listing.price.toFixed(2) }}</h3>
               </v-col>
               <v-col id="total" align="left">
-                <h3>${{ (parseFloat(listing.price)*listing.qty).toFixed(2) }}</h3>
+                <h3>
+                  ${{ (parseFloat(listing.price) * listing.qty).toFixed(2) }}
+                </h3>
               </v-col>
               <v-col align="left">
                 <v-btn
@@ -198,6 +200,7 @@ export default {
         status: "Payment Pending",
         total: finalOrders[0].price * finalOrders[0].qty,
         paymentImgRef: "",
+        reviewLeft: false,
       };
       ans.push(obj);
       //segment by store
