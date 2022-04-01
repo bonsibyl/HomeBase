@@ -175,10 +175,6 @@ export default {
       }
     }
 
-    console.log(itemDict);
-
-    console.log("hello");
-
     for (let key in itemDict) {
       var dict = {}
       dict["item"] = key;
@@ -285,6 +281,7 @@ export default {
     },
     async retrieveOrders() {
       const docRef = db.collection("orders");
+      var temporders = [];
       var orders = [];
 
       var dayStart = new Date();
@@ -292,12 +289,14 @@ export default {
       var dayEnd = new Date();
       dayEnd.setHours(23, 59, 59, 999);
 
-      await docRef.where("date", ">=", dayStart).where("date", "<=", dayEnd).get().then((querySnapshot) => {
+      await docRef.where("sellerID", "==", this.$store.state.profileId).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          orders.push({ ...doc.data(), docID: doc.id});
+          temporders.push({ ...doc.data(), docID: doc.id});
         });
       });
 
+      orders = temporders.filter(orderrecord => (orderrecord["date"].toDate() >= dayStart) && (orderrecord["date"].toDate() <= dayEnd))
+      
       return orders;
     },
 
