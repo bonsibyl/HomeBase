@@ -318,9 +318,9 @@ export default {
         }
       }
       return results.filter(checkFilters);
-      }
-      
     },
+
+
     filterByPrice(results) {
       let ranges = this.ActiveRanges;
       function checkWithinRanges(listing) {
@@ -350,9 +350,9 @@ export default {
         case "Price Desc":
           return results.sort((a, b) => b.price - a.price);
       }
+    }
     },
   }
-
 </script>
 
 <style scoped>
