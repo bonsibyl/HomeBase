@@ -2,7 +2,7 @@
   <div v-if="seller" class="background">
     <v-app>
       <v-navigation-drawer app absolute color="#f5f5f5" height="100%">
-        <v-list  class="pt-0">
+        <v-list class="pt-0">
           <v-list-item
             v-for="[page, route] in pages"
             :key="page"
@@ -173,7 +173,7 @@ export default {
         .doc(user)
         .get()
         .then((doc) => {
-          this.numVisits = doc.data().viewCount;
+          this.numVisits = doc.data().viewCount ? doc.data().viewCount : 0;
         });
 
       var today = new Date();
@@ -185,25 +185,19 @@ export default {
         this.totalRev = this.totalRev + ref2.total;
         if (ref2.date.toDate().getDate() == todayDate) {
           this.day7Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 1)) {
+        } else if (ref2.date.toDate().getDate() == todayDate - 1) {
           this.day6Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 2)) {
+        } else if (ref2.date.toDate().getDate() == todayDate - 2) {
           this.day5Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 3)) {
+        } else if (ref2.date.toDate().getDate() == todayDate - 3) {
           this.day4Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 4)) {
+        } else if (ref2.date.toDate().getDate() == todayDate - 4) {
           this.day3Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 5)) {
+        } else if (ref2.date.toDate().getDate() == todayDate - 5) {
           this.day2Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 6)) {
+        } else if (ref2.date.toDate().getDate() == todayDate - 6) {
           this.day1Rev += ref2.total;
-        } 
+        }
         //console.log(ref2.date.toDate().getMonth());
         //  if (ref2.date.toDate().getMonth() == 0) {
         //   this.janRev = this.janRev + ref2.total;
@@ -243,39 +237,39 @@ export default {
         // }
       }
 
-
-
-      for (let j = (todayDate - 6); j <= todayDate; j++) {
+      for (let j = todayDate - 6; j <= todayDate; j++) {
         this.revDates.push(j);
       }
 
       this.ListingResults = listings;
       console.log(this.ListingResults);
-      this.chartData = [{
-        name: "Sales ($)",
+      this.chartData = [
+        {
+          name: "Sales ($)",
 
-        data: {
-          // 'Jan':this.janRev,
-          // 'Feb': this.febRev,
-          // 'Mar':this.marRev,
-          // 'Apr': this.aprRev,
-          // 'May':this.mayRev,
-          // 'Jun': this.junRev,
-          // 'Jul':this.julRev,
-          // 'Aug': this.augRev,
-          // 'Sep':this.sepRev,
-          // 'Oct': this.octRev,
-          // 'Nov':this.novRev,
-          // 'Dec': this.decRev,
-          'Day 1': this.day1Rev,
-          'Day 2': this.day2Rev,
-          'Day 3': this.day3Rev,
-          'Day 4': this.day4Rev,
-          'Day 5': this.day5Rev,
-          'Day 6': this.day6Rev,
-          'Day 7': this.day7Rev,
-        },}]
-
+          data: {
+            // 'Jan':this.janRev,
+            // 'Feb': this.febRev,
+            // 'Mar':this.marRev,
+            // 'Apr': this.aprRev,
+            // 'May':this.mayRev,
+            // 'Jun': this.junRev,
+            // 'Jul':this.julRev,
+            // 'Aug': this.augRev,
+            // 'Sep':this.sepRev,
+            // 'Oct': this.octRev,
+            // 'Nov':this.novRev,
+            // 'Dec': this.decRev,
+            "Day 1": this.day1Rev,
+            "Day 2": this.day2Rev,
+            "Day 3": this.day3Rev,
+            "Day 4": this.day4Rev,
+            "Day 5": this.day5Rev,
+            "Day 6": this.day6Rev,
+            "Day 7": this.day7Rev,
+          },
+        },
+      ];
     }
     this.avgRating = Math.round(this.totalRating / this.numReviews);
   },
