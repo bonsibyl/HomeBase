@@ -145,6 +145,8 @@ export default {
     ],
   }),
   async mounted() {
+    console.log("TESTLINE1")
+    console.log(this.$store.state.seller);
     const listings = await this.retrieveListings();
     for (let i = 0; i < listings.length; i++) {
       var ref = listings[i];
@@ -152,9 +154,11 @@ export default {
       listings[i]["imageURL"] = imageURL;
     }
     this.ListingResults = listings;
+    //this.ListingResults = listings;
+    console.log(this.ListingResults);
 
     const firebaseorders = await this.retrieveOrders();
-    console.log(firebaseorders);
+    //console.log(firebaseorders);
 
     var itemDict = {}
 
@@ -223,15 +227,10 @@ export default {
     //   this.revDates.push(j);
     // }
 
-      this.ListingResults = listings;
-      console.log(this.ListingResults);
+      
 
       var days = this.labelArray(dateArray);
       var dayRev = [this.day1Rev, this.day2Rev, this.day3Rev, this.day4Rev, this.day5Rev, this.day6Rev, this.day7Rev];
-      
-      console.log("TESTLINE2");
-      console.log(this.chartData);
-      
 
       this.chartData = [
         {
