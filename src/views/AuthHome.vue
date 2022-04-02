@@ -161,17 +161,20 @@ export default {
     for (let i = 0; i < firebaseorders.length; i++) {
       //console.log(i);
       //console.log(firebaseorders[i]["details"][0]);
-      var itemName = firebaseorders[i]["details"][0]["name"];
-      var itemQty = firebaseorders[i]["details"][0]["quantity"];
-      var itemPrice = firebaseorders[i]["details"][0]["fullRef"]["price"];
+      for (let j = 0; j < firebaseorders[i]["details"].length; j ++) {
 
-      if (!(itemName in itemDict)) {
-        itemDict[itemName] = {}
-        itemDict[itemName]["itemQty"] = itemQty;
-        itemDict[itemName]["itemPrice"] = itemPrice;
-        
-      } else {
-        itemDict[itemName]["itemQty"] = itemDict[itemName]["itemQty"] + itemQty;
+        var itemName = firebaseorders[i]["details"][j]["name"];
+        var itemQty = firebaseorders[i]["details"][j]["quantity"];
+        var itemPrice = firebaseorders[i]["details"][j]["fullRef"]["price"];
+
+        if (!(itemName in itemDict)) {
+          itemDict[itemName] = {}
+          itemDict[itemName]["itemQty"] = itemQty;
+          itemDict[itemName]["itemPrice"] = itemPrice;
+          
+        } else {
+          itemDict[itemName]["itemQty"] = itemDict[itemName]["itemQty"] + itemQty;
+        }
       }
     }
 
@@ -310,6 +313,41 @@ export default {
       });
       return orders;
     },
+    makeDateArray() {
+      var dateArray = [];
+
+      for (let i = 0; i < 7; i++) {
+        var dateObject = new Date();
+        dateObject.setDate(dateObject.getDate() - i);
+        dateArray.unshift(dateObject); 
+      }
+      return dateArray
+    },
+
+    compareDate(orderTimestamp, chartTimestamp) {
+      var orderDay = orderTimestamp.getDate();
+      var orderMonth = orderTimestamp.getMonth();
+      var orderYear = orderTimestamp.getFullYear();
+      
+      var chartDay = chartTimestamp.getDate();
+      var chartMonth = chartTimestamp.getMonth();
+      var chartYear = chartTimestamp.getFullYear();
+
+      return ((orderDay == chartDay) && (orderMonth == chartMonth) && (orderYear == chartYear));
+
+    },
+
+    labelArray(dateArray) {
+      var result = []
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+      for (let i = 0; i < 7; i++) {
+        var day = String(dateArray[i].getDate());
+        var month = months[dateArray[i].getMonth()];
+        result.push(day + " " + month)
+      }
+
+      return result;
+    }
   },
 };
 </script>
