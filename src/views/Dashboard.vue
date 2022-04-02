@@ -155,15 +155,11 @@ export default {
       //var todayMonth = today.getMonth();
 
       var dateArray = this.makeDateArray();
-      //console.log("TESTLINE");
+      console.log("TESTLINE");
       console.log(dateArray);
 
       for (let i = 0; i < orders.length; i++) {
         var ref2 = orders[i]; //ref2 is each order
-
-        console.log("TESTLINE")
-        console.log(ref2.date.toDate());
-        console.log(dateArray[0])
 
         this.totalRev = this.totalRev + ref2.total;
 

@@ -192,55 +192,59 @@ export default {
 
     const orders = await this.retrieveOrdersForAnalytics(this.$store.state.profileId);
 
-    var today = new Date();
-    var todayDate = today.getDate();
+    //var today = new Date();
+    //var todayDate = today.getDate();
 
-      for (let i = 0; i < orders.length; i++) {
+     var dateArray = this.makeDateArray();
+
+    for (let i = 0; i < orders.length; i++) {
         var ref2 = orders[i]; //ref2 is each order
 
         this.totalRev = this.totalRev + ref2.total;
-        if (ref2.date.toDate().getDate() == todayDate) {
-          this.day7Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 1)) {
-          this.day6Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 2)) {
-          this.day5Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 3)) {
-          this.day4Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 4)) {
-          this.day3Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 5)) {
-          this.day2Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 6)) {
-          this.day1Rev += ref2.total;
-        }
+
+        if (this.compareDate(ref2.date.toDate(), dateArray[6])) {
+            this.day7Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[5])) {
+            this.day6Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[4])) {
+            this.day5Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[3])) {
+            this.day4Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[2])) {
+            this.day3Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[1])) {
+            this.day2Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[0])) {
+            this.day1Rev += ref2.total;
+          }
       }
-      for (let j = (todayDate - 6); j <= todayDate; j++) {
-        this.revDates.push(j);
-      }
+
+    // for (let j = (todayDate - 6); j <= todayDate; j++) {
+    //   this.revDates.push(j);
+    // }
 
       this.ListingResults = listings;
       console.log(this.ListingResults);
-      this.chartData = [{
-        name: "Sales ($)",
 
-        data: {
-          'Day 1': this.day1Rev,
-          'Day 2': this.day2Rev,
-          'Day 3': this.day3Rev,
-          'Day 4': this.day4Rev,
-          'Day 5': this.day5Rev,
-          'Day 6': this.day6Rev,
-          'Day 7': this.day7Rev,
-        },}]
-    
+      var days = this.labelArray(dateArray);
+      var dayRev = [this.day1Rev, this.day2Rev, this.day3Rev, this.day4Rev, this.day5Rev, this.day6Rev, this.day7Rev];
+      
+      console.log("TESTLINE2");
+      console.log(this.chartData);
+      
+
+      this.chartData = [
+        {
+          name: "Sales ($)",
+
+          data: {},
+        }
+      ]
+      for (let k = 0; k < days.length; k++) {
+        this.chartData[0]["data"][days[k]] = dayRev[k];
+      }
   },
+
   computed: {
     isSeller() {
       return this.$store.state.isSeller;
