@@ -1,7 +1,15 @@
 <template>
   <v-app>
-    <review-form :reviewRef="this.reviewRef" :orderRef="this.orderRef"/>
-    <screenshot-upload :orderRef="this.orderRef" :qrRoute="this.qrRef" />
+    <review-form
+      :reviewRef="this.reviewRef"
+      :orderRef="this.orderRef"
+      @reviewLeft="handleReviewLeft"
+    />
+    <screenshot-upload
+      :orderRef="this.orderRef"
+      :qrRoute="this.qrRef"
+      @changeProcessing="handlePaymentMade"
+    />
     <div id="sheet">
       <v-sheet rounded="sm" width="95vw" elevation="1" min-height="80vh">
         <div id="content">
@@ -98,66 +106,66 @@
           </v-row>
           <v-divider></v-divider>
           <v-row>
-          <v-col v-show="filteredOrders.length === 0">
-            <h2 class="font-weight-bold">No orders yet :(</h2>
-          </v-col>
-          <v-col
-            :cols="12"
-            v-for="(order, index) in filteredOrders"
-            :key="`Order-${index}`"
-          >
-            <v-row>
-              <v-col>{{ order.date.toDate().toLocaleDateString() }}</v-col>
-              <v-col
-                ><u
-                  ><strong>{{ order.bakery }}</strong></u
-                ></v-col
-              >
-              <v-col>
-                <v-row
-                  dense
-                  v-for="(each, index) in order.details"
-                  :key="index"
-                  no-gutters
+            <v-col v-show="filteredOrders.length === 0">
+              <h2 class="font-weight-bold">No orders yet :(</h2>
+            </v-col>
+            <v-col
+              :cols="12"
+              v-for="(order, index) in filteredOrders"
+              :key="`Order-${index}`"
+            >
+              <v-row>
+                <v-col>{{ order.date.toDate().toLocaleDateString() }}</v-col>
+                <v-col
+                  ><u
+                    ><strong>{{ order.bakery }}</strong></u
+                  ></v-col
                 >
-                  <v-col :cols="12">
-                    <u>{{ each.name }}</u>
-                  </v-col>
-                  <v-col class="caption" :cols="12">
-                    {{ each.quantityDesc }}
-                  </v-col>
-                  <v-col class="caption" :cols="12">
-                    Qty: {{ each.quantity }}
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-col>
-                <v-btn min-width="12vw" :color="btnColor(order.status)"
-                  >{{ order.status }}
-                </v-btn>
-                <v-btn
-                  class="mt-4"
-                  min-width="12vw"
-                  color="light-blue lighten-3"
-                  @click="showModal(order)"
-                  v-if="order.reviewLeft == false && order.status == 'Fulfilled'"
-                  >Leave a review!</v-btn
-                >
-                <v-btn
-                  class="mt-4"
-                  min-width="12vw"
-                  v-if="order.status == 'Payment Pending'"
-                  color="light-blue lighten-3"
-                  @click="showPayment(order)"
-                >
-                  Click to Pay!
-                </v-btn>
-              </v-col>
-              <v-col>{{ `$` + order.total }}</v-col>
-            </v-row>
-            <br />
-            <v-divider></v-divider>
-          </v-col>
+                <v-col>
+                  <v-row
+                    dense
+                    v-for="(each, index) in order.details"
+                    :key="index"
+                    no-gutters
+                  >
+                    <v-col :cols="12">
+                      <u>{{ each.name }}</u>
+                    </v-col>
+                    <v-col class="caption" :cols="12">
+                      {{ each.quantityDesc }}
+                    </v-col>
+                    <v-col class="caption" :cols="12">
+                      Qty: {{ each.quantity }}
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col>
+                  <v-btn min-width="12vw" :color="btnColor(order.status)"
+                    >{{ order.status }}
+                  </v-btn>
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    color="light-blue lighten-3"
+                    @click="showModal(order)"
+                    v-if="!order.reviewLeft && order.status == 'Fulfilled'"
+                    >Leave a review!</v-btn
+                  >
+                  <v-btn
+                    class="mt-4"
+                    min-width="12vw"
+                    v-if="order.status == 'Payment Pending'"
+                    color="light-blue lighten-3"
+                    @click="showPayment(order)"
+                  >
+                    Click to Pay!
+                  </v-btn>
+                </v-col>
+                <v-col>{{ `$` + order.total }}</v-col>
+              </v-row>
+              <br />
+              <v-divider></v-divider>
+            </v-col>
           </v-row>
         </div>
       </v-sheet>
@@ -240,6 +248,24 @@ export default {
         case "Cancelled":
           return "#ad1313";
       }
+    },
+    handleReviewLeft(value) {
+      this.Orders = this.Orders.map((x) => {
+        if (x.docID == value) {
+          return { ...x, reviewLeft: true };
+        } else {
+          return x;
+        }
+      });
+    },
+    handlePaymentMade(value) {
+      this.Orders = this.Orders.map((x) => {
+        if (x.docID == value) {
+          return { ...x, status: "Processing" };
+        } else {
+          return x;
+        }
+      });
     },
     togglePastOrder() {
       this.PastOrder = true;
@@ -353,7 +379,6 @@ export default {
   padding-top: 5vh;
 }
 #orderheaders {
-  
 }
 .col-info {
   padding: 0px;
