@@ -2,7 +2,7 @@
   <div v-if="seller" class="background">
     <v-app>
       <v-navigation-drawer app absolute color="#f5f5f5" height="100%">
-        <v-list  class="pt-0">
+        <v-list class="pt-0">
           <v-list-item
             v-for="[page, route] in pages"
             :key="page"
@@ -112,18 +112,7 @@ export default {
     email: "",
     contactNo: "",
     address: "",
-    // janRev: 0,
-    // febRev: 0,
-    // marRev: 0,
-    // aprRev: 0,
-    // mayRev: 0,
-    // junRev: 0,
-    // julRev: 0,
-    // augRev: 0,
-    // sepRev: 0,
-    // octRev: 0,
-    // novRev: 0,
-    // decRev: 0,
+
     day1Rev: 0,
     day2Rev: 0,
     day3Rev: 0,
@@ -136,21 +125,6 @@ export default {
     chartData: [
       {
         name: "Sales ($)",
-
-        // data: {
-        //   'Jan':0,
-        //   'Feb': 0,
-        //   'Mar':0,
-        //   'Apr': 0,
-        //   'May':0,
-        //   'Jun': 0,
-        //   'Jul':0,
-        //   'Aug': 0,
-        //   'Sep':0,
-        //   'Oct': 0,
-        //   'Nov':0,
-        //   'Dec': 0,
-        // },
         data: {},
       },
     ],
@@ -173,109 +147,73 @@ export default {
         .doc(user)
         .get()
         .then((doc) => {
-          this.numVisits = doc.data().viewCount;
+          this.numVisits = doc.data().viewCount ? doc.data().viewCount : 0;
         });
 
-      var today = new Date();
-      var todayDate = today.getDate();
+      //var today = new Date();
+      //var todayDate = today.getDate();
+      //var todayMonth = today.getMonth();
+
+      var dateArray = this.makeDateArray();
+      console.log("TESTLINE");
+      console.log(dateArray);
 
       for (let i = 0; i < orders.length; i++) {
         var ref2 = orders[i]; //ref2 is each order
 
         this.totalRev = this.totalRev + ref2.total;
-        if (ref2.date.toDate().getDate() == todayDate) {
-          this.day7Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 1)) {
-          this.day6Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 2)) {
-          this.day5Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 3)) {
-          this.day4Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 4)) {
-          this.day3Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 5)) {
-          this.day2Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 6)) {
-          this.day1Rev += ref2.total;
-        } 
-        //console.log(ref2.date.toDate().getMonth());
-        //  if (ref2.date.toDate().getMonth() == 0) {
-        //   this.janRev = this.janRev + ref2.total;
-        // }
-        //  if (ref2.date.toDate().getMonth() == 1) {
-        //   this.febRev = this.febRev + ref2.total;
-        // }
-        // if (ref2.date.toDate().getMonth() == 2) {
-        //   this.marRev = this.marRev + ref2.total;
-        // }
-        //  if (ref2.date.toDate().getMonth() == 3) {
-        //   this.aprRev = this.aprRev + ref2.total;
-        // }
-        // if (ref2.date.toDate().getMonth() == 4) {
-        //   this.mayRev = this.mayRev + ref2.total;
-        // }
-        //  if (ref2.date.toDate().getMonth() == 5) {
-        //   this.junRev = this.junRev + ref2.total;
-        // }
-        // if (ref2.date.toDate().getMonth() == 6) {
-        //   this.julRev = this.julRev + ref2.total;
-        // }
-        //  if (ref2.date.toDate().getMonth() == 7) {
-        //   this.augRev = this.augRev + ref2.total;
-        // }
-        // if (ref2.date.toDate().getMonth() == 8) {
-        //   this.sepRev = this.sepRev + ref2.total;
-        // }
-        //  if (ref2.date.toDate().getMonth() == 9) {
-        //   this.octRev = this.octRev + ref2.total;
-        // }
-        // if (ref2.date.toDate().getMonth() == 10) {
-        //   this.novRev = this.novRev + ref2.total;
-        // }
-        //  if (ref2.date.toDate().getMonth() == 11) {
-        //   this.decRev = this.decRev + ref2.total;
-        // }
+
+        if (this.compareDate(ref2.date.toDate(), dateArray[6])) {
+            this.day7Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[5])) {
+            this.day6Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[4])) {
+            this.day5Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[3])) {
+            this.day4Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[2])) {
+            this.day3Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[1])) {
+            this.day2Rev += ref2.total;
+          } else if (this.compareDate(ref2.date.toDate(), dateArray[0])) {
+            this.day1Rev += ref2.total;
+          }
       }
 
-
-
-      for (let j = (todayDate - 6); j <= todayDate; j++) {
-        this.revDates.push(j);
-      }
+      // for (let j = todayDate - 6; j <= todayDate; j++) {
+      //   this.revDates.push(j);
+      // }
 
       this.ListingResults = listings;
       console.log(this.ListingResults);
-      this.chartData = [{
-        name: "Sales ($)",
 
-        data: {
-          // 'Jan':this.janRev,
-          // 'Feb': this.febRev,
-          // 'Mar':this.marRev,
-          // 'Apr': this.aprRev,
-          // 'May':this.mayRev,
-          // 'Jun': this.junRev,
-          // 'Jul':this.julRev,
-          // 'Aug': this.augRev,
-          // 'Sep':this.sepRev,
-          // 'Oct': this.octRev,
-          // 'Nov':this.novRev,
-          // 'Dec': this.decRev,
-          'Day 1': this.day1Rev,
-          'Day 2': this.day2Rev,
-          'Day 3': this.day3Rev,
-          'Day 4': this.day4Rev,
-          'Day 5': this.day5Rev,
-          'Day 6': this.day6Rev,
-          'Day 7': this.day7Rev,
-        },}]
+      //var days = ["1", "2", "3", "4", "5", "6", "7"];
+      var days = this.labelArray(dateArray);
 
+      var dayRev = [this.day1Rev, this.day2Rev, this.day3Rev, this.day4Rev, this.day5Rev, this.day6Rev, this.day7Rev];
+      
+      
+      for (let k = 0; k < days.length; k++) {
+        this.chartData[0]["data"][days[k]] = dayRev[k];
+      }
+
+      // this.chartData = [
+      //   {
+      //     name: "Sales ($)",
+
+      //     data: {
+      //       "Day 1": this.day1Rev,
+      //       "Day 2": this.day2Rev,
+      //       "Day 3": this.day3Rev,
+      //       "Day 4": this.day4Rev,
+      //       "Day 5": this.day5Rev,
+      //       "Day 6": this.day6Rev,
+      //       "Day 7": this.day7Rev,
+      //     },
+      //   },
+      // ];
+
+      console.log(this.chartData[0]["data"]);
     }
     this.avgRating = Math.round(this.totalRating / this.numReviews);
   },
@@ -297,6 +235,7 @@ export default {
       });
       return sellerType;
     },
+
     async retrieveSellerListings(id) {
       const docRef = db.collection("listings").where("storeName", "==", id);
       var listings = [];
@@ -307,6 +246,7 @@ export default {
       });
       return listings;
     },
+
     async retrieveOrders(id) {
       const docRef = db.collection("orders").where("sellerID", "==", id);
       var orders = [];
@@ -317,6 +257,42 @@ export default {
       });
       return orders;
     },
+
+    makeDateArray() {
+      var dateArray = [];
+
+      for (let i = 0; i < 7; i++) {
+        var dateObject = new Date();
+        dateObject.setDate(dateObject.getDate() - i);
+        dateArray.unshift(dateObject); 
+      }
+      return dateArray
+    },
+
+    compareDate(orderTimestamp, chartTimestamp) {
+      var orderDay = orderTimestamp.getDate();
+      var orderMonth = orderTimestamp.getMonth();
+      var orderYear = orderTimestamp.getFullYear();
+      
+      var chartDay = chartTimestamp.getDate();
+      var chartMonth = chartTimestamp.getMonth();
+      var chartYear = chartTimestamp.getFullYear();
+
+      return ((orderDay == chartDay) && (orderMonth == chartMonth) && (orderYear == chartYear));
+
+    },
+
+    labelArray(dateArray) {
+      var result = []
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+      for (let i = 0; i < 7; i++) {
+        var day = String(dateArray[i].getDate());
+        var month = months[dateArray[i].getMonth()];
+        result.push(day + " " + month)
+      }
+
+      return result;
+    }
   },
   computed: {
     checkRoute() {
