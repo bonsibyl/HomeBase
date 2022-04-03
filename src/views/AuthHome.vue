@@ -150,8 +150,8 @@ export default {
       var ref = listings[i];
       var imageURL = await this.retrieveImage(ref.imageRef);
       listings[i]["imageURL"] = imageURL;
+      this.ListingResults.push(listings[i]);
     }
-    this.ListingResults = listings.slice(0, 12);
 
     const firebaseorders = await this.retrieveOrders();
     console.log(firebaseorders);
@@ -221,8 +221,6 @@ export default {
       this.revDates.push(j);
     }
 
-    this.ListingResults = listings.slice(0, 12);
-    console.log(this.ListingResults);
     this.chartData = [
       {
         name: "Sales ($)",
