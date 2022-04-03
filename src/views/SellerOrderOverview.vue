@@ -91,24 +91,22 @@ export default {
     async retrieveOrders() {
 
       const docRef = db.collection("orders");
+      var temporders = [];
       var orders = [];
 
       var dayStart = new Date();
       dayStart.setHours(0,0,0,0);
       var dayEnd = new Date();
       dayEnd.setHours(23, 59, 59, 999);
-      
-      
 
-      await docRef.where("date", ">=", dayStart).where("date", "<=", dayEnd).get().then((querySnapshot) => {
+      await docRef.where("sellerID", "==", this.$route.params.id).get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          orders.push({ ...doc.data(), docID: doc.id});
+          temporders.push({ ...doc.data(), docID: doc.id});
         });
       });
 
-      console.log("hello");
-      console.log(orders);
-
+      orders = temporders.filter(orderrecord => (orderrecord["date"].toDate() >= dayStart) && (orderrecord["date"].toDate() <= dayEnd))
+      
       return orders;
     }
 
@@ -123,23 +121,25 @@ export default {
 
     for (let i = 0; i < firebaseorders.length; i++) {
       //console.log(i);
-      console.log(firebaseorders[i]);
 
       if (firebaseorders[i]["sellerID"] != this.$route.params.id) {
         continue;
       }
 
-      var itemName = firebaseorders[i]["details"][0]["name"];
-      var itemQty = firebaseorders[i]["details"][0]["quantity"];
-      var itemPrice = firebaseorders[i]["details"][0]["fullRef"]["price"];
+      for (let j = 0; j < firebaseorders[i]["details"].length; j ++) {
 
-      if (!(itemName in itemDict)) {
-        itemDict[itemName] = {}
-        itemDict[itemName]["itemQty"] = itemQty;
-        itemDict[itemName]["itemPrice"] = itemPrice;
-        
-      } else {
-        itemDict[itemName]["itemQty"] = itemDict[itemName]["itemQty"] + itemQty;
+        var itemName = firebaseorders[i]["details"][j]["name"];
+        var itemQty = firebaseorders[i]["details"][j]["quantity"];
+        var itemPrice = firebaseorders[i]["details"][j]["fullRef"]["price"];
+
+        if (!(itemName in itemDict)) {
+          itemDict[itemName] = {}
+          itemDict[itemName]["itemQty"] = itemQty;
+          itemDict[itemName]["itemPrice"] = itemPrice;
+          
+        } else {
+          itemDict[itemName]["itemQty"] = itemDict[itemName]["itemQty"] + itemQty;
+        }
       }
     }
 

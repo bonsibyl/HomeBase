@@ -145,6 +145,8 @@ export default {
     ],
   }),
   async mounted() {
+    console.log("TESTLINE2");
+    console.log(this.$store.state.seller);
     const listings = await this.retrieveListings();
     for (let i = 0; i < Math.min(listings.length, 12); i++) {
       var ref = listings[i];
@@ -154,29 +156,28 @@ export default {
     }
 
     const firebaseorders = await this.retrieveOrders();
-    console.log(firebaseorders);
+    //console.log(firebaseorders);
 
     var itemDict = {};
 
     for (let i = 0; i < firebaseorders.length; i++) {
       //console.log(i);
       //console.log(firebaseorders[i]["details"][0]);
-      var itemName = firebaseorders[i]["details"][0]["name"];
-      var itemQty = firebaseorders[i]["details"][0]["quantity"];
-      var itemPrice = firebaseorders[i]["details"][0]["fullRef"]["price"];
+      for (let j = 0; j < firebaseorders[i]["details"].length; j++) {
+        var itemName = firebaseorders[i]["details"][j]["name"];
+        var itemQty = firebaseorders[i]["details"][j]["quantity"];
+        var itemPrice = firebaseorders[i]["details"][j]["fullRef"]["price"];
 
-      if (!(itemName in itemDict)) {
-        itemDict[itemName] = {};
-        itemDict[itemName]["itemQty"] = itemQty;
-        itemDict[itemName]["itemPrice"] = itemPrice;
-      } else {
-        itemDict[itemName]["itemQty"] = itemDict[itemName]["itemQty"] + itemQty;
+        if (!(itemName in itemDict)) {
+          itemDict[itemName] = {};
+          itemDict[itemName]["itemQty"] = itemQty;
+          itemDict[itemName]["itemPrice"] = itemPrice;
+        } else {
+          itemDict[itemName]["itemQty"] =
+            itemDict[itemName]["itemQty"] + itemQty;
+        }
       }
     }
-
-    console.log(itemDict);
-
-    console.log("hello");
 
     for (let key in itemDict) {
       var dict = {};
@@ -194,49 +195,64 @@ export default {
       this.$store.state.profileId
     );
 
-    var today = new Date();
-    var todayDate = today.getDate();
+    //var today = new Date();
+    //var todayDate = today.getDate();
+
+    var dateArray = this.makeDateArray();
 
     for (let i = 0; i < orders.length; i++) {
       var ref2 = orders[i]; //ref2 is each order
 
       this.totalRev = this.totalRev + ref2.total;
-      if (ref2.date.toDate().getDate() == todayDate) {
+
+      if (this.compareDate(ref2.date.toDate(), dateArray[6])) {
         this.day7Rev += ref2.total;
-      } else if (ref2.date.toDate().getDate() == todayDate - 1) {
+      } else if (this.compareDate(ref2.date.toDate(), dateArray[5])) {
         this.day6Rev += ref2.total;
-      } else if (ref2.date.toDate().getDate() == todayDate - 2) {
+      } else if (this.compareDate(ref2.date.toDate(), dateArray[4])) {
         this.day5Rev += ref2.total;
-      } else if (ref2.date.toDate().getDate() == todayDate - 3) {
+      } else if (this.compareDate(ref2.date.toDate(), dateArray[3])) {
         this.day4Rev += ref2.total;
-      } else if (ref2.date.toDate().getDate() == todayDate - 4) {
+      } else if (this.compareDate(ref2.date.toDate(), dateArray[2])) {
         this.day3Rev += ref2.total;
-      } else if (ref2.date.toDate().getDate() == todayDate - 5) {
+      } else if (this.compareDate(ref2.date.toDate(), dateArray[1])) {
         this.day2Rev += ref2.total;
-      } else if (ref2.date.toDate().getDate() == todayDate - 6) {
+      } else if (this.compareDate(ref2.date.toDate(), dateArray[0])) {
         this.day1Rev += ref2.total;
       }
     }
-    for (let j = todayDate - 6; j <= todayDate; j++) {
-      this.revDates.push(j);
-    }
+
+    // for (let j = todayDate - 6; j <= todayDate; j++) {
+    //   this.revDates.push(j);
+    // }
+
+    // for (let j = (todayDate - 6); j <= todayDate; j++) {
+    //   this.revDates.push(j);
+    // }
+
+    var days = this.labelArray(dateArray);
+    var dayRev = [
+      this.day1Rev,
+      this.day2Rev,
+      this.day3Rev,
+      this.day4Rev,
+      this.day5Rev,
+      this.day6Rev,
+      this.day7Rev,
+    ];
 
     this.chartData = [
       {
         name: "Sales ($)",
 
-        data: {
-          "Day 1": this.day1Rev,
-          "Day 2": this.day2Rev,
-          "Day 3": this.day3Rev,
-          "Day 4": this.day4Rev,
-          "Day 5": this.day5Rev,
-          "Day 6": this.day6Rev,
-          "Day 7": this.day7Rev,
-        },
+        data: {},
       },
     ];
+    for (let k = 0; k < days.length; k++) {
+      this.chartData[0]["data"][days[k]] = dayRev[k];
+    }
   },
+
   computed: {
     isSeller() {
       return this.$store.state.isSeller;
@@ -280,6 +296,7 @@ export default {
     },
     async retrieveOrders() {
       const docRef = db.collection("orders");
+      var temporders = [];
       var orders = [];
 
       var dayStart = new Date();
@@ -288,16 +305,21 @@ export default {
       dayEnd.setHours(23, 59, 59, 999);
 
       await docRef
-        .where("date", ">=", dayStart)
-        .where("date", "<=", dayEnd)
+        .where("sellerID", "==", this.$store.state.profileId)
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            orders.push({ ...doc.data(), docID: doc.id });
+            temporders.push({ ...doc.data(), docID: doc.id });
           });
-        });
 
-      return orders;
+          orders = temporders.filter(
+            (orderrecord) =>
+              orderrecord["date"].toDate() >= dayStart &&
+              orderrecord["date"].toDate() <= dayEnd
+          );
+
+          return orders;
+        });
     },
 
     async retrieveOrdersForAnalytics(id) {
@@ -309,6 +331,57 @@ export default {
         });
       });
       return orders;
+    },
+    makeDateArray() {
+      var dateArray = [];
+
+      for (let i = 0; i < 7; i++) {
+        var dateObject = new Date();
+        dateObject.setDate(dateObject.getDate() - i);
+        dateArray.unshift(dateObject);
+      }
+      return dateArray;
+    },
+
+    compareDate(orderTimestamp, chartTimestamp) {
+      var orderDay = orderTimestamp.getDate();
+      var orderMonth = orderTimestamp.getMonth();
+      var orderYear = orderTimestamp.getFullYear();
+
+      var chartDay = chartTimestamp.getDate();
+      var chartMonth = chartTimestamp.getMonth();
+      var chartYear = chartTimestamp.getFullYear();
+
+      return (
+        orderDay == chartDay &&
+        orderMonth == chartMonth &&
+        orderYear == chartYear
+      );
+    },
+
+    labelArray(dateArray) {
+      var result = [];
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      for (let i = 0; i < 7; i++) {
+        var day = String(dateArray[i].getDate());
+        var month = months[dateArray[i].getMonth()];
+        result.push(day + " " + month);
+      }
+
+      return result;
     },
   },
 };

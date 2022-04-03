@@ -117,6 +117,7 @@ export default {
   },
   props: {
     reviewRef: Object,
+    orderRef: Object,
   },
   created() {
     this.modalWidth =
