@@ -166,9 +166,6 @@
                       <v-card-subtitle class="pt-0">{{
                         "$" + result.price
                       }}</v-card-subtitle>
-                      <v-card-subtitle class="pt-0">{{
-                        result.tags
-                      }}</v-card-subtitle>
                     </v-img>
                     <v-fade-transition>
                       <v-overlay v-if="hover" absolute color="#fff">
