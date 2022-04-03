@@ -246,7 +246,7 @@ export default {
         case "Processing":
           return "#ff5500";
         case "Cancelled":
-          return "#ad1313";
+          return "#FF5A5F";
       }
     },
     handleReviewLeft(value) {
