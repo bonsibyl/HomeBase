@@ -9,8 +9,8 @@
     <div class="box">
       <div class="partition" id="partition-register">
         <div class="partition-title">
-          Hope you enjoyed your bakes from nuttybutterybakery! Do leave a review
-          to tell us how we fared.
+          Hope you enjoyed your bakes! Do leave a review to tell us how we
+          fared.
         </div>
         <div class="partition-form">
           <v-form ref="form" lazy-validation>
