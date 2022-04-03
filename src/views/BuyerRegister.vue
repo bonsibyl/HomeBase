@@ -61,14 +61,6 @@
           />
           <password class="icon" />
         </div>
-
-        <h4 class="profile">Profile Picture:</h4>
-        <v-file-input
-          class="fileInput"
-          v-model="profileModel"
-          accept="image/png, image/jpeg, image/bmp"
-        ></v-file-input>
-
         <div v-show="error" class="error">{{ this.errorMsg }}</div>
         <!-- only show if error == true -->
       </div>
@@ -118,7 +110,6 @@ export default {
       password: "",
       error: null,
       errorMsg: "",
-      profileModel: [],
     };
   },
   methods: {
@@ -134,7 +125,6 @@ export default {
       ) {
         this.error = false;
         this.errorMsg = "";
-
         const firebaseAuth = await firebase.auth();
         const createUser = await firebaseAuth.createUserWithEmailAndPassword(
           this.email,
@@ -155,31 +145,6 @@ export default {
           email: this.email,
           seller: false,
         });
-
-        
-      var storageRef = firebase.storage().ref();
-      var profileURL = "/user/profile/" + firebase.auth().currentUser.uid;
-      //check if image already exists
-      console.log(this.check);
-      if (
-        this.check &&
-        (Array.isArray(this.profileModel) || Array.isArray(this.qrModel))
-      ) {
-        this.error = true;
-        this.errorMsg = "Please fill out the required fields!";
-        return;
-      }
-      if (this.shopDesc !== "") {
-        this.error = false;
-        this.errorMsg = "";
-        //image handling
-        console.log(this.profileModel);
-        if (!Array.isArray(this.profileModel)) {
-          await storageRef.child(profileURL).put(this.profileModel);
-        }
-      }
-
-
         console.log("success")
         this.$router.push({ name: "AuthHome" }); //push user to homepage aft auth
         return;
@@ -203,9 +168,5 @@ export default {
   button {
     width: 300px;
   }
-}
-
-.profile {
-  margin-top: 15px;
 }
 </style>

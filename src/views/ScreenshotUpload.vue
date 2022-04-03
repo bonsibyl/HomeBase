@@ -1,54 +1,40 @@
 <template>
-  <v-container>
-    <modal
-      name="screenshot"
-      transition="pop-out"
-      :width="modalWidth"
-      :focus-trap="true"
-      :height="550"
-    >
-      <div class="box">
-        <div class="partition" id="partition-register">
-          <div class="partition-title">
-            <img class="paylahQR" :src="qrPic" alt="" />
-            <br />
-            We have received your order with thanks! <br /><br />
-            To proceed, please upload a screenshot of your PayLah! payment to
-            confirm your order. <br />
-          </div>
-          <div class="form">
-            <v-file-input
-              class="fileInput"
-              label="Upload Screenshot"
-              filled
-              full-width
-              prepend-icon="mdi-camera"
-              accept="image/png, image/jpeg, image/bmp"
-              v-model="uploaded"
-              :rules="imageRules"
-            ></v-file-input>
-          </div>
-          <div class="button-div">
-            <button id="submit-btn" @click="submit">Submit</button>
-            <button id="cancel-btn" @click.prevent="cancel">Go Back</button>
-            <div style="margin-bottom: 20px"></div>
-          </div>
+  <modal
+    name="screenshot"
+    transition="pop-out"
+    :width="modalWidth"
+    :focus-trap="true"
+    :height="550"
+  >
+    <div class="box">
+      <div class="partition" id="partition-register">
+        <div class="partition-title">
+          <img class="paylahQR" :src="qrPic" alt="" />
+          <br />
+          We have received your order with thanks! <br /><br />
+          To proceed, please upload a screenshot of your PayLah! payment to
+          confirm your order. <br />
+        </div>
+        <div class="form">
+          <v-file-input
+            class="fileInput"
+            label="Upload Screenshot"
+            filled
+            full-width
+            prepend-icon="mdi-camera"
+            accept="image/png, image/jpeg, image/bmp"
+            v-model="uploaded"
+            :rules="imageRules"
+          ></v-file-input>
+        </div>
+        <div class="button-div">
+          <button id="submit-btn" @click="submit">Submit</button>
+          <button id="cancel-btn" @click.prevent="cancel">Go Back</button>
+          <div style="margin-bottom: 20px"></div>
         </div>
       </div>
-    </modal>
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-      transition="scale-transition"
-    >
-      {{ snackbar.msg }}
-      <template v-slot:action="{ attrs }">
-        <v-btn color="white" text v-bind="attrs" @click="snackbar.show = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-  </v-container>
+    </div>
+  </modal>
 </template>
 <script>
 import firebase from "firebase/app";
@@ -68,11 +54,6 @@ export default {
         (value) =>
           value.size < 2000000 || "Image size should be less than 2 MB!",
       ],
-      snackbar: {
-        show: false,
-        msg: null,
-        color: null,
-      },
     };
   },
   // props: {
@@ -91,12 +72,7 @@ export default {
       var storageRef = firebase.storage().ref();
       console.log(this.OrderInfo[0]);
       if (this.uploaded.size == null) {
-          this.snackbar = {
-            color: "error",
-            show: true,
-            msg: "You have not uploaded a screenshot!",
-          };
-          return;
+        alert("Please upload a file");
       }
       if (this.uploaded.size > 0) {
         var imageUpload = this.uploaded;
@@ -143,11 +119,7 @@ export default {
           }
         );
 
-          this.snackbar = {
-            color: "success",
-            show: true,
-            msg: "You have successfully paid for your order!",
-          };
+        alert("You have successfully submitted your payment screenshot");
         this.$modal.hide("screenshot");
         //location.reload();
       }

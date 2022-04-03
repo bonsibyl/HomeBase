@@ -11,17 +11,6 @@
           <v-row dense>
             <v-col>
               <v-btn
-                v-if="this.$store.state.seller"
-                icon
-                color="black"
-                :to="createListing"
-                exact-active-class="activebtn"
-              >
-                <v-icon>mdi-application-edit-outline</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col>
-              <v-btn
                 icon
                 color="black"
                 to="/search"
@@ -262,9 +251,6 @@ export default {
   computed: {
     checkCartUpdate() {
       return this.$store.state.checkCartUpdate;
-    },
-    createListing() {
-      return "/CreateListing/" + this.$store.state.profileId;
     },
   },
   watch: {

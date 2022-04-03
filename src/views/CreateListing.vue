@@ -271,6 +271,7 @@ export default {
             dateCreated: new Date(),
             ReviewScoreTotal: 0,
             ReviewScoreCount: 0,
+            viewCount: 0,
             imageRef:
               this.uploaded.size > 0
                 ? "listings/" + this.productName + this.$route.params.id
