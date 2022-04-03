@@ -1,7 +1,7 @@
 <template>
   <div class="landing-container">
     <div v-if="$store.state.seller">
-        <div class="landing-rectangle">
+      <div class="landing-rectangle">
         <v-container>
           <strong class="supporting-header">Welcome back to Homebase!</strong>
 
@@ -10,8 +10,10 @@
             Take a look at your analytics dashboard.
           </p>
           <router-link
-            :to="{ name: 'Dashboard', params: { id: this.$store.state.profileId }}"
-            
+            :to="{
+              name: 'Dashboard',
+              params: { id: this.$store.state.profileId },
+            }"
             tag="button"
             class="landing-register-button"
           >
@@ -22,24 +24,22 @@
 
       <div class="landing-overview">
         <h1 class="overview-title">Today's Orders</h1>
-        <v-data-table :headers="headers" :items="fireorders">
-        </v-data-table>
-        <br>
+        <v-data-table :headers="headers" :items="fireorders"> </v-data-table>
+        <br />
         <v-card id="graphcard" color="#ffff">
-              <v-card-title id="graphcardtitle" class="text-h5 justify-center">
-                Weekly Sales Trends
-              </v-card-title>
-              <v-card-text>
-                <line-chart
-                  :data="chartData"
-                  :colors="['green']"
-                  :legend="false"
-                ></line-chart>
-                <p id="graphlabel">Day</p>
-              </v-card-text>
-            </v-card>
+          <v-card-title id="graphcardtitle" class="text-h5 justify-center">
+            Weekly Sales Trends
+          </v-card-title>
+          <v-card-text>
+            <line-chart
+              :data="chartData"
+              :colors="['green']"
+              :legend="false"
+            ></line-chart>
+            <p id="graphlabel">Day</p>
+          </v-card-text>
+        </v-card>
       </div>
-
     </div>
 
     <div v-else>
@@ -85,9 +85,9 @@
                       <v-card-title class="font-weight-medium pt-0">{{
                         result.name
                       }}</v-card-title>
-                      <v-card-subtitle class="text-left py-0">By {{
-                        result.shopName
-                      }}</v-card-subtitle>
+                      <v-card-subtitle class="text-left py-0"
+                        >By {{ result.shopName }}</v-card-subtitle
+                      >
                       <v-card-subtitle class="text-left pt-0"
                         >{{ result.qtyDesc }}
                         <br />
@@ -146,17 +146,17 @@ export default {
   }),
   async mounted() {
     const listings = await this.retrieveListings();
-    for (let i = 0; i < listings.length; i++) {
+    for (let i = 0; i < Math.min(listings.length, 12); i++) {
       var ref = listings[i];
       var imageURL = await this.retrieveImage(ref.imageRef);
       listings[i]["imageURL"] = imageURL;
     }
-    this.ListingResults = listings;
+    this.ListingResults = listings.slice(0, 12);
 
     const firebaseorders = await this.retrieveOrders();
     console.log(firebaseorders);
 
-    var itemDict = {}
+    var itemDict = {};
 
     for (let i = 0; i < firebaseorders.length; i++) {
       //console.log(i);
@@ -166,10 +166,9 @@ export default {
       var itemPrice = firebaseorders[i]["details"][0]["fullRef"]["price"];
 
       if (!(itemName in itemDict)) {
-        itemDict[itemName] = {}
+        itemDict[itemName] = {};
         itemDict[itemName]["itemQty"] = itemQty;
         itemDict[itemName]["itemPrice"] = itemPrice;
-        
       } else {
         itemDict[itemName]["itemQty"] = itemDict[itemName]["itemQty"] + itemQty;
       }
@@ -180,67 +179,65 @@ export default {
     console.log("hello");
 
     for (let key in itemDict) {
-      var dict = {}
+      var dict = {};
       dict["item"] = key;
       dict["unitno"] = itemDict[key]["itemQty"];
       dict["perunitprice"] = "$" + itemDict[key]["itemPrice"];
       //dict["earnings"] = parseFloat(itemDict[key]["itemQty"]) * parseFloat(itemDict[key]["itemPrice"]);
-      dict["earnings"] = "$" + (itemDict[key]["itemQty"] * itemDict[key]["itemPrice"]);
-    
+      dict["earnings"] =
+        "$" + itemDict[key]["itemQty"] * itemDict[key]["itemPrice"];
+
       this.fireorders.push(dict);
-    
     }
 
-    const orders = await this.retrieveOrdersForAnalytics(this.$store.state.profileId);
+    const orders = await this.retrieveOrdersForAnalytics(
+      this.$store.state.profileId
+    );
 
     var today = new Date();
     var todayDate = today.getDate();
 
-      for (let i = 0; i < orders.length; i++) {
-        var ref2 = orders[i]; //ref2 is each order
+    for (let i = 0; i < orders.length; i++) {
+      var ref2 = orders[i]; //ref2 is each order
 
-        this.totalRev = this.totalRev + ref2.total;
-        if (ref2.date.toDate().getDate() == todayDate) {
-          this.day7Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 1)) {
-          this.day6Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 2)) {
-          this.day5Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 3)) {
-          this.day4Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 4)) {
-          this.day3Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 5)) {
-          this.day2Rev += ref2.total;
-        }
-        else if (ref2.date.toDate().getDate() == (todayDate - 6)) {
-          this.day1Rev += ref2.total;
-        }
+      this.totalRev = this.totalRev + ref2.total;
+      if (ref2.date.toDate().getDate() == todayDate) {
+        this.day7Rev += ref2.total;
+      } else if (ref2.date.toDate().getDate() == todayDate - 1) {
+        this.day6Rev += ref2.total;
+      } else if (ref2.date.toDate().getDate() == todayDate - 2) {
+        this.day5Rev += ref2.total;
+      } else if (ref2.date.toDate().getDate() == todayDate - 3) {
+        this.day4Rev += ref2.total;
+      } else if (ref2.date.toDate().getDate() == todayDate - 4) {
+        this.day3Rev += ref2.total;
+      } else if (ref2.date.toDate().getDate() == todayDate - 5) {
+        this.day2Rev += ref2.total;
+      } else if (ref2.date.toDate().getDate() == todayDate - 6) {
+        this.day1Rev += ref2.total;
       }
-      for (let j = (todayDate - 6); j <= todayDate; j++) {
-        this.revDates.push(j);
-      }
+    }
+    for (let j = todayDate - 6; j <= todayDate; j++) {
+      this.revDates.push(j);
+    }
 
-      this.ListingResults = listings;
-      console.log(this.ListingResults);
-      this.chartData = [{
+    this.ListingResults = listings.slice(0, 12);
+    console.log(this.ListingResults);
+    this.chartData = [
+      {
         name: "Sales ($)",
 
         data: {
-          'Day 1': this.day1Rev,
-          'Day 2': this.day2Rev,
-          'Day 3': this.day3Rev,
-          'Day 4': this.day4Rev,
-          'Day 5': this.day5Rev,
-          'Day 6': this.day6Rev,
-          'Day 7': this.day7Rev,
-        },}]
-    
+          "Day 1": this.day1Rev,
+          "Day 2": this.day2Rev,
+          "Day 3": this.day3Rev,
+          "Day 4": this.day4Rev,
+          "Day 5": this.day5Rev,
+          "Day 6": this.day6Rev,
+          "Day 7": this.day7Rev,
+        },
+      },
+    ];
   },
   computed: {
     isSeller() {
@@ -288,15 +285,19 @@ export default {
       var orders = [];
 
       var dayStart = new Date();
-      dayStart.setHours(0,0,0,0);
+      dayStart.setHours(0, 0, 0, 0);
       var dayEnd = new Date();
       dayEnd.setHours(23, 59, 59, 999);
 
-      await docRef.where("date", ">=", dayStart).where("date", "<=", dayEnd).get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          orders.push({ ...doc.data(), docID: doc.id});
+      await docRef
+        .where("date", ">=", dayStart)
+        .where("date", "<=", dayEnd)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            orders.push({ ...doc.data(), docID: doc.id });
+          });
         });
-      });
 
       return orders;
     },
@@ -348,11 +349,10 @@ export default {
     border-radius: 20px;
     padding: 2% 10% 4% 10%;
     .overview-title {
-      text-align:left;
+      text-align: left;
       margin-bottom: 10px;
     }
   }
-
 
   .landing-register-button {
     border-radius: 0px;

@@ -26,50 +26,51 @@
       <hr />
       <br />
 
-        <v-col v-show="ListingResults.length === 0">
-          <h2 class="font-weight-bold">No results found :(</h2>
-        </v-col>
-        <v-card v-for="result in ListingResults" :key="result.name" cols="4">
-          <div class="listingInfo">
-            <v-img class="listingImg" :src="result.imageURL"></v-img>
-            <h3 class="listingDesc" v-if="result.ReviewScoreCount > 0">
-            {{result.name}}<br/>
-            ${{result.price}}, {{result.qtyDesc}}<br/>
-            Total Reviews: {{result.ReviewScoreCount}}<br/>
-            Average Rating: 
-            {{(result.ReviewScoreTotal / result.ReviewScoreCount).toFixed(2)}}
+      <v-col v-show="ListingResults.length === 0">
+        <h2 class="font-weight-bold">No results found :(</h2>
+      </v-col>
+      <v-card v-for="result in ListingResults" :key="result.name" cols="4">
+        <div class="listingInfo">
+          <v-img class="listingImg" :src="result.imageURL"></v-img>
+          <h3 class="listingDesc" v-if="result.ReviewScoreCount > 0">
+            {{ result.name }}<br />
+            ${{ result.price }}, {{ result.qtyDesc }}<br />
+            Total Reviews: {{ result.ReviewScoreCount }}<br />
+            Average Rating:
+            {{ (result.ReviewScoreTotal / result.ReviewScoreCount).toFixed(2) }}
             <v-icon color="yellow darken-2">mdi-star</v-icon>
-            </h3>
+          </h3>
 
-            <h3 class="listingDesc" v-else>
-            {{result.name}}<br/>
-            ${{result.price}}, {{result.qtyDesc}}<br/>
-            Total Reviews: {{result.ReviewScoreCount}}<br/>
+          <h3 class="listingDesc" v-else>
+            {{ result.name }}<br />
+            ${{ result.price }}, {{ result.qtyDesc }}<br />
+            Total Reviews: {{ result.ReviewScoreCount }}<br />
             Average Rating: -
-            </h3>
-          </div>
+          </h3>
+        </div>
 
-            <v-col
-              :cols="12"
-              v-for="review in result.Reviews"
-              :key="review.name"
-              class="review-spacing"
-            >
-              <v-row class="grey lighten-3 rounded-lg">
-                <v-col :cols="0" class="mr-0 reduce-space-circle">
-                  <div class="circle">{{ review.name.toUpperCase() }}</div>
-                </v-col>
-                <h4 :cols="0" class="pt-md-6 ml-0">
-                  <RatingStars :rating="review.rating" :isReview="true" />
-                </h4>
-                <v-col :cols="11">
-                  <h3 class="title">{{ review.title }}</h3>
-                  </v-col>
-                <v-col :cols="12"><p class="desc">{{ review.description }}</p></v-col>
-              </v-row>
+        <v-col
+          :cols="12"
+          v-for="review in result.Reviews"
+          :key="review.name"
+          class="review-spacing"
+        >
+          <v-row class="grey lighten-3 rounded-lg">
+            <v-col :cols="0" class="mr-0 reduce-space-circle">
+              <div class="circle">{{ review.name.toUpperCase() }}</div>
             </v-col>
-
-        </v-card>
+            <h4 :cols="0" class="pt-md-6 ml-0">
+              <RatingStars :rating="review.rating" :isReview="true" />
+            </h4>
+            <v-col :cols="11">
+              <h3 class="title">{{ review.title }}</h3>
+            </v-col>
+            <v-col :cols="12"
+              ><p class="desc">{{ review.description }}</p></v-col
+            >
+          </v-row>
+        </v-col>
+      </v-card>
     </v-container>
   </v-app>
 </template>

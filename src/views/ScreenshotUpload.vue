@@ -110,6 +110,7 @@ export default {
             // Upload completed successfully, now we can get the download URL
             upload.snapshot.ref.getDownloadURL().then((downloadURL) => {
               console.log("File available at", downloadURL);
+              this.$emit("changeProcessing", this.orderRef.docID);
               db.collection("orders").doc(this.orderRef.docID).update({
                 status: "Processing",
                 paymentImgRef: downloadURL,

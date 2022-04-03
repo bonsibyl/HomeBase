@@ -85,7 +85,7 @@
                             ></v-list-item-title>
                             <v-list-item-title
                               v-else
-                              v-text="`>$`+40"
+                              v-text="`>$` + 40"
                             ></v-list-item-title>
                           </v-list-item-content>
                         </template>
@@ -134,8 +134,8 @@
               <h2 class="font-weight-bold">No results found :(</h2>
             </v-col>
             <v-col
-              v-for="result in filteredListings"
-              :key="result.name"
+              v-for="(result, index) in filteredListings"
+              :key="index"
               cols="4"
             >
               <v-hover>
@@ -224,6 +224,7 @@ export default {
     Filters: ["Vegan", "Halal", "Gluten-Free"],
     ActiveFilters: [],
     searchQuery: null,
+    unusedListings: [],
   }),
 
   async mounted() {
@@ -232,8 +233,8 @@ export default {
       var ref = listings[i];
       var imageURL = await this.retrieveImage(ref.imageRef);
       listings[i]["imageURL"] = imageURL;
+      this.ListingResults.push(listings[i]);
     }
-    this.ListingResults = listings;
   },
   computed: {
     filteredListings() {
@@ -307,11 +308,10 @@ export default {
       });
     },
     filterByTags(results) {
-
       let filters = this.ActiveFilters;
       function checkFilters(listing) {
         if (listing.tags === null) {
-          console.log(listing.name)
+          console.log(listing.name);
           return false;
         } else if (filters.every((x) => listing.tags.indexOf(x) > -1)) {
           return true;
@@ -319,7 +319,6 @@ export default {
       }
       return results.filter(checkFilters);
     },
-
 
     filterByPrice(results) {
       let ranges = this.ActiveRanges;
@@ -350,9 +349,9 @@ export default {
         case "Price Desc":
           return results.sort((a, b) => b.price - a.price);
       }
-    }
     },
-  }
+  },
+};
 </script>
 
 <style scoped>

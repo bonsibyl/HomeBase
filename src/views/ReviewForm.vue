@@ -132,7 +132,13 @@ export default {
         return;
       }
       const user = firebase.auth().currentUser.email;
-      console.log(this.OrderInfo.details);
+      db.collection("orders")
+        .doc(this.reviewRef.docID)
+        .update({ reviewLeft: true })
+        .then(() => {
+          this.$emit("reviewLeft", this.reviewRef.docID);
+        });
+
       var ref = db
         .collection("listings")
         .where("storeName", "==", this.OrderInfo[0].sellerID);
