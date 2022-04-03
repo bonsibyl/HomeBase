@@ -145,7 +145,7 @@ export default {
     ],
   }),
   async mounted() {
-    console.log("TESTLINE1")
+    console.log("TESTLINE2")
     console.log(this.$store.state.seller);
     const listings = await this.retrieveListings();
     for (let i = 0; i < listings.length; i++) {
