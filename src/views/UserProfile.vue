@@ -378,8 +378,7 @@ export default {
 #searchrow {
   padding-top: 5vh;
 }
-#orderheaders {
-}
+
 .col-info {
   padding: 0px;
   margin-top: 3px;

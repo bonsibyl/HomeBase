@@ -1,94 +1,94 @@
 <template>
-  <modal
-    name="review"
-    transition="pop-out"
-    :width="modalWidth"
-    :focus-trap="true"
-    :height="550"
-  >
-    <div class="box">
-      <div class="partition" id="partition-register">
-        <div class="partition-title">
-          Hope you enjoyed your bakes from nuttybutterybakery! Do leave a review
-          to tell us how we fared.
-        </div>
-        <div class="partition-form">
-          <v-form ref="form" lazy-validation>
-            <v-col
-              class="pl-2"
-              :cols="12"
-              v-for="(order, index) in OrderInfo"
-              :key="index"
-            >
-              <v-row dense v-for="(each, index) in order.details" :key="index">
-                <v-col :cols="1">
-                  <v-card height="60" width="60" class="order-img">
-                    <v-img height="100%" :src="each.fullRef.imageURL"></v-img>
-                  </v-card>
-                </v-col>
-                <v-col :cols="3" class="caption">
-                  {{ each.name }}
-                  <br />
-                  {{ each.quantityDesc }}
-                  <br />
-                  Qty: {{ each.quantity }}
-                </v-col>
-                <v-col :cols="8">
-                  <v-container></v-container>
-                  <star-rating :star-size="20" v-model="ratingStar[index]" />
-                </v-col>
-                <v-col :cols="12">
-                  <v-text-field
-                    id="n-title"
-                    type="text"
-                    placeholder="Summary of Your Review"
-                    required
-                    :rules="titleRules"
-                    counter="30"
-                    v-model="reviewDetails[index * 2]"
-                  />
-                </v-col>
-                <v-col :cols="12">
-                  <v-textarea
-                    id="n-review"
-                    type="text"
-                    placeholder="Write a review"
-                    required
-                    :rules="contentRules"
-                    counter="250"
-                    v-model="reviewDetails[index * 2 + 1]"
-                  />
-                </v-col>
-                <v-container></v-container>
-              </v-row>
-            </v-col>
-            <div class="button-set">
-              <v-btn id="submit-btn" @click="submit"> Submit </v-btn>
-              <v-btn id="cancel-btn" @click="cancel">Cancel</v-btn>
-              <div style="margin-bottom: 20px"></div>
-            </div>
-            <v-snackbar
-              v-model="notRatedAlert"
-              centered
-              :timeout="2000"
-              color="red"
-              >Please provide a rating to all items!
-              <template v-slot:action="{ attrs }">
-                <v-btn
-                  color="white"
-                  text
-                  v-bind="attrs"
-                  @click="snackbar.show = false"
+  <v-container>
+    <modal
+      name="review"
+      transition="pop-out"
+      :width="modalWidth"
+      :focus-trap="true"
+      :height="550"
+    >
+      <div class="box">
+        <div class="partition" id="partition-register">
+          <div class="partition-title">
+            Hope you enjoyed your bakes from nuttybutterybakery! Do leave a
+            review to tell us how we fared.
+          </div>
+          <div class="partition-form">
+            <v-form ref="form" lazy-validation>
+              <v-col
+                class="pl-2"
+                :cols="12"
+                v-for="(order, index) in OrderInfo"
+                :key="index"
+              >
+                <v-row
+                  dense
+                  v-for="(each, index) in order.details"
+                  :key="index"
                 >
-                  Close
-                </v-btn>
-              </template>
-            </v-snackbar>
-          </v-form>
+                  <v-col :cols="1">
+                    <v-card height="60" width="60" class="order-img">
+                      <v-img height="100%" :src="each.fullRef.imageURL"></v-img>
+                    </v-card>
+                  </v-col>
+                  <v-col :cols="3" class="caption">
+                    {{ each.name }}
+                    <br />
+                    {{ each.quantityDesc }}
+                    <br />
+                    Qty: {{ each.quantity }}
+                  </v-col>
+                  <v-col :cols="8">
+                    <v-container></v-container>
+                    <star-rating :star-size="20" v-model="ratingStar[index]" />
+                  </v-col>
+                  <v-col :cols="12">
+                    <v-text-field
+                      id="n-title"
+                      type="text"
+                      placeholder="Summary of Your Review"
+                      required
+                      :rules="titleRules"
+                      counter="30"
+                      v-model="reviewDetails[index * 2]"
+                    />
+                  </v-col>
+                  <v-col :cols="12">
+                    <v-textarea
+                      id="n-review"
+                      type="text"
+                      placeholder="Write a review"
+                      required
+                      :rules="contentRules"
+                      counter="250"
+                      v-model="reviewDetails[index * 2 + 1]"
+                    />
+                  </v-col>
+                  <v-container></v-container>
+                </v-row>
+              </v-col>
+              <div class="button-set">
+                <v-btn id="submit-btn" @click="submit"> Submit </v-btn>
+                <v-btn id="cancel-btn" @click="cancel">Cancel</v-btn>
+                <div style="margin-bottom: 20px"></div>
+              </div>
+            </v-form>
+          </div>
         </div>
       </div>
-    </div>
-  </modal>
+    </modal>
+    <v-snackbar
+      v-model="snackbar.show"
+      :timeout="2000"
+      :color="snackbar.color"
+      >{{ snackbar.msg }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" text v-bind="attrs" @click="snackbar.show = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </v-container>
 </template>
 <script>
 const MODAL_WIDTH = 656;
@@ -112,7 +112,11 @@ export default {
       ],
       ratingStar: [],
       reviewDetails: [],
-      notRatedAlert: false,
+      snackbar: {
+        show: false,
+        msg: null,
+        color: null,
+      },
     };
   },
   props: {
@@ -128,7 +132,11 @@ export default {
         return;
       }
       if (this.ratingStar.length < this.OrderInfo[0].details.length) {
-        this.notRatedAlert = true;
+        this.snackbar = {
+          color: "error",
+          show: true,
+          msg: "Please provide a rating to all items!",
+        };
         return;
       }
       const user = firebase.auth().currentUser.email;
@@ -177,7 +185,11 @@ export default {
             });
           });
       }
-      alert("Submit Review");
+      this.snackbar = {
+        color: "success",
+        show: true,
+        msg: "You have successfully submitted a review!",
+      };
       this.$modal.hide("review");
     },
     cancel() {
