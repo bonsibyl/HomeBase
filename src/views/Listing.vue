@@ -217,7 +217,8 @@ export default {
         .doc(this.$route.params.user)
         .update({ viewCount: firebase.firestore.FieldValue.increment(1) });
     }
-    db.collection("listings")
+    await db
+      .collection("listings")
       .doc(this.$route.params.id)
       .get()
       .then((doc) => {
