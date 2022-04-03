@@ -10,8 +10,8 @@
       <div class="box">
         <div class="partition" id="partition-register">
           <div class="partition-title">
-            Hope you enjoyed your bakes from nuttybutterybakery! Do leave a
-            review to tell us how we fared.
+            Hope you enjoyed your bakes! Do leave a review to tell us how we
+            fared.
           </div>
           <div class="partition-form">
             <v-form ref="form" lazy-validation>
@@ -77,10 +77,7 @@
         </div>
       </div>
     </modal>
-    <v-snackbar
-      v-model="snackbar.show"
-      :timeout="2000"
-      :color="snackbar.color"
+    <v-snackbar v-model="snackbar.show" :timeout="2000" :color="snackbar.color"
       >{{ snackbar.msg }}
       <template v-slot:action="{ attrs }">
         <v-btn color="white" text v-bind="attrs" @click="snackbar.show = false">
