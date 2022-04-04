@@ -36,7 +36,7 @@
             </v-col>
             <v-col class="pl-0" v-if="userMatch">
               <v-btn plain x-small :to="createListing"
-                ><v-icon>mdi-plus</v-icon></v-btn
+                ><v-icon >mdi-plus</v-icon></v-btn
               ></v-col
             >
             <v-spacer></v-spacer>
@@ -92,7 +92,7 @@
                 hover
               >
                 <v-img
-                  gradient="to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(132, 131, 131, 0.8) 100%"
+                  gradient="to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(0, 0, 0, 0) 60%, rgba(132, 131, 131, 0.9) 100%"
                   class="white--text align-end bottom-gradient test"
                   height="100%"
                   :src="result.imageURL"
@@ -106,7 +106,7 @@
                     small
                     :to="'/Profile/' + checkRoute"
                   >
-                    <v-icon dark>mdi-delete</v-icon>
+                    <v-icon color="white" class="outlined">mdi-delete</v-icon>
                   </v-btn>
                   <v-btn
                     v-if="userMatch"
@@ -116,7 +116,7 @@
                     plain
                     small
                   >
-                    <v-icon dark>mdi-pencil</v-icon>
+                    <v-icon color="white" class="outlined">mdi-pencil</v-icon>
                   </v-btn>
                   <v-card-title class="font-weight-medium">{{
                     result.name
@@ -343,5 +343,13 @@ export default {
   top: -280px;
   right: 5px;
   float: right;
+}
+
+.v-icon.outlined {
+   filter: drop-shadow(-1px -1px .4px rgb(63, 61, 61))
+      drop-shadow(2px -1px .4px rgb(63, 61, 61))
+      drop-shadow(2px 2px .4px rgb(63, 61, 61))
+      drop-shadow(-1px 2px .4px rgb(63, 61, 61))
+      ;
 }
 </style>
