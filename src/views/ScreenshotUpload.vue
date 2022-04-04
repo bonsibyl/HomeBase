@@ -87,7 +87,11 @@ export default {
       var storageRef = firebase.storage().ref();
       console.log(this.OrderInfo[0]);
       if (this.uploaded.size == null) {
-        alert("Please upload a file");
+          this.snackbar = {
+          color: "error",
+          show: true,
+          msg: "Please upload a file!",
+        };
       }
       if (this.uploaded.size > 0) {
         var imageUpload = this.uploaded;
@@ -133,8 +137,11 @@ export default {
             });
           }
         );
-
-        alert("You have successfully submitted your payment screenshot");
+        this.snackbar = {
+          color: "success",
+          show: true,
+          msg: "You have successfully submitted your payment screenshot!",
+        };
         this.$modal.hide("screenshot");
         //location.reload();
       }
