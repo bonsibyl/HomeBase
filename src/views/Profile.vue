@@ -15,6 +15,7 @@
                 <h4 class="text--secondary">Business Email: {{ email }}</h4>
                 <h4 class="text--secondary">Contact Number: {{ contactNo }}</h4>
                 <h4 class="text--secondary">Address: {{ address }}</h4>
+                <h4 class="text--secondary">About: {{ desc }}</h4>
               </v-col>
               <v-col cols="auto" class="col-btn">
                 <v-btn @click="editDetails" v-if="userMatch">
@@ -167,6 +168,7 @@ export default {
     contactNo: "",
     address: "",
     profilePic: "",
+    desc: "",
   }),
 
   async mounted() {
@@ -211,6 +213,7 @@ export default {
         sellerType = doc.data().seller;
         if (sellerType) {
           this.storeName = doc.data().shopName;
+          this.desc = doc.data().shopDesc;
         } else {
           this.buyerName = doc.data().firstName + " " + doc.data().lastName;
         }
