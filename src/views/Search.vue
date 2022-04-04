@@ -285,7 +285,6 @@ export default {
         .child(imageRef)
         .getDownloadURL()
         .then((url) => {
-          console.log(url);
           if (url) {
             imageURL = url;
           } else {
@@ -311,7 +310,6 @@ export default {
       let filters = this.ActiveFilters;
       function checkFilters(listing) {
         if (listing.tags === null) {
-          console.log(listing.name);
           return false;
         } else if (filters.every((x) => listing.tags.indexOf(x) > -1)) {
           return true;

@@ -269,7 +269,7 @@ export default {
   },
   watch: {
     checkCartUpdate(oldCount, newCount) {
-      console.log(oldCount + " " + newCount);
+      oldCount + newCount;
       this.cartDetails = JSON.parse(localStorage.getItem("cart"));
     },
   },

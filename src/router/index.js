@@ -244,7 +244,7 @@ const router = new VueRouter({
 
 //document titles (name that appears on your tab display)
 router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title} | BT3103Donkeys`; //format interpolation
+  document.title = `${to.meta.title} | HomeBase`; //format interpolation
   next();
 });
 
