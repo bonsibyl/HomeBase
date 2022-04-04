@@ -38,7 +38,9 @@
                 <h3>${{ listing.price.toFixed(2) }}</h3>
               </v-col>
               <v-col id="total" align="left">
-                <h3>${{ (parseFloat(listing.price)*listing.qty).toFixed(2) }}</h3>
+                <h3>
+                  ${{ (parseFloat(listing.price) * listing.qty).toFixed(2) }}
+                </h3>
               </v-col>
               <v-col align="left">
                 <v-btn
@@ -104,7 +106,6 @@ export default {
       finalCart.push({ ...this.cartDetails[i], imageURL: ref });
     }
     this.cartDetails = finalCart;
-    console.log(this.cartDetails);
   },
   components: {
     Modal,
@@ -164,8 +165,6 @@ export default {
     },
     async handleOrders(event) {
       event.preventDefault();
-      console.log(this.cartDetails);
-      console.log("asdasdas");
       const finalOrders = this.cartDetails;
       finalOrders.sort((a, b) => {
         if (a.storeName > b.storeName) {
@@ -176,9 +175,9 @@ export default {
         }
         return 0;
       });
+      console.log(finalOrders);
       var refDate = new Date();
       const ans = [];
-      console.log(this.$store.state.profileId);
       // initialisation
       var storeRef = finalOrders[0].storeName;
       var storeRefCounter = 0;
@@ -231,6 +230,7 @@ export default {
             total: ref.price * ref.qty,
           };
           ans.push(addNewOrder);
+          storeRef = ref.storeName;
           storeRefCounter += 1;
         }
       }

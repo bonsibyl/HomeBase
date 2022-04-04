@@ -235,35 +235,31 @@ export default {
         this.tags = allData.tags;
         this.reviewDetails = allData.Reviews;
         this.imageURL = allData.imageRef;
+      });
+    await db
+      .collection("users")
+      .doc(this.$route.params.user)
+      .get()
+      .then((doc) => {
+        const data = doc.data();
+        this.shopName = data.shopName;
+        this.makerDetails = data.shopDesc
+          ? data.shopDesc
+          : "The shop owner has yet to upload his details!";
+        this.storeDetails = data.address;
+        this.convertFullOpeningDetails(data.openingDetails);
+        // this.openingHours = data.openingHours;
+      });
+
+    const storageRef = firebase.storage().ref();
+    await storageRef
+      .child(this.imageURL)
+      .getDownloadURL()
+      .then((url) => {
+        this.image = url;
       })
-      .then(
-        db
-          .collection("users")
-          .doc(this.$route.params.user)
-          .get()
-          .then((doc) => {
-            const data = doc.data();
-            this.shopName = data.shopName;
-            this.makerDetails = data.shopDesc
-              ? data.shopDesc
-              : "The shop owner has yet to upload his details!";
-            this.storeDetails = data.address;
-            this.convertFullOpeningDetails(data.openingDetails);
-            // this.openingHours = data.openingHours;
-          })
-      )
-      .then(() => {
-        const storageRef = firebase.storage().ref();
-        storageRef
-          .child(this.imageURL)
-          .getDownloadURL()
-          .then((url) => {
-            console.log(url);
-            this.image = url;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+      .catch((error) => {
+        console.log(error);
       });
   },
 
