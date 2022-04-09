@@ -207,7 +207,7 @@ export default {
       },
     };
   },
-  async mounted() {
+  async created() {
     const user = firebase.auth().currentUser.uid;
     this.userMatch = this.$route.params.user === user;
     const information = await this.retrieveUserType(user);
