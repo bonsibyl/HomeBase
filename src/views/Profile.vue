@@ -15,6 +15,8 @@
                 <h4 class="text--secondary">Business Email: {{ email }}</h4>
                 <h4 class="text--secondary">Contact Number: {{ contactNo }}</h4>
                 <h4 class="text--secondary">Address: {{ address }}</h4>
+                <br />
+                <br />
                 <h4 class="text--secondary">About: {{ desc }}</h4>
               </v-col>
               <v-col cols="auto" class="col-btn">
@@ -37,7 +39,7 @@
             </v-col>
             <v-col class="pl-0" v-if="userMatch">
               <v-btn plain x-small :to="createListing"
-                ><v-icon >mdi-plus</v-icon></v-btn
+                ><v-icon>mdi-plus</v-icon></v-btn
               ></v-col
             >
             <v-spacer></v-spacer>
@@ -349,10 +351,9 @@ export default {
 }
 
 .v-icon.outlined {
-   filter: drop-shadow(-1px -1px .4px rgb(63, 61, 61))
-      drop-shadow(2px -1px .4px rgb(63, 61, 61))
-      drop-shadow(2px 2px .4px rgb(63, 61, 61))
-      drop-shadow(-1px 2px .4px rgb(63, 61, 61))
-      ;
+  filter: drop-shadow(-1px -1px 0.4px rgb(63, 61, 61))
+    drop-shadow(2px -1px 0.4px rgb(63, 61, 61))
+    drop-shadow(2px 2px 0.4px rgb(63, 61, 61))
+    drop-shadow(-1px 2px 0.4px rgb(63, 61, 61));
 }
 </style>
